@@ -406,16 +406,16 @@
   const pdfInput = document.getElementById("pdf-input");
   const pdfList = document.getElementById("pdf-list");
 
-  pdfInput.addEventListener("change", (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach(f => {
-      if (!pdfFiles.find(p => p.name === f.name)) {
-        pdfFiles.push(f);
-        addPdfTag(f.name);
-      }
-    });
-    pdfInput.value = "";
-  });
+  // pdfInput.addEventListener("change", (e) => {
+  //   const files = Array.from(e.target.files);
+  //   files.forEach(f => {
+  //     if (!pdfFiles.find(p => p.name === f.name)) {
+  //       pdfFiles.push(f);
+  //       addPdfTag(f.name);
+  //     }
+  //   });
+  //   pdfInput.value = "";
+  // });
 
   function addPdfTag(name) {
     const tag = document.createElement("div");
