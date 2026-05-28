@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rəfiq – Sosial Xidmətlər Assistantı</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue: #1a5fa8;
+      --blue-light: #2876cc;
+      --blue-pale: #e8f1fb;
+      --blue-mid: #c2d9f5;
+      --white: #ffffff;
+      --gray: #f4f7fb;
+      --text: #1a2535;
+      --text-muted: #6b7a90;
+      --radius: 16px;
+      --shadow: 0 4px 24px rgba(26,95,168,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--white);
+      border-bottom: 2px solid var(--blue-mid);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 12px rgba(26,95,168,0.08);
+    }
+
+    header img {
+      height: 48px;
+      width: auto;
+    }
+
+    .header-text h1 {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: -0.3px;
+    }
+
+    .header-text p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      background: #28c76f;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* CHAT AREA */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 16px 0;
+    }
+
+    #chat-box {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-bottom: 12px;
+      min-height: 0;
+      max-height: calc(100vh - 220px);
+    }
+
+    /* MESSAGES */
+    .msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.user { flex-direction: row-reverse; }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .avatar.bot {
+      background: var(--blue);
+      color: white;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+    }
+
+    .avatar.user-av {
+      background: var(--blue-mid);
+      color: var(--blue);
+      font-size: 0.85rem;
+    }
+
+    .bubble {
+      max-width: 78%;
+      padding: 13px 18px;
+      border-radius: var(--radius);
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    .bubble.bot {
+      background: var(--white);
+      border: 1.5px solid var(--blue-mid);
+      color: var(--text);
+      border-top-left-radius: 4px;
+      box-shadow: var(--shadow);
+    }
+
+    .bubble.user {
+      background: var(--blue);
+      color: white;
+      border-top-right-radius: 4px;
+    }
+
+    /* LOADING SPINNER */
+    .loading-bubble {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--white);
+      border: 1.5px solid var(--blue-mid);
+      border-radius: var(--radius);
+      border-top-left-radius: 4px;
+      padding: 12px 18px;
+      max-width: 200px;
+      box-shadow: var(--shadow);
+    }
+
+    .spinner-wrap {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .spinner-wrap img {
+      width: 28px;
+      height: 28px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .spinner-ring {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--blue-pale);
+      border-top: 3px solid var(--blue);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* INPUT AREA */
+    .input-area {
+      background: var(--white);
+      border-top: 2px solid var(--blue-mid);
+      padding: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      position: sticky;
+      bottom: 0;
+    }
+
+    #user-input {
+      flex: 1;
+      border: 1.5px solid var(--blue-mid);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.93rem;
+      font-family: 'Inter', sans-serif;
+      resize: none;
+      outline: none;
+      min-height: 46px;
+      max-height: 130px;
+      transition: border 0.2s;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    #user-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(26,95,168,0.10);
+    }
+
+    #user-input::placeholder { color: #b0bac8; }
+
+    #send-btn {
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    #send-btn:hover { background: var(--blue-light); }
+    #send-btn:active { transform: scale(0.97); }
+    #send-btn:disabled { background: #b0bac8; cursor: not-allowed; }
+
+    /* PDF UPLOAD */
+    .pdf-bar {
+      background: var(--blue-pale);
+      border-bottom: 1px solid var(--blue-mid);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pdf-bar label {
+      background: var(--blue);
+      color: white;
+      border-radius: 8px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .pdf-bar label:hover { background: var(--blue-light); }
+
+    #pdf-input { display: none; }
+
+    #pdf-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      flex: 1;
+    }
+
+    .pdf-tag {
+      background: white;
+      border: 1.5px solid var(--blue-mid);
+      color: var(--blue);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .pdf-tag button {
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .pdf-tag button:hover { color: #e74c3c; }
+
+    /* WELCOME */
+    .welcome {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .welcome h2 {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 8px;
+    }
+
+    .welcome p { font-size: 0.9rem; line-height: 1.6; }
+
+    /* SCROLLBAR */
+    #chat-box::-webkit-scrollbar { width: 5px; }
+    #chat-box::-webkit-scrollbar-track { background: transparent; }
+    #chat-box::-webkit-scrollbar-thumb { background: var(--blue-mid); border-radius: 10px; }
+
+    /* FORMATTED RESPONSE */
+    .bubble.bot p { margin-bottom: 8px; }
+    .bubble.bot p:last-child { margin-bottom: 0; }
+    .bubble.bot strong { color: var(--blue); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Logo" />
+  <div class="header-text">
+    <h1>Rəfiq</h1>
+    <p><span class="status-dot"></span>Sosial xidmətlər üzrə AI assistant</p>
+  </div>
+</header>
+
+<!-- PDF yüklə paneli -->
+<div class="pdf-bar">
+  <label for="pdf-input">
+    📄 PDF Yüklə
+  </label>
+  <input type="file" id="pdf-input" accept=".pdf" multiple />
+  <div id="pdf-list"></div>
+</div>
+
+<main>
+  <div id="chat-box">
+    <div class="welcome" id="welcome-msg">
+      <h2>Salam! Mən Rəfiqəm 👋</h2>
+      <p>Reqlament və qanunlar üzrə suallarınızı verin.<br/>PDF sənədlər yükləyin və istədiyiniz məlumatı soruşun.</p>
+    </div>
+  </div>
+</main>
+
+<div class="input-area">
+  <textarea id="user-input" placeholder="Sualınızı yazın..." rows="1"></textarea>
+  <button id="send-btn">
+    Göndər ➤
+  </button>
+</div>
+
+<script>
+  // ===== KONFİQURASİYA =====
+  const API_KEY = ""; 
+  const MODEL = "claude-sonnet-4-5";
+
+  // ===== VƏZİYYƏT =====
+  let pdfFiles = [];
+  let conversationHistory = [];
+
+  // ===== LOGO BASE64 (Inline) =====
+  // logo.png faylını eyni qovluqda saxlayın
+
+  // ===== PDF İDARƏSİ =====
+  const pdfInput = document.getElementById("pdf-input");
+  const pdfList = document.getElementById("pdf-list");
+
+  pdfInput.addEventListener("change", (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(f => {
+      if (!pdfFiles.find(p => p.name === f.name)) {
+        pdfFiles.push(f);
+        addPdfTag(f.name);
+      }
+    });
+    pdfInput.value = "";
+  });
+
+  function addPdfTag(name) {
+    const tag = document.createElement("div");
+    tag.className = "pdf-tag";
+    tag.dataset.name = name;
+    tag.innerHTML = `📄 ${name} <button onclick="removePdf('${name}')">✕</button>`;
+    pdfList.appendChild(tag);
+  }
+
+  function removePdf(name) {
+    pdfFiles = pdfFiles.filter(f => f.name !== name);
+    const tag = pdfList.querySelector(`[data-name="${name}"]`);
+    if (tag) tag.remove();
+  }
+
+  // ===== PDF OXUMA =====
+  async function readPdfAsBase64(file) {
+    return new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = () => res(reader.result.split(",")[1]);
+      reader.onerror = () => rej(new Error("PDF oxunmadı"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ===== CHAT =====
+  const chatBox = document.getElementById("chat-box");
+  const userInput = document.getElementById("user-input");
+  const sendBtn = document.getElementById("send-btn");
+
+  function addMessage(role, text) {
+    const welcome = document.getElementById("welcome-msg");
+    if (welcome) welcome.remove();
+
+    const msg = document.createElement("div");
+    msg.className = `msg ${role === "user" ? "user" : "bot-msg"}`;
+
+    const avatar = document.createElement("div");
+    avatar.className = `avatar ${role === "user" ? "user-av" : "bot"}`;
+    avatar.textContent = role === "user" ? "Siz" : "R";
+
+    const bubble = document.createElement("div");
+    bubble.className = `bubble ${role === "user" ? "user" : "bot"}`;
+
+    if (role === "assistant") {
+      bubble.innerHTML = formatText(text);
+    } else {
+      bubble.textContent = text;
+    }
+
+    msg.appendChild(avatar);
+    msg.appendChild(bubble);
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return bubble;
+  }
+
+  function formatText(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n\n/g, "</p><p>")
+      .replace(/\n/g, "<br/>")
+      .replace(/^/, "<p>")
+      .replace(/$/, "</p>");
+  }
+
+  function showLoading() {
+    const welcome = document.getElementById("welcome-msg");
+    if (welcome) welcome.remove();
+
+    const msg = document.createElement("div");
+    msg.className = "msg bot-msg";
+    msg.id = "loading-msg";
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar bot";
+    avatar.textContent = "R";
+
+    const loadDiv = document.createElement("div");
+    loadDiv.className = "loading-bubble";
+
+    loadDiv.innerHTML = `
+      <div class="spinner-wrap">
+        <div class="spinner-ring"></div>
+        <img src="logo.png" alt="logo" />
+      </div>
+      <span class="loading-text">Axtarıram...</span>
+    `;
+
+    msg.appendChild(avatar);
+    msg.appendChild(loadDiv);
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function hideLoading() {
+    const loading = document.getElementById("loading-msg");
+    if (loading) loading.remove();
+  }
+
+  async function sendMessage() {
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    if (API_KEY === "BURAYA_API_AÇARINI_YAZ") {
+      alert("Zəhmət olmasa əvvəlcə API açarını daxil edin!\nindex.html faylında API_KEY dəyişənini doldurun.");
+      return;
+    }
+
+    userInput.value = "";
+    userInput.style.height = "auto";
+    sendBtn.disabled = true;
+
+    addMessage("user", text);
+    showLoading();
+
+    try {
+      // PDF-ləri hazırla
+      const userContent = [];
+
+      if (pdfFiles.length > 0) {
+        for (const pdf of pdfFiles) {
+          const b64 = await readPdfAsBase64(pdf);
+          userContent.push({
+            type: "document",
+            source: { type: "base64", media_type: "application/pdf", data: b64 }
+          });
+        }
+      }
+
+      userContent.push({ type: "text", text: text });
+
+      conversationHistory.push({ role: "user", content: userContent });
+
+      const systemPrompt = `Sən "Rəfiq" adlı sosial xidmətlər üzrə ixtisaslaşmış AI assistantsan. 
+Sənə verilən PDF sənədlər (reqlamentlər və qanunlar) əsasında cavab verirsən.
+
+CAVAB FORMATI:
+1. Əvvəlcə reqlamentdən cavabı yaz: "**Reqlamentə əsasən:** ..."
+2. Sonra qanuni əsası göstər: "**Qanunun X maddəsinin Y bəndinə əsasən:** burda belə deyilir..."
+3. Sənədlərdə məlumat yoxdursa, bunu açıq bildir.
+
+Yalnız sənədlərdəki məlumata əsaslan. Azərbaycan dilində cavab ver.`;
+
+      const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+            messages: conversationHistory,
+            system: systemPrompt
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error.message);
+      }
+
+      const reply = data.content.map(b => b.text || "").join("\n");
+      conversationHistory.push({ role: "assistant", content: reply });
+
+      hideLoading();
+      addMessage("assistant", reply);
+
+    } catch (err) {
+      hideLoading();
+      addMessage("assistant", `❌ Xəta baş verdi: ${err.message}`);
+      conversationHistory.pop();
+    }
+
+    sendBtn.disabled = false;
+    userInput.focus();
+  }
+
+  // ===== TEXTAREA AUTO-RESIZE =====
+  userInput.addEventListener("input", () => {
+    userInput.style.height = "auto";
+    userInput.style.height = Math.min(userInput.scrollHeight, 130) + "px";
+  });
+
+  userInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  sendBtn.addEventListener("click", sendMessage);
+</script>
+</body>
+</html>
