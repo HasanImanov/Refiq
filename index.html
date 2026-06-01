@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rəfiq – Sosial Xidmətlər Assistantı</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/index.js"></script>
+  <script src="/docx.js"></script>
   <style>
     :root {
       --blue: #1a5fa8;
@@ -506,8 +506,6 @@
       <select id="arayish-select" onchange="selectCat(this.value)" style="width:100%;border:2px solid var(--blue-mid);border-radius:12px;padding:13px 16px;font-size:1rem;font-family:'Nunito',sans-serif;font-weight:700;color:var(--text);outline:none;cursor:pointer;background:white;">
         <option value="">-- Arayış növünü seçin --</option>
         <option value="yasa-gore">Yaşa görə müavinət</option>
-        <option value="defn">Dəfn müavinəti</option>
-        <option value="dogum">Doğum müavinəti</option>
         <option value="elillik">Əlilliyə görə müavinət</option>
       </select>
     </div>
@@ -566,101 +564,9 @@
       <button class="hazirla-btn" onclick="hazirla('yasa-gore')">📥 Arayışı hazırla</button>
     </div>
 
-    <!-- DƏFN -->
-    <div class="arayish-form" id="form-defn">
-      <div class="form-title">Dəfn müavinəti arayışı</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Soyadı</label>
-          <input type="text" id="df-soyad" placeholder="Həsənov" />
-        </div>
-        <div class="form-group">
-          <label>Adı</label>
-          <input type="text" id="df-ad" placeholder="Həsən" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Ata adı</label>
-        <input type="text" id="df-ata" placeholder="Elmar oğlu" />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>FİN</label>
-          <input type="text" id="df-fin" placeholder="1234567" maxlength="7" />
-        </div>
-        <div class="form-group">
-          <label>Məbləğ (manat)</label>
-          <input type="number" id="df-mebleg" placeholder="600" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Vəfat tarixi</label>
-        <input type="text" id="df-tarix" placeholder="01.01.2024" />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>İmzalayan vəzifəsi</label>
-          <select id="df-vezife">
-            <option value="Direktor">Direktor</option>
-            <option value="Direktor müavini" selected>Direktor müavini</option>
-            <option value="Xidmətlər şöbəsinin müdiri">Xidmətlər şöbəsinin müdiri</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>İmzalayanın adı soyadı</label>
-          <input type="text" id="df-imza" placeholder="Ad Soyad" />
-        </div>
-      </div>
-      <button class="hazirla-btn" onclick="hazirla('defn')">📥 Arayışı hazırla</button>
-    </div>
+   
 
-    <!-- DOĞUM -->
-    <div class="arayish-form" id="form-dogum">
-      <div class="form-title">Doğum müavinəti arayışı</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Soyadı</label>
-          <input type="text" id="dg-soyad" placeholder="Həsənov" />
-        </div>
-        <div class="form-group">
-          <label>Adı</label>
-          <input type="text" id="dg-ad" placeholder="Həsən" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Ata adı</label>
-        <input type="text" id="dg-ata" placeholder="Elmar oğlu" />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>FİN</label>
-          <input type="text" id="dg-fin" placeholder="1234567" maxlength="7" />
-        </div>
-        <div class="form-group">
-          <label>Məbləğ (manat)</label>
-          <input type="number" id="dg-mebleg" placeholder="300" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Uşağın doğum tarixi</label>
-        <input type="text" id="dg-tarix" placeholder="01.01.2024" />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>İmzalayan vəzifəsi</label>
-          <select id="dg-vezife">
-            <option value="Direktor">Direktor</option>
-            <option value="Direktor müavini" selected>Direktor müavini</option>
-            <option value="Xidmətlər şöbəsinin müdiri">Xidmətlər şöbəsinin müdiri</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>İmzalayanın adı soyadı</label>
-          <input type="text" id="dg-imza" placeholder="Ad Soyad" />
-        </div>
-      </div>
-      <button class="hazirla-btn" onclick="hazirla('dogum')">📥 Arayışı hazırla</button>
-    </div>
+   
 
     <!-- ƏLİLLİK -->
     <div class="arayish-form" id="form-elillik">
@@ -770,7 +676,7 @@
 
   // ===== WORD HAZIRLA =====
   async function hazirla(tip) {
-    const { Document, Packer, Paragraph, TextRun, AlignmentType } = window.docx;
+    const { Document, Packer, Paragraph, TextRun, AlignmentType } = docx;
 
     let ad, fin, mebleg, mətn, tarixMətn, bitmeTarix, vezife, imzaAd;
 
@@ -878,11 +784,14 @@
       new Paragraph({ children: [new TextRun('')] }),
       new Paragraph({ children: [new TextRun('')] }),
       new Paragraph({
-        children: [
-          new TextRun({ text: vezife, font: 'Arial', size: 24, bold: true }),
-          new TextRun({ text: '\t\t\t\t\t\t' + imzaAd, font: 'Arial', size: 24 })
-        ]
-      })
+            children: [
+              new TextRun({ text: vezife, font: 'Arial', size: 24, bold: true }),
+              new TextRun({ text: '\t' + imzaAd, font: 'Arial', size: 24,bold: true })
+            ],
+            tabStops: [
+              { type: docx.TabStopType.RIGHT, position: 9026 }
+            ]
+            })
     );
 
     const doc = new Document({
