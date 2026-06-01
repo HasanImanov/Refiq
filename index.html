@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="az">
 <head>
@@ -5,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rəfiq – Sosial Xidmətlər Assistantı</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <style>
     :root {
       --blue: #1a5fa8;
@@ -41,10 +43,7 @@
       box-shadow: 0 2px 12px rgba(26,95,168,0.08);
     }
 
-    header img {
-      height: 48px;
-      width: auto;
-    }
+    header img { height: 48px; width: auto; }
 
     .header-text h1 {
       font-family: 'Nunito', sans-serif;
@@ -61,8 +60,7 @@
     }
 
     .status-dot {
-      width: 9px;
-      height: 9px;
+      width: 9px; height: 9px;
       background: #28c76f;
       border-radius: 50%;
       display: inline-block;
@@ -75,7 +73,48 @@
       50% { opacity: 0.4; }
     }
 
+    /* TABS */
+    .tabs {
+      background: var(--white);
+      border-bottom: 2px solid var(--blue-mid);
+      display: flex;
+      padding: 0 24px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      margin-bottom: -2px;
+    }
+
+    .tab-btn:hover { color: var(--blue); }
+
+    .tab-btn.active {
+      color: var(--blue);
+      border-bottom: 3px solid var(--blue);
+    }
+
+    /* TAB CONTENT */
+    .tab-content { display: none; flex: 1; flex-direction: column; }
+    .tab-content.active { display: flex; }
+
     /* CHAT AREA */
+    #tab-refiq {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+    }
+    #tab-refiq.active { display: flex; }
+
     main {
       flex: 1;
       display: flex;
@@ -94,10 +133,9 @@
       gap: 16px;
       padding-bottom: 12px;
       min-height: 0;
-      max-height: calc(100vh - 220px);
+      max-height: calc(100vh - 260px);
     }
 
-    /* MESSAGES */
     .msg {
       display: flex;
       gap: 10px;
@@ -113,8 +151,7 @@
     .msg.user { flex-direction: row-reverse; }
 
     .avatar {
-      width: 38px;
-      height: 38px;
+      width: 38px; height: 38px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -159,7 +196,6 @@
       border-top-right-radius: 4px;
     }
 
-    /* LOADING SPINNER */
     .loading-bubble {
       display: flex;
       align-items: center;
@@ -175,23 +211,19 @@
 
     .spinner-wrap {
       position: relative;
-      width: 36px;
-      height: 36px;
+      width: 36px; height: 36px;
       flex-shrink: 0;
     }
 
     .spinner-wrap img {
-      width: 28px;
-      height: 28px;
+      width: 28px; height: 28px;
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
     }
 
     .spinner-ring {
-      width: 36px;
-      height: 36px;
+      width: 36px; height: 36px;
       border: 3px solid var(--blue-pale);
       border-top: 3px solid var(--blue);
       border-radius: 50%;
@@ -209,7 +241,6 @@
       font-style: italic;
     }
 
-    /* INPUT AREA */
     .input-area {
       background: var(--white);
       border-top: 2px solid var(--blue-mid);
@@ -226,7 +257,7 @@
       border: 1.5px solid var(--blue-mid);
       border-radius: 12px;
       padding: 12px 16px;
-      font-size: 0.93rem;
+      font-size: 16px;
       font-family: 'Inter', sans-serif;
       resize: none;
       outline: none;
@@ -235,7 +266,6 @@
       transition: border 0.2s;
       color: var(--text);
       line-height: 1.5;
-      font-size: 16px;
     }
 
     #user-input:focus {
@@ -266,68 +296,6 @@
     #send-btn:active { transform: scale(0.97); }
     #send-btn:disabled { background: #b0bac8; cursor: not-allowed; }
 
-    /* PDF UPLOAD */
-    .pdf-bar {
-      background: var(--blue-pale);
-      border-bottom: 1px solid var(--blue-mid);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .pdf-bar label {
-      background: var(--blue);
-      color: white;
-      border-radius: 8px;
-      padding: 7px 14px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s;
-    }
-
-    .pdf-bar label:hover { background: var(--blue-light); }
-
-    #pdf-input { display: none; }
-
-    #pdf-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      flex: 1;
-    }
-
-    .pdf-tag {
-      background: white;
-      border: 1.5px solid var(--blue-mid);
-      color: var(--blue);
-      border-radius: 20px;
-      padding: 4px 12px;
-      font-size: 0.78rem;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .pdf-tag button {
-      background: none;
-      border: none;
-      color: #999;
-      cursor: pointer;
-      font-size: 0.85rem;
-      padding: 0;
-      line-height: 1;
-    }
-
-    .pdf-tag button:hover { color: #e74c3c; }
-
-    /* WELCOME */
     .welcome {
       text-align: center;
       padding: 40px 20px;
@@ -344,15 +312,156 @@
 
     .welcome p { font-size: 0.9rem; line-height: 1.6; }
 
-    /* SCROLLBAR */
     #chat-box::-webkit-scrollbar { width: 5px; }
     #chat-box::-webkit-scrollbar-track { background: transparent; }
     #chat-box::-webkit-scrollbar-thumb { background: var(--blue-mid); border-radius: 10px; }
 
-    /* FORMATTED RESPONSE */
     .bubble.bot p { margin-bottom: 8px; }
     .bubble.bot p:last-child { margin-bottom: 0; }
     .bubble.bot strong { color: var(--blue); font-weight: 700; }
+
+    /* ===== ARAYIŞLAR TAB ===== */
+    #tab-arayish {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 24px 16px;
+    }
+
+    #tab-arayish.active { display: flex; }
+
+    .arayish-container {
+      max-width: 700px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .arayish-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 16px;
+    }
+
+    .arayish-cats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .cat-btn {
+      background: var(--white);
+      border: 2px solid var(--blue-mid);
+      border-radius: 12px;
+      padding: 10px 18px;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .cat-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .cat-btn.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+    }
+
+    .arayish-form {
+      background: var(--white);
+      border-radius: var(--radius);
+      border: 1.5px solid var(--blue-mid);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: none;
+    }
+
+    .arayish-form.active { display: block; }
+
+    .form-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--blue);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid var(--blue-pale);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      border: 1.5px solid var(--blue-mid);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 0.93rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      color: var(--text);
+      transition: border 0.2s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(26,95,168,0.10);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .hazirla-btn {
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 28px;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-top: 8px;
+      width: 100%;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .hazirla-btn:hover { background: var(--blue-light); }
+    .hazirla-btn:active { transform: scale(0.98); }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .empty-state span { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+
+    @media (max-width: 500px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -365,83 +474,440 @@
   </div>
 </header>
 
-<!-- PDF yüklə paneli -->
-<!-- <div class="pdf-bar">
-  <label for="pdf-input">
-    📄 PDF Yüklə
-  </label>
-  <input type="file" id="pdf-input" accept=".pdf" multiple />
-  <div id="pdf-list"></div>
-</div> -->
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('refiq')">💬 Rəfiq</button>
+  <button class="tab-btn" onclick="switchTab('arayish')">📄 Arayışlar</button>
+</div>
 
-<main>
-  <div id="chat-box">
-    <div class="welcome" id="welcome-msg">
-      <h2>Salam! Mən Rəfiqəm 👋</h2>
-      <p>Reqlament və qanunlar üzrə suallarınızı verin.<br/>PDF sənədlər yükləyin və istədiyiniz məlumatı soruşun.</p>
+<!-- TAB 1: REFIQ -->
+<div id="tab-refiq" class="active">
+  <main>
+    <div id="chat-box">
+      <div class="welcome" id="welcome-msg">
+        <h2>Salam! Mən Rəfiqəm 👋</h2>
+        <p>Reqlament və qanunlar üzrə suallarınızı verin.</p>
+      </div>
+    </div>
+  </main>
+
+  <div class="input-area">
+    <textarea id="user-input" placeholder="Sualınızı yazın..." rows="1"></textarea>
+    <button id="send-btn">Göndər ➤</button>
+  </div>
+</div>
+
+<!-- TAB 2: ARAYIŞLAR -->
+<div id="tab-arayish">
+  <div class="arayish-container">
+    <div class="arayish-title">📄 Arayış növünü seçin</div>
+
+    <div class="form-group" style="margin-bottom:28px;">
+      <select id="arayish-select" onchange="selectCat(this.value)" style="width:100%;border:2px solid var(--blue-mid);border-radius:12px;padding:13px 16px;font-size:1rem;font-family:'Nunito',sans-serif;font-weight:700;color:var(--text);outline:none;cursor:pointer;background:white;">
+        <option value="">-- Arayış növünü seçin --</option>
+        <option value="yasa-gore">Yaşa görə müavinət</option>
+        <option value="defn">Dəfn müavinəti</option>
+        <option value="dogum">Doğum müavinəti</option>
+        <option value="elillik">Əlilliyə görə müavinət</option>
+      </select>
+    </div>
+
+    <!-- YAŞA GÖRƏ -->
+    <div class="arayish-form" id="form-yasa-gore">
+      <div class="form-title">Yaşa görə müavinət arayışı</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Soyadı</label>
+          <input type="text" id="yg-soyad" placeholder="Həsənov" />
+        </div>
+        <div class="form-group">
+          <label>Adı</label>
+          <input type="text" id="yg-ad" placeholder="Həsən" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ata adı</label>
+        <input type="text" id="yg-ata" placeholder="Elmar oğlu" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>FİN</label>
+          <input type="text" id="yg-fin" placeholder="1234567" maxlength="7" />
+        </div>
+        <div class="form-group">
+          <label>Məbləğ (manat)</label>
+          <input type="number" id="yg-mebleg" placeholder="220" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Hüququn yaranma tarixi</label>
+          <input type="text" id="yg-tarix" placeholder="27.04.2024" />
+        </div>
+        <div class="form-group">
+          <label>Təyinatın bitmə tarixi</label>
+          <input type="text" id="yg-bitmə" placeholder="müddətsiz" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>İmzalayan vəzifəsi</label>
+          <select id="yg-vezife">
+            <option value="Direktor">Direktor</option>
+            <option value="Direktor müavini" selected>Direktor müavini</option>
+            <option value="Xidmətlər şöbəsinin müdiri">Xidmətlər şöbəsinin müdiri</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>İmzalayanın adı soyadı</label>
+          <input type="text" id="yg-imza" placeholder="Ad Soyad" />
+        </div>
+      </div>
+      <button class="hazirla-btn" onclick="hazirla('yasa-gore')">📥 Arayışı hazırla</button>
+    </div>
+
+    <!-- DƏFN -->
+    <div class="arayish-form" id="form-defn">
+      <div class="form-title">Dəfn müavinəti arayışı</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Soyadı</label>
+          <input type="text" id="df-soyad" placeholder="Həsənov" />
+        </div>
+        <div class="form-group">
+          <label>Adı</label>
+          <input type="text" id="df-ad" placeholder="Həsən" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ata adı</label>
+        <input type="text" id="df-ata" placeholder="Elmar oğlu" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>FİN</label>
+          <input type="text" id="df-fin" placeholder="1234567" maxlength="7" />
+        </div>
+        <div class="form-group">
+          <label>Məbləğ (manat)</label>
+          <input type="number" id="df-mebleg" placeholder="600" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Vəfat tarixi</label>
+        <input type="text" id="df-tarix" placeholder="01.01.2024" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>İmzalayan vəzifəsi</label>
+          <select id="df-vezife">
+            <option value="Direktor">Direktor</option>
+            <option value="Direktor müavini" selected>Direktor müavini</option>
+            <option value="Xidmətlər şöbəsinin müdiri">Xidmətlər şöbəsinin müdiri</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>İmzalayanın adı soyadı</label>
+          <input type="text" id="df-imza" placeholder="Ad Soyad" />
+        </div>
+      </div>
+      <button class="hazirla-btn" onclick="hazirla('defn')">📥 Arayışı hazırla</button>
+    </div>
+
+    <!-- DOĞUM -->
+    <div class="arayish-form" id="form-dogum">
+      <div class="form-title">Doğum müavinəti arayışı</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Soyadı</label>
+          <input type="text" id="dg-soyad" placeholder="Həsənov" />
+        </div>
+        <div class="form-group">
+          <label>Adı</label>
+          <input type="text" id="dg-ad" placeholder="Həsən" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ata adı</label>
+        <input type="text" id="dg-ata" placeholder="Elmar oğlu" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>FİN</label>
+          <input type="text" id="dg-fin" placeholder="1234567" maxlength="7" />
+        </div>
+        <div class="form-group">
+          <label>Məbləğ (manat)</label>
+          <input type="number" id="dg-mebleg" placeholder="300" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Uşağın doğum tarixi</label>
+        <input type="text" id="dg-tarix" placeholder="01.01.2024" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>İmzalayan vəzifəsi</label>
+          <select id="dg-vezife">
+            <option value="Direktor">Direktor</option>
+            <option value="Direktor müavini" selected>Direktor müavini</option>
+            <option value="Xidmətlər şöbəsinin müdiri">Xidmətlər şöbəsinin müdiri</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>İmzalayanın adı soyadı</label>
+          <input type="text" id="dg-imza" placeholder="Ad Soyad" />
+        </div>
+      </div>
+      <button class="hazirla-btn" onclick="hazirla('dogum')">📥 Arayışı hazırla</button>
+    </div>
+
+    <!-- ƏLİLLİK -->
+    <div class="arayish-form" id="form-elillik">
+      <div class="form-title">Əlilliyə görə müavinət arayışı</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Soyadı</label>
+          <input type="text" id="el-soyad" placeholder="Həsənov" />
+        </div>
+        <div class="form-group">
+          <label>Adı</label>
+          <input type="text" id="el-ad" placeholder="Həsən" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ata adı</label>
+        <input type="text" id="el-ata" placeholder="Elmar oğlu" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>FİN</label>
+          <input type="text" id="el-fin" placeholder="1234567" maxlength="7" />
+        </div>
+        <div class="form-group">
+          <label>Məbləğ (manat)</label>
+          <input type="number" id="el-mebleg" placeholder="180" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Əlillik qrupu</label>
+          <select id="el-qrup">
+            <option value="I">I qrup</option>
+            <option value="II">II qrup</option>
+            <option value="III">III qrup</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Bitmə tarixi</label>
+          <input type="text" id="el-bitmə" placeholder="müddətsiz" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>İmzalayan vəzifəsi</label>
+          <select id="el-vezife">
+            <option value="Direktor">Direktor</option>
+            <option value="Direktor müavini" selected>Direktor müavini</option>
+            <option value="Xidmətlər şöbəsinin müdiri">Xidmətlər şöbəsinin müdiri</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>İmzalayanın adı soyadı</label>
+          <input type="text" id="el-imza" placeholder="Ad Soyad" />
+        </div>
+      </div>
+      <button class="hazirla-btn" onclick="hazirla('elillik')">📥 Arayışı hazırla</button>
+    </div>
+
+    <div class="empty-state" id="empty-state">
+      <span>📋</span>
+      Yuxarıdan arayış növünü seçin
     </div>
   </div>
-</main>
-
-<div class="input-area">
-  <textarea id="user-input" placeholder="Sualınızı yazın..." rows="1"></textarea>
-  <button id="send-btn">
-    Göndər ➤
-  </button>
 </div>
 
 <script>
-  // ===== KONFİQURASİYA =====
-  const API_KEY = ""; 
-  const MODEL = "claude-sonnet-4-5";
-
-  // ===== VƏZİYYƏT =====
-  let pdfFiles = [];
-  let conversationHistory = [];
-
-  // ===== LOGO BASE64 (Inline) =====
-  // logo.png faylını eyni qovluqda saxlayın
-
-  // ===== PDF İDARƏSİ =====
-  const pdfInput = document.getElementById("pdf-input");
-  const pdfList = document.getElementById("pdf-list");
-
-  // pdfInput.addEventListener("change", (e) => {
-  //   const files = Array.from(e.target.files);
-  //   files.forEach(f => {
-  //     if (!pdfFiles.find(p => p.name === f.name)) {
-  //       pdfFiles.push(f);
-  //       addPdfTag(f.name);
-  //     }
-  //   });
-  //   pdfInput.value = "";
-  // });
-
-  function addPdfTag(name) {
-    const tag = document.createElement("div");
-    tag.className = "pdf-tag";
-    tag.dataset.name = name;
-    tag.innerHTML = `📄 ${name} <button onclick="removePdf('${name}')">✕</button>`;
-    pdfList.appendChild(tag);
-  }
-
-  function removePdf(name) {
-    pdfFiles = pdfFiles.filter(f => f.name !== name);
-    const tag = pdfList.querySelector(`[data-name="${name}"]`);
-    if (tag) tag.remove();
-  }
-
-  // ===== PDF OXUMA =====
-  async function readPdfAsBase64(file) {
-    return new Promise((res, rej) => {
-      const reader = new FileReader();
-      reader.onload = () => res(reader.result.split(",")[1]);
-      reader.onerror = () => rej(new Error("PDF oxunmadı"));
-      reader.readAsDataURL(file);
+  // ===== TAB SİSTEMİ =====
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', (i === 0 && tab === 'refiq') || (i === 1 && tab === 'arayish'));
     });
+    document.getElementById('tab-refiq').classList.toggle('active', tab === 'refiq');
+    document.getElementById('tab-arayish').classList.toggle('active', tab === 'arayish');
+  }
+
+  // ===== KATEQORİYA SEÇİMİ =====
+  function selectCat(cat) {
+    document.querySelectorAll('.arayish-form').forEach(f => f.classList.remove('active'));
+    if (!cat) {
+      document.getElementById('empty-state').style.display = 'block';
+      return;
+    }
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('form-' + cat).classList.add('active');
+  }
+
+  // ===== RƏQƏMI HƏRFLƏ =====
+  function numberToWords(n) {
+    n = parseInt(n);
+    if (isNaN(n)) return '';
+    const birler = ['', 'bir', 'iki', 'üç', 'dörd', 'beş', 'altı', 'yeddi', 'səkkiz', 'doqquz'];
+    const onlar = ['', 'on', 'iyirmi', 'otuz', 'qırx', 'əlli', 'altmış', 'yetmiş', 'səksən', 'doxsan'];
+    const yuzler = ['', 'yüz', 'iki yüz', 'üç yüz', 'dörd yüz', 'beş yüz', 'altı yüz', 'yeddi yüz', 'səkkiz yüz', 'doqquz yüz'];
+    if (n === 0) return 'sıfır';
+    let result = '';
+    if (n >= 1000) {
+      const k = Math.floor(n / 1000);
+      result += (k === 1 ? 'min' : birler[k] + ' min') + ' ';
+      n %= 1000;
+    }
+    if (n >= 100) { result += yuzler[Math.floor(n / 100)] + ' '; n %= 100; }
+    if (n >= 10) { result += onlar[Math.floor(n / 10)] + ' '; n %= 10; }
+    if (n > 0) result += birler[n];
+    return result.trim();
+  }
+
+  // ===== WORD HAZIRLA =====
+  async function hazirla(tip) {
+    const { Document, Packer, Paragraph, TextRun, AlignmentType } = docx;
+
+    let ad, fin, mebleg, mətn, tarixMətn, bitmeTarix, vezife, imzaAd;
+
+    if (tip === 'yasa-gore') {
+      const soyad = document.getElementById('yg-soyad').value.trim();
+      const adVal = document.getElementById('yg-ad').value.trim();
+      const ata = document.getElementById('yg-ata').value.trim();
+      fin = document.getElementById('yg-fin').value.trim();
+      mebleg = document.getElementById('yg-mebleg').value.trim();
+      vezife = document.getElementById('yg-vezife').value;
+      imzaAd = document.getElementById('yg-imza').value.trim() || 'XXXX XXXX';
+      const tarix = document.getElementById('yg-tarix').value.trim();
+      bitmeTarix = document.getElementById('yg-bitmə').value.trim() || 'müddətsiz';
+      ad = `${soyad} ${adVal} ${ata}`;
+      const herf = numberToWords(mebleg);
+      mətn = `${ad} (FİN ${fin}) Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin "Sosial ödənişlər" altsisteминə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan yaşa görə ${mebleg} (${herf}) manat məbləğində sosial müavinət alır.`;
+      tarixMətn = tarix ? `Hüququn yaranma tarixi: ${tarix}-cü il` : '';
+    } else if (tip === 'defn') {
+      const soyad = document.getElementById('df-soyad').value.trim();
+      const adVal = document.getElementById('df-ad').value.trim();
+      const ata = document.getElementById('df-ata').value.trim();
+      fin = document.getElementById('df-fin').value.trim();
+      mebleg = document.getElementById('df-mebleg').value.trim();
+      vezife = document.getElementById('df-vezife').value;
+      imzaAd = document.getElementById('df-imza').value.trim() || 'XXXX XXXX';
+      const tarix = document.getElementById('df-tarix').value.trim();
+      ad = `${soyad} ${adVal} ${ata}`;
+      const herf = numberToWords(mebleg);
+      mətn = `${ad} (FİN ${fin}) vəfat etmiş şəxsin dəfnini təşkil etdiyinə görə ${mebleg} (${herf}) manat məbləğində dəfn üçün birdəfəlik müavinət almışdır. Vəfat tarixi: ${tarix}.`;
+      tarixMətn = '';
+      bitmeTarix = '';
+    } else if (tip === 'dogum') {
+      const soyad = document.getElementById('dg-soyad').value.trim();
+      const adVal = document.getElementById('dg-ad').value.trim();
+      const ata = document.getElementById('dg-ata').value.trim();
+      fin = document.getElementById('dg-fin').value.trim();
+      mebleg = document.getElementById('dg-mebleg').value.trim();
+      vezife = document.getElementById('dg-vezife').value;
+      imzaAd = document.getElementById('dg-imza').value.trim() || 'XXXX XXXX';
+      const tarix = document.getElementById('dg-tarix').value.trim();
+      ad = `${soyad} ${adVal} ${ata}`;
+      const herf = numberToWords(mebleg);
+      mətn = `${ad} (FİN ${fin}) uşağının anadan olmasına görə ${mebleg} (${herf}) manat məbləğində birdəfəlik müavinət almışdır. Uşağın doğum tarixi: ${tarix}.`;
+      tarixMətn = '';
+      bitmeTarix = '';
+    } else if (tip === 'elillik') {
+      const soyad = document.getElementById('el-soyad').value.trim();
+      const adVal = document.getElementById('el-ad').value.trim();
+      const ata = document.getElementById('el-ata').value.trim();
+      fin = document.getElementById('el-fin').value.trim();
+      mebleg = document.getElementById('el-mebleg').value.trim();
+      vezife = document.getElementById('el-vezife').value;
+      imzaAd = document.getElementById('el-imza').value.trim() || 'XXXX XXXX';
+      const qrup = document.getElementById('el-qrup').value;
+      bitmeTarix = document.getElementById('el-bitmə').value.trim() || 'müddətsiz';
+      ad = `${soyad} ${adVal} ${ata}`;
+      const herf = numberToWords(mebleg);
+      mətn = `${ad} (FİN ${fin}) Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin "Sosial ödənişlər" altsisteминə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan əlilliyə görə (${qrup} qrup) ${mebleg} (${herf}) manat məbləğində sosial müavinət alır.`;
+      tarixMətn = '';
+    }
+
+    const children = [
+      new Paragraph({ children: [new TextRun('')] }),
+      new Paragraph({ children: [new TextRun('')] }),
+      new Paragraph({ children: [new TextRun('')] }),
+      new Paragraph({ children: [new TextRun('')] }),
+      new Paragraph({ children: [new TextRun('')] }),
+      new Paragraph({
+        alignment: AlignmentType.CENTER,
+        children: [new TextRun({ text: 'ARAYIŞ', font: 'Arial', size: 24 })],
+        spacing: { after: 280 }
+      }),
+      new Paragraph({
+        alignment: AlignmentType.JUSTIFIED,
+        indent: { firstLine: 720 },
+        children: [new TextRun({ text: mətn, font: 'Arial', size: 24 })],
+        spacing: { after: 200 }
+      }),
+      new Paragraph({ children: [new TextRun('')] }),
+    ];
+
+    if (tarixMətn) {
+      children.push(new Paragraph({
+        indent: { left: 720 },
+        children: [new TextRun({ text: tarixMətn, font: 'Arial', size: 24 })],
+        spacing: { after: 80 }
+      }));
+    }
+
+    if (bitmeTarix) {
+      children.push(new Paragraph({
+        indent: { left: 720 },
+        children: [new TextRun({ text: `Təyinatın bitmə tarixi: ${bitmeTarix}`, font: 'Arial', size: 24 })],
+        spacing: { after: 200 }
+      }));
+    }
+
+    children.push(
+      new Paragraph({ children: [new TextRun('')] }),
+      new Paragraph({
+        indent: { left: 720 },
+        children: [new TextRun({ text: 'Arayış tələb olunan yerə təqdim etmək üçün verilir.', font: 'Arial', size: 24 })],
+        spacing: { after: 400 }
+      }),
+      new Paragraph({ children: [new TextRun('')] }),
+      new Paragraph({ children: [new TextRun('')] }),
+      new Paragraph({
+        children: [
+          new TextRun({ text: vezife, font: 'Arial', size: 24, bold: true }),
+          new TextRun({ text: '\t\t\t\t\t\t' + imzaAd, font: 'Arial', size: 24 })
+        ]
+      })
+    );
+
+    const doc = new Document({
+      sections: [{
+        properties: {
+          page: {
+            size: { width: 11906, height: 16838 },
+            margin: { top: 1701, right: 1701, bottom: 1701, left: 1701 }
+          }
+        },
+        children
+      }]
+    });
+
+    const buffer = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(buffer);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `arayish_${fin || 'naməlum'}.docx`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   // ===== CHAT =====
+  let conversationHistory = [];
   const chatBox = document.getElementById("chat-box");
   const userInput = document.getElementById("user-input");
   const sendBtn = document.getElementById("send-btn");
@@ -449,28 +915,22 @@
   function addMessage(role, text) {
     const welcome = document.getElementById("welcome-msg");
     if (welcome) welcome.remove();
-
     const msg = document.createElement("div");
     msg.className = `msg ${role === "user" ? "user" : "bot-msg"}`;
-
     const avatar = document.createElement("div");
     avatar.className = `avatar ${role === "user" ? "user-av" : "bot"}`;
     avatar.textContent = role === "user" ? "Siz" : "R";
-
     const bubble = document.createElement("div");
     bubble.className = `bubble ${role === "user" ? "user" : "bot"}`;
-
     if (role === "assistant") {
       bubble.innerHTML = formatText(text);
     } else {
       bubble.textContent = text;
     }
-
     msg.appendChild(avatar);
     msg.appendChild(bubble);
     chatBox.appendChild(msg);
     chatBox.scrollTop = chatBox.scrollHeight;
-    return bubble;
   }
 
   function formatText(text) {
@@ -485,18 +945,14 @@
   function showLoading() {
     const welcome = document.getElementById("welcome-msg");
     if (welcome) welcome.remove();
-
     const msg = document.createElement("div");
     msg.className = "msg bot-msg";
     msg.id = "loading-msg";
-
     const avatar = document.createElement("div");
     avatar.className = "avatar bot";
     avatar.textContent = "R";
-
     const loadDiv = document.createElement("div");
     loadDiv.className = "loading-bubble";
-
     loadDiv.innerHTML = `
       <div class="spinner-wrap">
         <div class="spinner-ring"></div>
@@ -504,7 +960,6 @@
       </div>
       <span class="loading-text">Axtarıram...</span>
     `;
-
     msg.appendChild(avatar);
     msg.appendChild(loadDiv);
     chatBox.appendChild(msg);
@@ -519,81 +974,40 @@
   async function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
-
-    if (API_KEY === "BURAYA_API_AÇARINI_YAZ") {
-      alert("Zəhmət olmasa əvvəlcə API açarını daxil edin!\nindex.html faylında API_KEY dəyişənini doldurun.");
-      return;
-    }
-
     userInput.value = "";
     userInput.style.height = "auto";
     sendBtn.disabled = true;
-
     addMessage("user", text);
     showLoading();
-
     try {
-      // PDF-ləri hazırla
-      const userContent = [];
-
-      if (pdfFiles.length > 0) {
-        for (const pdf of pdfFiles) {
-          const b64 = await readPdfAsBase64(pdf);
-          userContent.push({
-            type: "document",
-            source: { type: "base64", media_type: "application/pdf", data: b64 }
-          });
-        }
-      }
-
-      userContent.push({ type: "text", text: text });
-
-      conversationHistory.push({ role: "user", content: userContent });
-
-      const systemPrompt = `Sən "Rəfiq" adlı sosial xidmətlər üzrə ixtisaslaşmış AI assistantsan. 
+      conversationHistory.push({ role: "user", content: text });
+      const systemPrompt = `Sən "Rəfiq" adlı sosial xidmətlər üzrə ixtisaslaşmış AI assistantsan.
 Sənə verilən PDF sənədlər (reqlamentlər və qanunlar) əsasında cavab verirsən.
-
 CAVAB FORMATI:
 1. Əvvəlcə reqlamentdən cavabı yaz: "**Reqlamentə əsasən:** ..."
 2. Sonra qanuni əsası göstər: "**Qanunun X maddəsinin Y bəndinə əsasən:** burda belə deyilir..."
 3. Sənədlərdə məlumat yoxdursa, bunu açıq bildir.
-
 Yalnız sənədlərdəki məlumata əsaslan. Azərbaycan dilində cavab ver.`;
-
       const response = await fetch("/api/chat", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-            messages: conversationHistory,
-            system: systemPrompt
-        })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: conversationHistory, system: systemPrompt })
       });
-
       const data = await response.json();
-
-      if (data.error) {
-        throw new Error(data.error.message);
-      }
-
+      if (data.error) throw new Error(data.error.message);
       const reply = data.content.map(b => b.text || "").join("\n");
       conversationHistory.push({ role: "assistant", content: reply });
-
       hideLoading();
       addMessage("assistant", reply);
-
     } catch (err) {
       hideLoading();
       addMessage("assistant", `❌ Xəta baş verdi: ${err.message}`);
       conversationHistory.pop();
     }
-
     sendBtn.disabled = false;
     userInput.focus();
   }
 
-  // ===== TEXTAREA AUTO-RESIZE =====
   userInput.addEventListener("input", () => {
     userInput.style.height = "auto";
     userInput.style.height = Math.min(userInput.scrollHeight, 130) + "px";
