@@ -375,7 +375,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     var resp = await fetch('/api/docx-to-pdf', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({html: htmlContent, filename: 'arayish_' + (d.fin||'namelum')})
+      body: JSON.stringify({html: htmlContent, filename: 'arayish_' + (d?.fin || 'namelum')})
     });
     if (resp.ok) {
       var pb = await resp.blob();

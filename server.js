@@ -41,8 +41,9 @@ app.get('/docx.js', (req, res) => {
 // ----------------------------
 // filename safe
 // ----------------------------
+
 function safeFilename(name) {
-  return (name || 'file')
+  return String(name || 'arayish')
     .replace(/ə/g, 'e').replace(/Ə/g, 'E')
     .replace(/ş/g, 's').replace(/Ş/g, 'S')
     .replace(/ı/g, 'i').replace(/İ/g, 'I')
@@ -68,7 +69,7 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     }
 
     const { html, filename } = req.body;
-    const safeName = safeFilename(filename);
+    const safeName = safeFilename(filename || "arayish");
 
     browser = await chromium.launch({
       args: [
