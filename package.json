@@ -1,20 +1,18 @@
 {
   "name": "refiq",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "npx playwright install chromium"
+  },
+   "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HasanImanov/Refiq.git"
   },
   "engines": {
     "node": "20.x"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HasanImanov/Refiq.git"
-  },
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "adm-zip": "^0.5.17",
     "cors": "^2.8.6",
@@ -24,3 +22,5 @@
     "playwright": "^1.40.0"
   }
 }
+
+

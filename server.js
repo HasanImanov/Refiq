@@ -57,11 +57,12 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const { html, filename } = req.body;
     const safeName = safeFilename(filename);
 
-    // ✅ PLAYWRIGHT (STABLE)
+    // ✅ STABLE RENDER SETUP
     browser = await chromium.launch({
       args: [
         "--no-sandbox",
-        "--disable-setuid-sandbox"
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage"
       ]
     });
 
