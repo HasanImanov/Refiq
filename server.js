@@ -41,6 +41,8 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const safeName = safeFilename(filename);
 
     const puppeteer = require('puppeteer');
+
+console.log('Chrome path:', puppeteer.executablePath());
     const browser = await puppeteer.launch({
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
