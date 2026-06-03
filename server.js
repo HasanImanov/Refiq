@@ -8,8 +8,14 @@ const { chromium } = require('playwright');
 
 const app = express();
 
+// ----------------------------
+// MIDDLEWARE (VACİB FIX)
+// ----------------------------
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
+
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: true, limit: '100mb' }));
+
 app.use(express.static('.'));
 
 // ----------------------------
@@ -48,16 +54,22 @@ function safeFilename(name) {
 }
 
 // ----------------------------
-// PDF GENERATOR (HTML → PDF)
+// PDF GENERATOR (FIXED)
 // ----------------------------
 app.post('/api/docx-to-pdf', async (req, res) => {
   let browser;
 
   try {
+    // 🔒 SAFETY CHECK
+    if (!req.body || !req.body.html) {
+      return res.status(400).json({
+        error: "html missing in request body"
+      });
+    }
+
     const { html, filename } = req.body;
     const safeName = safeFilename(filename);
 
-    // ✅ STABLE RENDER SETUP
     browser = await chromium.launch({
       args: [
         "--no-sandbox",
@@ -68,7 +80,7 @@ app.post('/api/docx-to-pdf', async (req, res) => {
 
     const page = await browser.newPage();
 
-    await page.setContent(html, {
+    await page.setContent(String(html), {
       waitUntil: 'networkidle'
     });
 
@@ -94,12 +106,12 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     res.send(pdfBuffer);
 
   } catch (error) {
-    console.error('PDF error:', error);
+    console.error('PDF ERROR:', error);
 
     if (browser) await browser.close();
 
     res.status(500).json({
-      error: error.message
+      error: error.message || "PDF generation failed"
     });
   }
 });
