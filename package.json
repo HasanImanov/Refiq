@@ -22,7 +22,6 @@
     "docx": "^9.7.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "puppeteer-core": "^21.0.0",
-    "chrome-aws-lambda": "^10.1.0"
+    "puppeteer": "^21.0.0"
   }
 }

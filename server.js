@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer');
 
 const app = express();
 
@@ -48,7 +48,7 @@ function safeFilename(name) {
 }
 
 // ----------------------------
-// PDF GENERATOR (HTML → PDF)
+// PDF GENERATOR
 // ----------------------------
 app.post('/api/docx-to-pdf', async (req, res) => {
   let browser;
@@ -57,11 +57,14 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const { html, filename } = req.body;
     const safeName = safeFilename(filename);
 
-    // 🔥 STABLE Chromium (Render-friendly)
-    browser = await chromium.puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: true
+    // ✅ CLEAN PUPPETEER (NO CONFLICT)
+    browser = await puppeteer.launch({
+      headless: "new",
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage"
+      ]
     });
 
     const page = await browser.newPage();
@@ -128,7 +131,7 @@ function loadPDFs() {
 const pdfFiles = loadPDFs();
 
 // ----------------------------
-// CHAT endpoint (Claude)
+// CHAT endpoint
 // ----------------------------
 app.post('/api/chat', async (req, res) => {
   try {
@@ -136,7 +139,7 @@ app.post('/api/chat', async (req, res) => {
 
     const systemPrompt = `
 Sən "Rəfiq" adlı AI assistantsan.
-Sənə verilən PDF sənədlərə əsaslanırsan.
+PDF sənədlərə əsaslanırsan.
 Azərbaycan dilində cavab ver.
     `;
 
