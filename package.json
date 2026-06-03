@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "apt-get install -y libreoffice || true",
-    "postinstall": "npx puppeteer browsers install chrome",
+    "postinstall": "",
     "start": "node server.js"
   },
   "repository": {
@@ -27,6 +27,7 @@
     "docx": "^9.7.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "puppeteer": "^25.1.0"
+    "puppeteer-core": "^latest",
+    "chrome-aws-lambda": "^latest"
   }
 }
