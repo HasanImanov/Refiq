@@ -48,7 +48,7 @@ function safeFilename(name) {
 }
 
 // ----------------------------
-// PDF GENERATOR
+// PDF GENERATOR (HTML → PDF)
 // ----------------------------
 app.post('/api/docx-to-pdf', async (req, res) => {
   let browser;
@@ -57,13 +57,14 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const { html, filename } = req.body;
     const safeName = safeFilename(filename);
 
-    // ✅ CLEAN PUPPETEER (NO CONFLICT)
+    // ✅ STABLE Puppeteer for Render
     browser = await puppeteer.launch({
       headless: "new",
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage"
+        "--disable-dev-shm-usage",
+        "--disable-gpu"
       ]
     });
 
@@ -139,14 +140,15 @@ app.post('/api/chat', async (req, res) => {
 
     const systemPrompt = `
 Sən "Rəfiq" adlı AI assistantsan.
-PDF sənədlərə əsaslanırsan.
-Azərbaycan dilində cavab ver.
-    `;
+Sən PDF sənədlərə əsaslanırsan.
+Cavabları Azərbaycan dilində ver.
+`;
 
     const lastMessage = messages[messages.length - 1];
 
     const userContent = [];
 
+    // inject PDFs
     for (const pdf of pdfFiles) {
       userContent.push({
         type: 'document',
@@ -169,7 +171,10 @@ Azərbaycan dilində cavab ver.
 
     const updatedMessages = [
       ...messages.slice(0, -1),
-      { role: 'user', content: userContent }
+      {
+        role: 'user',
+        content: userContent
+      }
     ];
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
