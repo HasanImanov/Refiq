@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "apt-get install -y libreoffice || true",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -15,7 +17,7 @@
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/HasanImanov/Refiq/issues"
+    "url": "https://github.com/HasanImanov/Refiq#readme"
   },
   "homepage": "https://github.com/HasanImanov/Refiq#readme",
   "dependencies": {

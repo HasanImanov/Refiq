@@ -48,8 +48,12 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     fs.writeFileSync(docxPath, Buffer.from(docxArr));
 
     // Convert to PDF using LibreOffice
-    execSync(`"C:\\Program Files\\LibreOffice\\program\\soffice.exe" --headless --convert-to pdf --outdir "${tmpDir}" "${docxPath}"`);
 
+    const soffice = process.platform === 'win32'
+  ? '"C:\\Program Files\\LibreOffice\\program\\soffice.exe"'
+  : 'soffice';
+
+execSync(`${soffice} --headless --convert-to pdf --outdir "${tmpDir}" "${docxPath}"`);
     if (fs.existsSync(pdfPath)) {
       const pdfBuffer = fs.readFileSync(pdfPath);
       res.setHeader('Content-Type', 'application/pdf');
