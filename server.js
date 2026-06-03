@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 require('dotenv').config();
 
 const app = express();
@@ -35,35 +34,28 @@ function safeFilename(name) {
     .replace(/[^a-zA-Z0-9_\-]/g, '_');
 }
 
-// PDF endpoint - docx -> pdf via LibreOffice
+// PDF endpoint - HTML -> PDF via Puppeteer
 app.post('/api/docx-to-pdf', async (req, res) => {
   try {
-    const { docx: docxArr, filename } = req.body;
-    const tmpDir = require('os').tmpdir();
+    const { html, filename } = req.body;
     const safeName = safeFilename(filename);
-    const docxPath = path.join(tmpDir, `${safeName}.docx`);
-    const pdfPath = path.join(tmpDir, `${safeName}.pdf`);
 
-    // Write docx
-    fs.writeFileSync(docxPath, Buffer.from(docxArr));
+    const puppeteer = require('puppeteer');
+    const browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      margin: { top: '20mm', bottom: '20mm', left: '20mm', right: '20mm' }
+    });
+    await browser.close();
 
-    // Convert to PDF using LibreOffice
-
-    const soffice = process.platform === 'win32'
-  ? '"C:\\Program Files\\LibreOffice\\program\\soffice.exe"'
-  : 'soffice';
-
-execSync(`${soffice} --headless --convert-to pdf --outdir "${tmpDir}" "${docxPath}"`);
-    if (fs.existsSync(pdfPath)) {
-      const pdfBuffer = fs.readFileSync(pdfPath);
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="${safeName}.pdf"`);
-      res.send(pdfBuffer);
-      fs.unlinkSync(docxPath);
-      fs.unlinkSync(pdfPath);
-    } else {
-      res.status(500).json({ error: 'PDF yaradıla bilmədi' });
-    }
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${safeName}.pdf"`);
+    res.send(pdfBuffer);
   } catch (error) {
     console.error('PDF error:', error.message);
     res.status(500).json({ error: error.message });
