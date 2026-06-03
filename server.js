@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer');
 
 const app = express();
 
@@ -36,7 +36,7 @@ app.get('/docx.js', (req, res) => {
 // filename safe
 // ----------------------------
 function safeFilename(name) {
-  return (name || 'arayish')
+  return (name || 'file')
     .replace(/ə/g, 'e').replace(/Ə/g, 'E')
     .replace(/ş/g, 's').replace(/Ş/g, 'S')
     .replace(/ı/g, 'i').replace(/İ/g, 'I')
@@ -48,7 +48,7 @@ function safeFilename(name) {
 }
 
 // ----------------------------
-// PDF GENERATOR (HTML -> PDF)
+// PDF GENERATOR (HTML → PDF)
 // ----------------------------
 app.post('/api/docx-to-pdf', async (req, res) => {
   let browser;
@@ -57,11 +57,14 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const { html, filename } = req.body;
     const safeName = safeFilename(filename);
 
-    // Chromium launch (Render-safe)
-    browser = await chromium.puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: true,
+    // 🔥 STABLE Puppeteer launch (Render-friendly)
+    browser = await puppeteer.launch({
+      headless: "new",
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage"
+      ]
     });
 
     const page = await browser.newPage();
@@ -103,7 +106,7 @@ app.post('/api/docx-to-pdf', async (req, res) => {
 });
 
 // ----------------------------
-// Load PDFs
+// PDF loader
 // ----------------------------
 function loadPDFs() {
   const pdfsDir = path.join(__dirname, 'pdfs');
@@ -143,20 +146,17 @@ app.post('/api/chat', async (req, res) => {
 Sən "Rəfiq" adlı sosial xidmətlər üzrə ixtisaslaşmış AI assistantsan.
 Sənə verilən PDF sənədlər əsasında cavab verirsən.
 
-CAVAB FORMATI:
-1. Reqlamentə əsasən
-2. Qanuni əsas
-3. Əgər məlumat yoxdursa: "Bu barədə mövcud sənədlərdə məlumat yoxdur"
-
-QADAĞA: sənədlərdən kənar məlumat vermə.
-Cavabları Azərbaycan dilində ver.
+Qaydalar:
+- yalnız sənədlərə əsaslan
+- Azərbaycan dilində cavab ver
+- sənəddə yoxdursa "məlumat yoxdur" yaz
     `;
 
     const lastMessage = messages[messages.length - 1];
 
     const userContent = [];
 
-    // PDFs inject
+    // inject PDFs
     for (const pdf of pdfFiles) {
       userContent.push({
         type: 'document',
@@ -186,23 +186,20 @@ Cavabları Azərbaycan dilində ver.
       }
     ];
 
-    const response = await fetch(
-      'https://api.anthropic.com/v1/messages',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-5',
-          max_tokens: 2048,
-          system: systemPrompt,
-          messages: updatedMessages
-        })
-      }
-    );
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages: updatedMessages
+      })
+    });
 
     const data = await response.json();
     res.json(data);
@@ -216,7 +213,7 @@ Cavabları Azərbaycan dilində ver.
 });
 
 // ----------------------------
-// START SERVER
+// START
 // ----------------------------
 const PORT = process.env.PORT || 3000;
 
