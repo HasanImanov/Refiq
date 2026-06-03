@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const puppeteer = require('puppeteer');
+const { chromium } = require('playwright');
 
 const app = express();
 
@@ -57,21 +57,18 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const { html, filename } = req.body;
     const safeName = safeFilename(filename);
 
-    // ✅ STABLE Puppeteer for Render
-    browser = await puppeteer.launch({
-      headless: "new",
+    // ✅ PLAYWRIGHT (STABLE)
+    browser = await chromium.launch({
       args: [
         "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu"
+        "--disable-setuid-sandbox"
       ]
     });
 
     const page = await browser.newPage();
 
     await page.setContent(html, {
-      waitUntil: 'networkidle0'
+      waitUntil: 'networkidle'
     });
 
     const pdfBuffer = await page.pdf({
@@ -140,15 +137,14 @@ app.post('/api/chat', async (req, res) => {
 
     const systemPrompt = `
 Sən "Rəfiq" adlı AI assistantsan.
-Sən PDF sənədlərə əsaslanırsan.
-Cavabları Azərbaycan dilində ver.
+PDF sənədlərə əsaslanırsan.
+Azərbaycan dilində cavab ver.
 `;
 
     const lastMessage = messages[messages.length - 1];
 
     const userContent = [];
 
-    // inject PDFs
     for (const pdf of pdfFiles) {
       userContent.push({
         type: 'document',
@@ -171,10 +167,7 @@ Cavabları Azərbaycan dilində ver.
 
     const updatedMessages = [
       ...messages.slice(0, -1),
-      {
-        role: 'user',
-        content: userContent
-      }
+      { role: 'user', content: userContent }
     ];
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {

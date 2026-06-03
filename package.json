@@ -1,6 +1,7 @@
 {
   "name": "refiq",
   "version": "1.0.0",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -8,12 +9,18 @@
   "engines": {
     "node": "20.x"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HasanImanov/Refiq.git"
+  },
+  "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
     "adm-zip": "^0.5.17",
     "cors": "^2.8.6",
     "docx": "^9.7.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "puppeteer": "^21.0.0"
+    "playwright": "^1.40.0"
   }
 }
