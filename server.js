@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const puppeteer = require('puppeteer');
+const chromium = require('chrome-aws-lambda');
 
 const app = express();
 
@@ -57,14 +57,11 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const { html, filename } = req.body;
     const safeName = safeFilename(filename);
 
-    // 🔥 STABLE Puppeteer launch (Render-friendly)
-    browser = await puppeteer.launch({
-      headless: "new",
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage"
-      ]
+    // 🔥 STABLE Chromium (Render-friendly)
+    browser = await chromium.puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath,
+      headless: true
     });
 
     const page = await browser.newPage();
@@ -112,10 +109,7 @@ function loadPDFs() {
   const pdfsDir = path.join(__dirname, 'pdfs');
   const pdfs = [];
 
-  if (!fs.existsSync(pdfsDir)) {
-    console.log('pdfs folderi tapılmadı');
-    return pdfs;
-  }
+  if (!fs.existsSync(pdfsDir)) return pdfs;
 
   const files = fs.readdirSync(pdfsDir).filter(f => f.endsWith('.pdf'));
 
@@ -126,8 +120,6 @@ function loadPDFs() {
       name: file,
       base64: data.toString('base64')
     });
-
-    console.log(`PDF yükləndi: ${file}`);
   }
 
   return pdfs;
@@ -143,20 +135,15 @@ app.post('/api/chat', async (req, res) => {
     const { messages } = req.body;
 
     const systemPrompt = `
-Sən "Rəfiq" adlı sosial xidmətlər üzrə ixtisaslaşmış AI assistantsan.
-Sənə verilən PDF sənədlər əsasında cavab verirsən.
-
-Qaydalar:
-- yalnız sənədlərə əsaslan
-- Azərbaycan dilində cavab ver
-- sənəddə yoxdursa "məlumat yoxdur" yaz
+Sən "Rəfiq" adlı AI assistantsan.
+Sənə verilən PDF sənədlərə əsaslanırsan.
+Azərbaycan dilində cavab ver.
     `;
 
     const lastMessage = messages[messages.length - 1];
 
     const userContent = [];
 
-    // inject PDFs
     for (const pdf of pdfFiles) {
       userContent.push({
         type: 'document',
@@ -168,7 +155,6 @@ Qaydalar:
       });
     }
 
-    // user message
     if (typeof lastMessage.content === 'string') {
       userContent.push({
         type: 'text',
@@ -180,10 +166,7 @@ Qaydalar:
 
     const updatedMessages = [
       ...messages.slice(0, -1),
-      {
-        role: 'user',
-        content: userContent
-      }
+      { role: 'user', content: userContent }
     ];
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -206,9 +189,7 @@ Qaydalar:
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({
-      error: error.message
-    });
+    res.status(500).json({ error: error.message });
   }
 });
 
