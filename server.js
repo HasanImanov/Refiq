@@ -50,7 +50,7 @@ function safeFilename(name) {
 }
 
 // ----------------------------
-// PDF GENERATOR (Render Fix)
+// PDF GENERATOR
 // ----------------------------
 app.post('/api/docx-to-pdf', async (req, res) => {
   let browser;
@@ -63,26 +63,17 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const { html, filename } = req.body;
     const safeName = safeFilename(filename || "arayish");
 
-    const chromium = await import('@sparticuz/chromium-min').then(m => m.default || m);
+    const chromium = await import('@sparticuz/chromium').then(m => m.default || m);
     const puppeteer = await import('puppeteer-core').then(m => m.default || m);
 
     browser = await puppeteer.launch({
-      args: [
-        ...chromium.args,
-        '--lang=az',
-        '--font-render-hinting=none',
-        '--disable-font-subpixel-positioning'
-      ],
+      args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(
-        'https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar'
-      ),
+      executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
 
     const page = await browser.newPage();
-
-    await page.setExtraHTTPHeaders({ 'Accept-Language': 'az,en' });
 
     await page.setContent(String(html), { waitUntil: 'networkidle0' });
 
