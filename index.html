@@ -316,7 +316,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
  async function hazirla(tip, format) {
   var d = getData(tip);
   var pp = {size:{width:11906,height:16838}, margin:{top:709,right:656,bottom:2269,left:1418}};
-  var ch = buildChildren(d, false); // Word üçün həmişə false
+  var ch = buildChildren(d, false);
   var wd = new docx.Document({sections:[{properties:{page:pp},children:ch}]});
   var blob = await docx.Packer.toBlob(wd);
 
@@ -326,56 +326,140 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     a.download = 'arayish_' + (d.fin||'namelum') + '.docx'; a.click();
     URL.revokeObjectURL(url);
   } else {
-    // PDF üçün HTML göndər
     var htmlContent = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <style>
-  @page { size: A4; margin: 25mm 23mm 25mm 50mm; }
-  body { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.5; }
-  .center { text-align: center; }
-  .both { text-align: justify; }
-  .bold { font-weight: bold; }
-  .indent { text-indent: 35px; }
-  .imza-row { display: flex; justify-content: space-between; margin-top: 40px; padding: 0 35px; font-weight: bold; }
-  .xett { border-bottom: 1px solid black; margin: 4px 0; }
-  .logo { display: block; margin: 0 auto; width: 80px; }
-  p { margin: 4px 0; }
+  @page {
+    size: A4;
+    margin: 12.5mm 11.6mm 40mm 25mm;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.3;
+  }
+  .gerb-wrap {
+    text-align: center;
+  }
+  .gerb-wrap img {
+    width: 31.3mm;
+    height: 34.1mm;
+    display: block;
+    margin: 0 auto;
+  }
+  .qurum {
+    text-align: center;
+    font-size: 14pt;
+    font-weight: bold;
+    line-height: 1.25;
+    margin-left: -15mm;
+    margin-right: -8mm;
+  }
+  .qurum p { margin: 1px 0; }
+  .xett {
+    border: none;
+    border-top: 1px solid black;
+    margin: 2px -10mm 2px -10mm;
+  }
+  .unvan-blok {
+    font-size: 9pt;
+    line-height: 1.4;
+    margin-left: -7mm;
+  }
+  .unvan-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .bosh { line-height: 1.5; font-size: 12pt; }
+  .arayish-title {
+    text-align: center;
+    font-size: 12pt;
+    font-weight: bold;
+    line-height: 1.5;
+  }
+  .metn {
+    text-align: justify;
+    text-indent: 12.5mm;
+    font-size: 12pt;
+    line-height: 1.5;
+    margin: 0 0 4pt 0;
+  }
+  .imza-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12pt;
+    font-weight: bold;
+    padding-left: 12.5mm;
+    margin-top: 16pt;
+  }
 </style>
 </head>
 <body>
-  <div class="center">
-    <img class="logo" src="https://refiq.onrender.com/logo.png"/>
-    <p class="bold">AZƏRBAYCAN RESPUBLİKASININ</p>
-    <p class="bold">ƏMƏK VƏ ƏHALİNİN SOSİAL MÜDAFİƏSİ NAZİRLİYİNİN TABELİYİNDƏ</p>
-    <p class="bold">DAYANIQLI VƏ OPERATİV SOSİAL TƏMİNAT AGENTLİYİ</p>
-    <p class="bold">3 SAYLI BAKI DOST MƏRKƏZİ</p>
+
+  <div class="gerb-wrap">
+    <img src="data:image/jpeg;base64,${LOGO}" alt="gerb"/>
   </div>
-  <div class="xett"></div>
-  <p style="font-size:9pt;">AZ 1029, Bakı şəhəri, Nizami rayonu, Keşlə ŞTQ Heydər Əliyev prospekti, ev 183B &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tel: (+99412) 142 &nbsp;&nbsp; e-poçt: dost_info@sosial.gov.az</p>
-  <div class="xett"></div>
-  <br/><br/><br/><br/><br/>
-  <p class="center bold">ARAYIŞ</p>
-  <br/>
-  <p class="both indent">${d.metn}</p>
-  <br/>
-  ${d.tarixMetn ? `<p class="indent">${d.tarixMetn}</p><br/>` : ''}
-  <p class="indent">Təyinatın bitmə tarixi: ${d.bitme}.</p>
-  <br/>
-  <p class="indent">${d.yerMetn}</p>
+
+  <div class="qurum">
+    <p>AZƏRBAYCAN RESPUBLİKASININ</p>
+    <p>ƏMƏK VƏ ƏHALİNİN SOSİAL MÜDAFİƏSİ NAZİRLİYİNİN TABELİYİNDƏ</p>
+    <p>DAYANIQLI VƏ OPERATİV SOSİAL TƏMİNAT AGENTLİYİ</p>
+    <p>3 SAYLI BAKI DOST MƏRKƏZİ</p>
+  </div>
+
+  <hr class="xett"/>
+
+  <div class="unvan-blok">
+    <div class="unvan-row">
+      <span>AZ 1029, Bakı şəhəri, Nizami rayonu,</span>
+      <span>Tel: (+99412) 142</span>
+    </div>
+    <div class="unvan-row">
+      <span>Keşlə ŞTQ Heydər Əliyev prospekti, ev 183B</span>
+      <span>e-poçt: dost_info@sosial.gov.az</span>
+    </div>
+  </div>
+
+  <hr class="xett"/>
+
+  <p class="bosh">&nbsp;</p>
+  <p class="bosh">&nbsp;</p>
+  <p class="bosh">&nbsp;</p>
+  <p class="bosh">&nbsp;</p>
+  <p class="bosh">&nbsp;</p>
+
+  <p class="arayish-title">ARAYIŞ</p>
+  <p class="bosh">&nbsp;</p>
+
+  <p class="metn">${d.metn}</p>
+  <p class="bosh">&nbsp;</p>
+
+  ${d.tarixMetn ? `<p class="metn">${d.tarixMetn}</p><p class="bosh">&nbsp;</p>` : ''}
+
+  <p class="metn">T\u0259yinat\u0131n bitm\u0259 tarixi: ${d.bitme}.</p>
+  <p class="bosh">&nbsp;</p>
+
+  <p class="metn">${d.yerMetn}</p>
+
+  <p class="bosh">&nbsp;</p>
+  <p class="bosh">&nbsp;</p>
+  <p class="bosh">&nbsp;</p>
+
   <div class="imza-row">
     <span>${d.vezife}</span>
     <span>${d.imza}</span>
   </div>
+
 </body>
 </html>`;
-
 
     var resp = await fetch('/api/docx-to-pdf', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({html: htmlContent, filename: 'arayish_' + (d?.fin || 'namelum')})
+      body: JSON.stringify({html: htmlContent, filename: 'arayish_' + (d.fin||'namelum')})
     });
     if (resp.ok) {
       var pb = await resp.blob();
