@@ -63,12 +63,16 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const { html, filename } = req.body;
     const safeName = safeFilename(filename || "arayish");
 
-    // Render-də dynamic import işləyir
     const chromium = await import('@sparticuz/chromium-min').then(m => m.default || m);
     const puppeteer = await import('puppeteer-core').then(m => m.default || m);
 
     browser = await puppeteer.launch({
-      args: chromium.args,
+      args: [
+        ...chromium.args,
+        '--lang=az',
+        '--font-render-hinting=none',
+        '--disable-font-subpixel-positioning'
+      ],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(
         'https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar'
@@ -78,16 +82,18 @@ app.post('/api/docx-to-pdf', async (req, res) => {
 
     const page = await browser.newPage();
 
-    await page.setContent(String(html), { waitUntil: 'load' });
+    await page.setExtraHTTPHeaders({ 'Accept-Language': 'az,en' });
+
+    await page.setContent(String(html), { waitUntil: 'networkidle0' });
 
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
       margin: {
-        top: '20mm',
-        bottom: '20mm',
-        left: '20mm',
-        right: '20mm'
+        top: '0mm',
+        bottom: '0mm',
+        left: '0mm',
+        right: '0mm'
       }
     });
 
