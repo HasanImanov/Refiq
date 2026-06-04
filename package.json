@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "postinstall": "npx playwright install chromium"
+    "start": "node server.js"
   },
-   "repository": {
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/HasanImanov/Refiq.git"
   },
@@ -15,12 +14,11 @@
   },
   "dependencies": {
     "adm-zip": "^0.5.17",
+    "@sparticuz/chromium-min": "^131.0.1",
     "cors": "^2.8.6",
     "docx": "^9.7.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "playwright": "^1.40.0"
+    "puppeteer-core": "^23.0.0"
   }
 }
-
-

@@ -4,18 +4,14 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const { chromium } = require('playwright');
-
 const app = express();
 
 // ----------------------------
-// MIDDLEWARE (VACİB FIX)
+// MIDDLEWARE
 // ----------------------------
 app.use(cors());
-
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: true, limit: '100mb' }));
-
 app.use(express.static('.'));
 
 // ----------------------------
@@ -41,7 +37,6 @@ app.get('/docx.js', (req, res) => {
 // ----------------------------
 // filename safe
 // ----------------------------
-
 function safeFilename(name) {
   return String(name || 'arayish')
     .replace(/ə/g, 'e').replace(/Ə/g, 'E')
@@ -55,35 +50,35 @@ function safeFilename(name) {
 }
 
 // ----------------------------
-// PDF GENERATOR (FIXED)
+// PDF GENERATOR (Render Fix)
 // ----------------------------
 app.post('/api/docx-to-pdf', async (req, res) => {
   let browser;
 
   try {
-    // 🔒 SAFETY CHECK
     if (!req.body || !req.body.html) {
-      return res.status(400).json({
-        error: "html missing in request body"
-      });
+      return res.status(400).json({ error: "html missing in request body" });
     }
 
     const { html, filename } = req.body;
     const safeName = safeFilename(filename || "arayish");
 
-    browser = await chromium.launch({
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage"
-      ]
+    // Render-də dynamic import işləyir
+    const chromium = await import('@sparticuz/chromium-min').then(m => m.default || m);
+    const puppeteer = await import('puppeteer-core').then(m => m.default || m);
+
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(
+        'https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar'
+      ),
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
 
-    await page.setContent(String(html), {
-      waitUntil: 'networkidle'
-    });
+    await page.setContent(String(html), { waitUntil: 'load' });
 
     const pdfBuffer = await page.pdf({
       format: 'A4',
@@ -99,21 +94,13 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     await browser.close();
 
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="${safeName}.pdf"`
-    );
-
+    res.setHeader('Content-Disposition', `attachment; filename="${safeName}.pdf"`);
     res.send(pdfBuffer);
 
   } catch (error) {
     console.error('PDF ERROR:', error);
-
     if (browser) await browser.close();
-
-    res.status(500).json({
-      error: error.message || "PDF generation failed"
-    });
+    res.status(500).json({ error: error.message || "PDF generation failed" });
   }
 });
 
@@ -130,7 +117,6 @@ function loadPDFs() {
 
   for (const file of files) {
     const data = fs.readFileSync(path.join(pdfsDir, file));
-
     pdfs.push({
       name: file,
       base64: data.toString('base64')
@@ -156,7 +142,6 @@ Azərbaycan dilində cavab ver.
 `;
 
     const lastMessage = messages[messages.length - 1];
-
     const userContent = [];
 
     for (const pdf of pdfFiles) {
@@ -171,10 +156,7 @@ Azərbaycan dilində cavab ver.
     }
 
     if (typeof lastMessage.content === 'string') {
-      userContent.push({
-        type: 'text',
-        text: lastMessage.content
-      });
+      userContent.push({ type: 'text', text: lastMessage.content });
     } else {
       userContent.push(...lastMessage.content);
     }
