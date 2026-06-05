@@ -192,6 +192,11 @@
     document.getElementById('empty-state').style.display='none';
     document.getElementById('form-'+cat).classList.add('active');
   }
+  function ilShekilchi(tarix){
+    var son=tarix.trim().slice(-1);
+    var map={'1':'ci','2':'ci','3':'cü','4':'cü','5':'ci','6':'ci','7':'ci','8':'ci','9':'cu','0':'cu'};
+    return map[son]||'ci';
+  }
   function n2w(n){
     var s=String(n);
     var parts=s.split('.');
@@ -231,7 +236,7 @@
       d.yer=document.getElementById('yg-yer').value.trim();
       d.fullAd=document.getElementById('yg-soyad').value.trim()+' '+document.getElementById('yg-ad').value.trim()+' '+document.getElementById('yg-ata').value.trim();
       d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan yaşa görə '+d.mebleg+' ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
-      d.tarixMetn=d.tarix?'Hüququn yaranma tarixi: '+d.tarix+'-cü il':'';
+      d.tarixMetn=d.tarix?'Hüququn yaranma tarixi: '+d.tarix+'-'+ilShekilchi(d.tarix)+' il':'';
     } else {
       d.fin=document.getElementById('el-fin').value.trim();
       d.mebleg=document.getElementById('el-mebleg').value.trim();
