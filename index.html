@@ -235,7 +235,7 @@
       d.bitme=document.getElementById('yg-bitme').value.trim()||'müddətsiz';
       d.yer=document.getElementById('yg-yer').value.trim();
       d.fullAd=document.getElementById('yg-soyad').value.trim()+' '+document.getElementById('yg-ad').value.trim()+' '+document.getElementById('yg-ata').value.trim();
-      d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan yaşa görə '+d.mebleg+' ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
+      d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan yaşa görə '+d.mebleg+' manat ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
       d.tarixMetn=d.tarix?'Hüququn yaranma tarixi: '+d.tarix+'-'+ilShekilchi(d.tarix)+' il':'';
     } else {
       d.fin=document.getElementById('el-fin').value.trim();
@@ -246,7 +246,7 @@
       d.bitme=document.getElementById('el-bitme').value.trim()||'müddətsiz';
       d.yer=document.getElementById('el-yer').value.trim();
       d.fullAd=document.getElementById('el-soyad').value.trim()+' '+document.getElementById('el-ad').value.trim()+' '+document.getElementById('el-ata').value.trim();
-      d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan əlilliyə görə ('+d.qrup+' qrup) '+d.mebleg+' ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
+      d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan əlilliyə görə ('+d.qrup+' qrup) '+d.mebleg+' manat ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
       d.tarixMetn='';
     }
     d.yerMetn=d.yer?'Arayış '+d.yer+' təqdim etmək üçün verilir.':'Arayış tələb olunan yerə təqdim etmək üçün verilir.';
