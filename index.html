@@ -193,6 +193,20 @@
     document.getElementById('form-'+cat).classList.add('active');
   }
   function n2w(n){
+    var s=String(n);
+    var parts=s.split('.');
+    var manats=parseInt(parts[0]);
+    var qepik=0;
+    if(parts[1]){
+      var q=parts[1].substring(0,2);
+      if(q.length===1)q=q+'0';
+      qepik=parseInt(q);
+    }
+    var result=n2wInt(manats)+' manat';
+    if(qepik>0)result+=' '+n2wInt(qepik)+' qəpik';
+    return result;
+  }
+  function n2wInt(n){
     n=parseInt(n);if(isNaN(n))return'';
     var b=['','bir','iki','üç','dörd','beş','altı','yeddi','səkkiz','doqquz'];
     var o=['','on','iyirmi','otuz','qırx','əlli','altmış','yetmiş','səksən','doxsan'];
@@ -216,7 +230,7 @@
       d.bitme=document.getElementById('yg-bitme').value.trim()||'müddətsiz';
       d.yer=document.getElementById('yg-yer').value.trim();
       d.fullAd=document.getElementById('yg-soyad').value.trim()+' '+document.getElementById('yg-ad').value.trim()+' '+document.getElementById('yg-ata').value.trim();
-      d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan yaşa görə '+d.mebleg+' ('+n2w(d.mebleg)+') manat məbləğində sosial müavinət alır.';
+      d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan yaşa görə '+d.mebleg+' ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
       d.tarixMetn=d.tarix?'Hüququn yaranma tarixi: '+d.tarix+'-cü il':'';
     } else {
       d.fin=document.getElementById('el-fin').value.trim();
@@ -227,7 +241,7 @@
       d.bitme=document.getElementById('el-bitme').value.trim()||'müddətsiz';
       d.yer=document.getElementById('el-yer').value.trim();
       d.fullAd=document.getElementById('el-soyad').value.trim()+' '+document.getElementById('el-ad').value.trim()+' '+document.getElementById('el-ata').value.trim();
-      d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan əlilliyə görə ('+d.qrup+' qrup) '+d.mebleg+' ('+n2w(d.mebleg)+') manat məbləğində sosial müavinət alır.';
+      d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan əlilliyə görə ('+d.qrup+' qrup) '+d.mebleg+' ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
       d.tarixMetn='';
     }
     d.yerMetn=d.yer?'Arayış '+d.yer+' təqdim etmək üçün verilir.':'Arayış tələb olunan yerə təqdim etmək üçün verilir.';
