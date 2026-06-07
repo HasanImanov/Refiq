@@ -424,7 +424,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   var etibarCb = document.getElementById(etibarPrefix + '-etibar');
   var etibarInput = document.getElementById(etibarPrefix + '-etibar-ad');
   var etibarChecked = etibarCb && etibarCb.checked;
-  var etibarAdVal = etibarChecked && etibarInput ? toInitCap(etibarInput.value.trim()) : '';
+  var etibarAdVal = etibarChecked && etibarInput ? etibarInput.value.trim() : '';
   var qebulAd = etibarChecked && etibarAdVal
     ? '(səlahiyyətli nümayəndə) ' + etibarAdVal
     : d.fullAd;
@@ -432,13 +432,13 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   for(var i=0;i<55;i++) ch2.push(ep0());
   ch2.push(new docx.Paragraph({spacing:{before:0,after:160,line:240,lineRule:'exact'},
     children:[
-      new docx.TextRun({text:'Qəbul etdim: ________________ ' + qebulAd,font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+      new docx.TextRun({text:'Qəbul etdim: ________________ ' + qebulAd,font:'Calibri',size:24,language:{value:'az-Latn-AZ'}})
     ]}));
   ch2.push(new docx.Paragraph({spacing:{before:0,after:0,line:240,lineRule:'exact'},
-    children:[new docx.TextRun({text:'Tarix: ________________',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]}));
+    children:[new docx.TextRun({text:'Tarix: ________________',font:'Calibri',size:24,language:{value:'az-Latn-AZ'}})]}));
   ch2.push(ep0());
   ch2.push(new docx.Paragraph({spacing:{before:0,after:0,line:240,lineRule:'exact'},
-    children:[new docx.TextRun({text:'\u0130cra\u00e7\u0131: \u0130manov H\u0259s\u0259n',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]}));
+    children:[new docx.TextRun({text:'\u0130cra\u00e7\u0131: \u0130manov H\u0259s\u0259n',font:'Calibri',size:24,language:{value:'az-Latn-AZ'}})]}));
 
   var wd = new docx.Document({sections:[
     {properties:{page:pp},children:ch},
