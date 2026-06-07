@@ -139,6 +139,15 @@
         </div>
         <div class="form-group"><label>İmzalayanın adı soyadı</label><input type="text" id="yg-imza" placeholder="Ad Soyad"/></div>
       </div>
+      <div class="form-group" style="margin-top:8px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600;">
+          <input type="checkbox" id="yg-etibar" onchange="toggleEtibar('yg')" style="width:18px;height:18px;cursor:pointer;"/>
+          Etibarnamə ilə müraciət
+        </label>
+        <div id="yg-etibar-box" style="display:none;margin-top:10px;">
+          <input type="text" id="yg-etibar-ad" placeholder="Səlahiyyətli nümayəndənin adı soyadı ata adı" style="width:100%;border:1.5px solid var(--blue-mid);border-radius:10px;padding:11px 14px;font-size:0.93rem;font-family:'Inter',sans-serif;outline:none;color:var(--text);"/>
+        </div>
+      </div>
       <div class="btn-group">
         <button class="hazirla-btn" onclick="hazirla('yasa-gore','word')">📄 Word yüklə</button>
         <button class="hazirla-btn pdf-btn" onclick="hazirla('yasa-gore','pdf')">📋 PDF yüklə</button>
@@ -171,6 +180,15 @@
           </select>
         </div>
         <div class="form-group"><label>İmzalayanın adı soyadı</label><input type="text" id="el-imza" placeholder="Ad Soyad"/></div>
+      </div>
+      <div class="form-group" style="margin-top:8px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600;">
+          <input type="checkbox" id="el-etibar" onchange="toggleEtibar('el')" style="width:18px;height:18px;cursor:pointer;"/>
+          Etibarnamə ilə müraciət
+        </label>
+        <div id="el-etibar-box" style="display:none;margin-top:10px;">
+          <input type="text" id="el-etibar-ad" placeholder="Səlahiyyətli nümayəndənin adı soyadı ata adı" style="width:100%;border:1.5px solid var(--blue-mid);border-radius:10px;padding:11px 14px;font-size:0.93rem;font-family:'Inter',sans-serif;outline:none;color:var(--text);"/>
+        </div>
       </div>
       <div class="btn-group">
         <button class="hazirla-btn" onclick="hazirla('elillik','word')">📄 Word yüklə</button>
@@ -235,6 +253,12 @@
     applyInitCap('el-ata');
     applyInitCap('el-imza');
   });
+
+  function toggleEtibar(prefix){
+    var cb = document.getElementById(prefix+'-etibar');
+    var box = document.getElementById(prefix+'-etibar-box');
+    box.style.display = cb.checked ? 'block' : 'none';
+  }
 
   function switchTab(tab){
     document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',(i===0&&tab==='refiq')||(i===1&&tab==='arayish'));});
@@ -392,7 +416,32 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   var d = getData(tip);
   var pp = {size:{width:11906,height:16838}, margin:{top:709,right:656,bottom:2269,left:1418}};
   var ch = buildChildren(d, false);
-  var wd = new docx.Document({sections:[{properties:{page:pp},children:ch}]});
+  // ── 2-ci səhifə (yalnız Word üçün) ──
+  var ch2 = [];
+  // Boş sahə - yuxarıdan aşağı yerə endirmək üçün
+  for(var i=0;i<28;i++) ch2.push(ep());
+  // "Qəbul etdim:" sətri
+  var qebulAd = d.etibar && d.etibarAd
+    ? '(səlahiyyətli nümayəndə) ' + d.etibarAd
+    : d.fullAd;
+  ch2.push(new P({spacing:{after:0,line:240},
+    children:[
+      new T({text:'Qəbul etdim: ________________  ',font:'Arial',size:24}),
+      new T({text:qebulAd,font:'Arial',size:24})
+    ]}));
+  ch2.push(ep());
+  // "Tarix:" sətri
+  ch2.push(new P({spacing:{after:0,line:240},
+    children:[new T({text:'Tarix: ________________',font:'Arial',size:24})]}));
+  ch2.push(ep());
+  // "İcraçı:" sətri
+  ch2.push(new P({spacing:{after:0,line:240},
+    children:[new T({text:'İcraçı: İmanov Həsən',font:'Arial',size:24})]}));
+
+  var wd = new docx.Document({sections:[
+    {properties:{page:pp},children:ch},
+    {properties:{page:pp, type: docx.SectionType ? docx.SectionType.NEXT_PAGE : undefined},children:ch2}
+  ]});
   var blob = await docx.Packer.toBlob(wd);
 
   if (format === 'word') {
