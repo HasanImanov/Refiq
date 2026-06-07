@@ -131,7 +131,7 @@
       <div class="form-group"><label>Tələb olunan yer</label><input type="text" id="yg-yer" placeholder="məsələn: tələb olan yerə"/></div>
       <div class="form-row">
         <div class="form-group"><label>İmzalayan vəzifəsi</label>
-          <select id="yg-vezife">
+          <select id="yg-vezife" onchange="vezifeSec(this,'yg-imza')">
             <option value="Direktor">Direktor</option>
             <option value="Direktor müavini" selected>Direktor müavini</option>
             <option value="Xidmətlər şöbəsinin müdiri">Xidmətlər şöbəsinin müdiri</option>
@@ -173,7 +173,7 @@
       <div class="form-group"><label>Tələb olunan yer</label><input type="text" id="el-yer" placeholder="məsələn: bank filialına"/></div>
       <div class="form-row">
         <div class="form-group"><label>İmzalayan vəzifəsi</label>
-          <select id="el-vezife">
+          <select id="el-vezife" onchange="vezifeSec(this,'el-imza')">
             <option value="Direktor">Direktor</option>
             <option value="Direktor müavini" selected>Direktor müavini</option>
             <option value="Xidmətlər şöbəsinin müdiri">Xidmətlər şöbəsinin müdiri</option>
@@ -252,7 +252,23 @@
     applyInitCap('el-ad');
     applyInitCap('el-ata');
     applyInitCap('el-imza');
+    // Default vəzifə adlarını doldur
+    var ygVezife = document.getElementById('yg-vezife');
+    if(ygVezife) vezifeSec(ygVezife, 'yg-imza');
+    var elVezife = document.getElementById('el-vezife');
+    if(elVezife) vezifeSec(elVezife, 'el-imza');
   });
+
+  var VEZIFE_AD = {
+    'Direktor': 'Kamran Abdullayev',
+    'Direktor müavini': 'Şamil Əliyev',
+    'Xidmətlər şöbəsinin müdiri': 'Asəf Zeynalov'
+  };
+
+  function vezifeSec(selectEl, inputId) {
+    var ad = VEZIFE_AD[selectEl.value] || '';
+    document.getElementById(inputId).value = ad;
+  }
 
   function toggleEtibar(prefix){
     var cb = document.getElementById(prefix+'-etibar');
