@@ -427,8 +427,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   for(var i=0;i<55;i++) ch2.push(ep0());
   ch2.push(new docx.Paragraph({spacing:{after:0,line:240},
     children:[
-      new docx.TextRun({text:'Qəbul etdim: ________________  ',font:'Arial',size:24}),
-      new docx.TextRun({text:qebulAd,font:'Arial',size:24})
+      new docx.TextRun({text:'Qəbul etdim: ________________ ' + qebulAd,font:'Arial',size:24})
     ]}));
   ch2.push(new docx.Paragraph({spacing:{after:0,line:240},
     children:[new docx.TextRun({text:'Tarix: ________________',font:'Arial',size:24})]}));
