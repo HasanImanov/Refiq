@@ -417,26 +417,34 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   var pp = {size:{width:11906,height:16838}, margin:{top:709,right:656,bottom:2269,left:1418}};
   var ch = buildChildren(d, false);
   // ── 2-ci səhifə (yalnız Word üçün) ──
-  var ch2 = [];
-  // Boş sahə - yuxarıdan aşağı yerə endirmək üçün
-  for(var i=0;i<28;i++) ch2.push(ep());
-  // "Qəbul etdim:" sətri
+  // Səhifə hündürlüyü: 16838 twip (A4), alt marja: 2269 twip
+  // Yazıların yuxarı mövqeyi: 16838 - 2269 - 900 = ~13669 twip (səhifənin altından ~4sm yuxarı)
+  var bottomY = 13400; // twip - səhifə altından ~4.5sm
   var qebulAd = d.etibar && d.etibarAd
     ? '(səlahiyyətli nümayəndə) ' + d.etibarAd
     : d.fullAd;
-  ch2.push(new P({spacing:{after:0,line:240},
-    children:[
-      new T({text:'Qəbul etdim: ________________  ',font:'Arial',size:24}),
-      new T({text:qebulAd,font:'Arial',size:24})
-    ]}));
-  ch2.push(ep());
-  // "Tarix:" sətri
-  ch2.push(new P({spacing:{after:0,line:240},
-    children:[new T({text:'Tarix: ________________',font:'Arial',size:24})]}));
-  ch2.push(ep());
-  // "İcraçı:" sətri
-  ch2.push(new P({spacing:{after:0,line:240},
-    children:[new T({text:'İcraçı: İmanov Həsən',font:'Arial',size:24})]}));
+
+  function frameP(text1, text2, yPos) {
+    var runs = [new T({text: text1, font:'Arial', size:24})];
+    if(text2) runs.push(new T({text: text2, font:'Arial', size:24}));
+    return new P({
+      frame: {
+        position: { x: docx.HorizontalPositionRelativeFrom ? docx.HorizontalPositionRelativeFrom.MARGIN : 'margin',
+                    y: yPos },
+        anchor: { horizontal: docx.HorizontalPositionRelativeFrom ? docx.HorizontalPositionRelativeFrom.MARGIN : 'margin',
+                  vertical: 'page' },
+        width: 8500,
+        wrap: docx.TextWrappingType ? docx.TextWrappingType.NONE : 'none',
+      },
+      spacing:{after:0, line:240},
+      children: runs
+    });
+  }
+
+  var ch2 = [ep()]; // ən azı bir element lazımdır
+  ch2.push(frameP('Qəbul etdim: ________________  ', qebulAd, bottomY));
+  ch2.push(frameP('Tarix: ________________', '', bottomY + 360));
+  ch2.push(frameP('İcraçı: İmanov Həsən', '', bottomY + 720));
 
   var wd = new docx.Document({sections:[
     {properties:{page:pp},children:ch},
