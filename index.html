@@ -420,8 +420,13 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   // A4: 16838 twip. Üst marja: 709, Alt marja: 2269
   // İstifadə sahəsi: 13860 twip. Bir sətir ~240 twip.
   // 3 sətir yazı üçün: (13860 - 720) / 240 ≈ 55 boş sətir
-  var qebulAd = d.etibar && d.etibarAd
-    ? '(səlahiyyətli nümayəndə) ' + d.etibarAd
+  var etibarPrefix = tip === 'yasa-gore' ? 'yg' : 'el';
+  var etibarCb = document.getElementById(etibarPrefix + '-etibar');
+  var etibarInput = document.getElementById(etibarPrefix + '-etibar-ad');
+  var etibarChecked = etibarCb && etibarCb.checked;
+  var etibarAdVal = etibarChecked && etibarInput ? toInitCap(etibarInput.value.trim()) : '';
+  var qebulAd = etibarChecked && etibarAdVal
+    ? '(səlahiyyətli nümayəndə) ' + etibarAdVal
     : d.fullAd;
   var ch2 = [];
   for(var i=0;i<55;i++) ch2.push(ep0());
