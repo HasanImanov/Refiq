@@ -199,17 +199,18 @@
       'P':'p','Q':'q','R':'r','S':'s','Ş':'ş','T':'t','U':'u',
       'Ü':'ü','V':'v','Y':'y','Z':'z'
     };
+    var lowercase = ['oğlu','qızı'];
     return str.trim().split(/\s+/).map(function(word){
       if(!word) return '';
-      var first = word.charAt(0);
-      var rest  = word.slice(1);
-      // Birinci hərfi böyüt
-      var upper = azMap[first.toLowerCase()] || first.toUpperCase();
-      // Qalanını kiçilt
-      var lower = rest.split('').map(function(ch){
+      // əvvəlcə sözü tam kiçilt
+      var wordLower = word.split('').map(function(ch){
         return azLower[ch] || ch.toLowerCase();
       }).join('');
-      return upper + lower;
+      // oğlu / qızı həmişə kiçik qalsın
+      if(lowercase.indexOf(wordLower) !== -1) return wordLower;
+      // digər sözlər: birinci hərf böyük
+      var upper = azMap[wordLower.charAt(0)] || wordLower.charAt(0).toUpperCase();
+      return upper + wordLower.slice(1);
     }).join(' ');
   }
 
