@@ -272,6 +272,7 @@
     var o=['','on','iyirmi','otuz','qırx','əlli','altmış','yetmiş','səksən','doxsan'];
     var y=['','yüz','iki yüz','üç yüz','dörd yüz','beş yüz','altı yüz','yeddi yüz','səkkiz yüz','doqquz yüz'];
     if(n===0)return'sıfır';var r='';
+    if(n>=10000){var onMin=Math.floor(n/10000);r+=o[onMin]+' min ';n%=10000;}
     if(n>=1000){var k=Math.floor(n/1000);r+=(k===1?'min':b[k]+' min')+' ';n%=1000;}
     if(n>=100){r+=y[Math.floor(n/100)]+' ';n%=100;}
     if(n>=10){r+=o[Math.floor(n/10)]+' ';n%=10;}
