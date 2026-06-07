@@ -181,6 +181,60 @@
   </div>
 </div>
 <script>
+  // Azərbaycan əlifbasını dəstəkləyən InitCap funksiyası
+  // "HASAN IMANOV KAMRAN" → "Hasan Imanov Kamran"
+  function toInitCap(str){
+    if(!str) return '';
+    var azMap={
+      'a':'A','b':'B','c':'C','ç':'Ç','d':'D','e':'E','ə':'Ə',
+      'f':'F','g':'G','ğ':'Ğ','h':'H','x':'X','i':'İ','ı':'I',
+      'j':'J','k':'K','l':'L','m':'M','n':'N','o':'O','ö':'Ö',
+      'p':'P','q':'Q','r':'R','s':'S','ş':'Ş','t':'T','u':'U',
+      'ü':'Ü','v':'V','y':'Y','z':'Z'
+    };
+    var azLower={
+      'A':'a','B':'b','C':'c','Ç':'ç','D':'d','E':'e','Ə':'ə',
+      'F':'f','G':'g','Ğ':'ğ','H':'h','X':'x','İ':'i','I':'ı',
+      'J':'j','K':'k','L':'l','M':'m','N':'n','O':'o','Ö':'ö',
+      'P':'p','Q':'q','R':'r','S':'s','Ş':'ş','T':'t','U':'u',
+      'Ü':'ü','V':'v','Y':'y','Z':'z'
+    };
+    return str.trim().split(/\s+/).map(function(word){
+      if(!word) return '';
+      var first = word.charAt(0);
+      var rest  = word.slice(1);
+      // Birinci hərfi böyüt
+      var upper = azMap[first.toLowerCase()] || first.toUpperCase();
+      // Qalanını kiçilt
+      var lower = rest.split('').map(function(ch){
+        return azLower[ch] || ch.toLowerCase();
+      }).join('');
+      return upper + lower;
+    }).join(' ');
+  }
+
+  // Ad/soyad/ata inputlarına avtomatik initCap tətbiq et
+  function applyInitCap(inputId){
+    var el = document.getElementById(inputId);
+    if(!el) return;
+    el.addEventListener('blur', function(){
+      this.value = toInitCap(this.value);
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', function(){
+    // Yaşa görə arayış inputları
+    applyInitCap('yg-soyad');
+    applyInitCap('yg-ad');
+    applyInitCap('yg-ata');
+    applyInitCap('yg-imza');
+    // Əlilliyə görə arayış inputları
+    applyInitCap('el-soyad');
+    applyInitCap('el-ad');
+    applyInitCap('el-ata');
+    applyInitCap('el-imza');
+  });
+
   function switchTab(tab){
     document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',(i===0&&tab==='refiq')||(i===1&&tab==='arayish'));});
     document.getElementById('tab-refiq').classList.toggle('active',tab==='refiq');
@@ -234,7 +288,7 @@
       d.tarix=document.getElementById('yg-tarix').value.trim();
       d.bitme=document.getElementById('yg-bitme').value.trim()||'müddətsiz';
       d.yer=document.getElementById('yg-yer').value.trim();
-      d.fullAd=document.getElementById('yg-soyad').value.trim()+' '+document.getElementById('yg-ad').value.trim()+' '+document.getElementById('yg-ata').value.trim();
+      d.fullAd=toInitCap(document.getElementById('yg-soyad').value)+' '+toInitCap(document.getElementById('yg-ad').value)+' '+toInitCap(document.getElementById('yg-ata').value);
       d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan yaşa görə '+d.mebleg+' manat ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
       d.tarixMetn=d.tarix?'Hüququn yaranma tarixi: '+d.tarix+'-'+ilShekilchi(d.tarix)+' il':'';
     } else {
@@ -245,7 +299,7 @@
       d.qrup=document.getElementById('el-qrup').value;
       d.bitme=document.getElementById('el-bitme').value.trim()||'müddətsiz';
       d.yer=document.getElementById('el-yer').value.trim();
-      d.fullAd=document.getElementById('el-soyad').value.trim()+' '+document.getElementById('el-ad').value.trim()+' '+document.getElementById('el-ata').value.trim();
+      d.fullAd=toInitCap(document.getElementById('el-soyad').value)+' '+toInitCap(document.getElementById('el-ad').value)+' '+toInitCap(document.getElementById('el-ata').value);
       d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan əlilliyə görə ('+d.qrup+' qrup) '+d.mebleg+' manat ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
       d.tarixMetn='';
     }
