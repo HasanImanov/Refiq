@@ -77,6 +77,9 @@
     .hazirla-btn.pdf-btn:hover{background:#c53030;}
     .empty-state{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:0.9rem;}
     .empty-state span{font-size:2.5rem;display:block;margin-bottom:12px;}
+    #tab-erize{flex:1;display:none;flex-direction:column;overflow-y:auto;padding:24px 16px;}
+    #tab-erize.active{display:flex;}
+    .erize-container{max-width:700px;width:100%;margin:0 auto;}
     @media(max-width:500px){.form-row{grid-template-columns:1fr;}.btn-group{grid-template-columns:1fr;}}
   </style>
 </head>
@@ -88,6 +91,7 @@
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('refiq')">💬 Rəfiq</button>
   <button class="tab-btn" onclick="switchTab('arayish')">📄 Arayışlar</button>
+  <button class="tab-btn" onclick="switchTab('erize')">📝 Ərizələr</button>
 </div>
 <div id="tab-refiq" class="active">
   <main>
@@ -198,6 +202,46 @@
     <div class="empty-state" id="empty-state"><span>📋</span>Yuxarıdan arayış növünü seçin</div>
   </div>
 </div>
+<div id="tab-erize">
+  <div class="erize-container">
+    <div class="arayish-title">📝 Ərizə növünü seçin</div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+      <button class="hazirla-btn" style="width:auto;padding:10px 20px;" onclick="selectErize('defn')">⚰️ Dəfn xərci</button>
+    </div>
+    <div class="arayish-form" id="erize-defn">
+      <div class="form-title">Dəfn xərci üzrə müavinət ərizəsi</div>
+      <div class="form-row">
+        <div class="form-group"><label>Ərizəçinin soyadı</label><input type="text" id="df-soyad" placeholder="Ağazadə"/></div>
+        <div class="form-group"><label>Ərizəçinin adı</label><input type="text" id="df-ad" placeholder="Zeynəb"/></div>
+      </div>
+      <div class="form-group"><label>Ərizəçinin ata adı</label><input type="text" id="df-ata" placeholder="Vaqif qızı"/></div>
+      <div class="form-row">
+        <div class="form-group"><label>Şəhər/Rayon</label><input type="text" id="df-rayon" placeholder="Bakı şəhəri, Nizami rayonu"/></div>
+        <div class="form-group"><label>Küçə</label><input type="text" id="df-kuce" placeholder="Nəsimi küçəsi"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Ev</label><input type="text" id="df-ev" placeholder="32A"/></div>
+        <div class="form-group"><label>Mənzil</label><input type="text" id="df-menzil" placeholder="47"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Pensiya hesab №</label><input type="text" id="df-hesab" placeholder="064426"/></div>
+        <div class="form-group"><label>Telefon nömrəsi</label><input type="text" id="df-tel" placeholder="051 3653394"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Vəfat edənin adı soyadı ata adı</label><input type="text" id="df-vefat-ad" placeholder="Ağayev Vaqif Yaqub oğlu"/></div>
+        <div class="form-group"><label>Vəfat tarixi</label><input type="text" id="df-vefat-tarix" placeholder="22.09.2025" maxlength="10"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Hara ünvanlanır</label><input type="text" id="df-unvan" placeholder="Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına"/></div>
+        <div class="form-group"><label>Tarix</label><input type="text" id="df-tarix" placeholder="08.06.2026" maxlength="10"/></div>
+      </div>
+      <div class="btn-group">
+        <button class="hazirla-btn" onclick="hazirlaErize('defn','word')">📄 Word yüklə</button>
+        <button class="hazirla-btn pdf-btn" onclick="hazirlaErize('defn','pdf')">📋 PDF yüklə</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
   // Azərbaycan əlifbasını dəstəkləyən InitCap funksiyası
   // "HASAN IMANOV KAMRAN" → "Hasan Imanov Kamran"
@@ -299,9 +343,10 @@
   }
 
   function switchTab(tab){
-    document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',(i===0&&tab==='refiq')||(i===1&&tab==='arayish'));});
+    document.querySelectorAll('.tab-btn').forEach(function(b,i){b.classList.toggle('active',(i===0&&tab==='refiq')||(i===1&&tab==='arayish')||(i===2&&tab==='erize'));});
     document.getElementById('tab-refiq').classList.toggle('active',tab==='refiq');
     document.getElementById('tab-arayish').classList.toggle('active',tab==='arayish');
+    document.getElementById('tab-erize').classList.toggle('active',tab==='erize');
   }
   function selectCat(cat){
     document.querySelectorAll('.arayish-form').forEach(function(f){f.classList.remove('active');});
@@ -607,3 +652,107 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
 </script>
 </body>
 </html>
+<script>
+  function selectErize(cat){
+    document.querySelectorAll('#tab-erize .arayish-form').forEach(function(f){f.classList.remove('active');});
+    document.getElementById('erize-'+cat).classList.add('active');
+  }
+  function today(){
+    var d=new Date();
+    return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear();
+  }
+  async function hazirlaErize(tip, format) {
+    var g=function(id){return (document.getElementById(id)||{}).value||'';};
+    var soyad=g('df-soyad').trim(),ad=g('df-ad').trim(),ata=g('df-ata').trim();
+    var fullAd=soyad+' '+ad+' '+ata;
+    var rayon=g('df-rayon').trim(),kuce=g('df-kuce').trim();
+    var ev=g('df-ev').trim(),menzil=g('df-menzil').trim();
+    var hesab=g('df-hesab').trim(),tel=g('df-tel').trim();
+    var vefatAd=g('df-vefat-ad').trim();
+    var vefatTarix=g('df-vefat-tarix').trim();
+    var tarix=g('df-tarix').trim()||today();
+    var qohum=ata.slice(-4)==='oğlu'?'atam':'anam';
+    var unvanMetn=rayon+', '+kuce+', ev '+ev+(menzil?', mənzil '+menzil:'')+' ünvanında yaşayan '+fullAd+' tərəfindən';
+    var vefatMetn='Sizdən xahiş edirəm ki, '+qohum+' '+vefatAd+' '+vefatTarix+'-'+ilShekilchi(vefatTarix)+' il tarixdə vəfatı ilə əlaqədar dəfn üçün müavinətin ödənilməsinə kömək edəsiniz.';
+
+    if(format==='pdf'){
+      var w=window.open('','_blank');
+      w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><style>'
+        +'@page{size:A4;margin:20mm 20mm 20mm 25mm;}'
+        +'*{box-sizing:border-box;margin:0;padding:0;}'
+        +'body{font-family:Arial,sans-serif;font-size:12pt;color:#000;line-height:1.5;}'
+        +'.merkez{text-align:center;font-weight:bold;margin-bottom:8mm;}'
+        +'.saga{margin-left:40%;font-size:11pt;text-align:justify;margin-bottom:10mm;}'
+        +'.bashliq{text-align:center;font-weight:bold;margin:8mm 0 6mm 0;}'
+        +'.metn{text-align:justify;text-indent:12mm;margin-bottom:4mm;}'
+        +'.hesab{margin-bottom:4mm;}'
+        +'.italic{font-style:italic;margin-bottom:2mm;}'
+        +'.list{margin-left:8mm;margin-bottom:8mm;}'
+        +'.list li{margin-bottom:1mm;}'
+        +'.alt{display:flex;justify-content:space-between;margin-top:10mm;}'
+        +'</style></head><body>'
+        +'<p class="merkez">3 saylı Bakı DOST Mərkəzi</p>'
+        +'<div class="saga">'
+        +'Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin tabeliyində Dövlət Sosial Müdafiə Fondunun Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına'
+        +'<br/><br/>'+unvanMetn
+        +'</div>'
+        +'<p class="bashliq">ƏRİZƏ</p>'
+        +'<p class="metn">'+vefatMetn+'</p>'
+        +'<p class="hesab">Pensiya hesab № '+hesab+'</p>'
+        +'<p class="italic">Ərizəyə əlavə olunan sənədlər:</p>'
+        +'<ol class="list"><li>Dəfni təşkil edən şəxsin şəxsiyyət vəsiqəsinin surəti;</li>'
+        +'<li>Ölüm haqqında şəhadətnamənin surəti;</li>'
+        +'<li>Ədliyyə Nazirliyinin rayon (şəhər) qeydiyyat şöbəsinin ölüm haqqında arayışının əsli;</li>'
+        +'<li>Dəfni təşkil edən şəxs barədə müvafiq bələdiyyə tərəfindən verilmiş arayış.</li></ol>'
+        +'<div class="alt"><span>Telefon nömrəsi: '+tel+'</span>'
+        +'<span>İmza: _______________<br/>Tarix: '+tarix+'</span></div>'
+        +'</body></html>');
+      w.document.close();
+      setTimeout(function(){w.print();},600);
+    } else {
+      function ep(){return new docx.Paragraph({spacing:{before:0,after:0,line:240,lineRule:'exact'},children:[new docx.TextRun({text:'',font:'Arial',size:24})]});}
+      function pr(text,opts){
+        opts=opts||{};
+        return new docx.Paragraph({
+          spacing:{before:0,after:120,line:240,lineRule:'exact'},
+          alignment:opts.center?docx.AlignmentType.CENTER:opts.right?docx.AlignmentType.RIGHT:opts.justify?docx.AlignmentType.JUSTIFIED:docx.AlignmentType.LEFT,
+          indent:opts.indent?{firstLine:709}:undefined,
+          children:[new docx.TextRun({text:text,font:'Arial',size:opts.small?22:24,bold:opts.bold||false,language:{value:'az-Latn-AZ'}})]
+        });
+      }
+      var pp={size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1418}};
+      var rows=[];
+      rows.push(pr('3 saylı Bakı DOST Mərkəzi',{center:true,bold:true}));
+      rows.push(ep());
+      rows.push(pr('Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin tabeliyində Dövlət Sosial Müdafiə Fondunun Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına',{right:true,small:true}));
+      rows.push(ep());
+      rows.push(pr(unvanMetn,{right:true,small:true}));
+      rows.push(ep());rows.push(ep());
+      rows.push(pr('ƏRİZƏ',{center:true,bold:true}));
+      rows.push(ep());
+      rows.push(pr(vefatMetn,{justify:true,indent:true}));
+      rows.push(ep());
+      rows.push(pr('Pensiya hesab № '+hesab,{}));
+      rows.push(ep());
+      rows.push(new docx.Paragraph({spacing:{before:0,after:80,line:240,lineRule:'exact'},children:[new docx.TextRun({text:'Ərizəyə əlavə olunan sənədlər:',font:'Arial',size:24,italics:true,language:{value:'az-Latn-AZ'}})]}));
+      ['1.  Dəfni təşkil edən şəxsin şəxsiyyət vəsiqəsinin surəti;',
+       '2.  Ölüm haqqında şəhadətnamənin surəti;',
+       '3.  Ədliyyə Nazirliyinin rayon (şəhər) qeydiyyat şöbəsinin ölüm haqqında arayışının əsli;',
+       '4.  Dəfni təşkil edən şəxs barədə müvafiq bələdiyyə tərəfindən verilmiş arayış.'
+      ].forEach(function(s){rows.push(pr(s,{indent:true}));});
+      rows.push(ep());rows.push(ep());
+      rows.push(new docx.Paragraph({spacing:{before:0,after:0,line:240,lineRule:'exact'},
+        children:[
+          new docx.TextRun({text:'Telefon nömrəsi: '+tel,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+          new docx.TextRun({text:'\t\t\t\tİmza: _______________',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+        ]}));
+      rows.push(new docx.Paragraph({spacing:{before:0,after:0,line:240,lineRule:'exact'},
+        children:[new docx.TextRun({text:'\t\t\t\t\t\tTarix: '+tarix,font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]}));
+      var wd=new docx.Document({sections:[{properties:{page:pp},children:rows}]});
+      var blob=await docx.Packer.toBlob(wd);
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');a.href=url;a.download='erize_defn_'+soyad+'.docx';a.click();
+      URL.revokeObjectURL(url);
+    }
+  }
+</script>
