@@ -534,11 +534,11 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     var tarixHisse = d.tarixMetn ? '<p class="metn">' + d.tarixMetn + '</p>' : '';
     var htmlContent = '<!DOCTYPE html>'
       + '<html><head><meta charset="UTF-8">'
-      + '<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet"/>'
       + '<style>'
+      + '@font-face{font-family:"DejaVu";src:url("https://cdn.jsdelivr.net/npm/dejavu-fonts-ttf@2.37.3/ttf/DejaVuSans.ttf") format("truetype");}'
       + '@page{size:A4;margin:12.51mm 11.57mm 40.02mm 25.01mm;}'
       + '*{box-sizing:border-box;margin:0;padding:0;}'
-      + 'body{font-family:Arial,"Noto Sans","Liberation Sans",sans-serif;font-size:12pt;color:#000;-webkit-font-smoothing:antialiased;}'
+      + 'body{font-family:"DejaVu","Noto Sans",Arial,sans-serif;font-size:12pt;color:#000;-webkit-font-smoothing:antialiased;}'
       + '.gerb{text-align:center;margin-bottom:2mm;}'
       + '.gerb img{width:31.26mm;height:34.13mm;display:block;margin:0 auto;}'
       + '.qurum{text-align:center;font-size:14pt;font-weight:900;line-height:1.2;margin-top:0;}'
