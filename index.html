@@ -671,14 +671,15 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     var vefatTarix=g('df-vefat-tarix').trim();
     var tarix=g('df-tarix').trim()||today();
     var qohum=ata.slice(-4)==='oğlu'?'atam':'anam';
-    var vefatMetn='Sizdən xahiş edirəm ki, '+qohum+' '+vefatAd+' '+vefatTarix+'-'+ilShekilchi(vefatTarix)+' il tarixdə vəfatı ilə əlaqədar dəfn üçün müavinətin ödənilməsinə kömək edəsiniz.';
+    var vefatMetn='Sizdən xahiş edirəm ki, '+qohum+' '+vefatAd+' '+vefatTarix+'-'+ilShekilchi(vefatTarix)+' il tarixdə vəfatı ilə əlaqədar dəfn üçün müavinətin ödənilməsinə kömək edasiniz.';
+    var INDENT=4800;
     function ep2(){return new docx.Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'',font:'Times New Roman',size:24})]});}
     function pr2(text,opts){
       opts=opts||{};
       return new docx.Paragraph({
         spacing:{before:0,after:0,line:276,lineRule:'auto'},
-        alignment:opts.center?docx.AlignmentType.CENTER:opts.right?docx.AlignmentType.RIGHT:opts.justify?docx.AlignmentType.JUSTIFIED:docx.AlignmentType.LEFT,
-        indent:opts.indent?{firstLine:720}:undefined,
+        alignment:opts.center?docx.AlignmentType.CENTER:opts.justify?docx.AlignmentType.JUSTIFIED:docx.AlignmentType.LEFT,
+        indent:opts.indentLeft?{left:INDENT}:opts.indent?{firstLine:720}:undefined,
         children:[new docx.TextRun({text:text,font:'Times New Roman',size:24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}})]
       });
     }
@@ -686,15 +687,15 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     var rows=[];
     rows.push(pr2('3 saylı Bakı DOST Mərkəzi',{center:true,bold:true}));
     rows.push(ep2());rows.push(ep2());
-    rows.push(pr2('Azərbaycan Respublikasının Əmək və',{right:true}));
-    rows.push(pr2('Əhalinin Sosial Müdafiəsi Nazirliyinin',{right:true}));
-    rows.push(pr2('tabeliyində Dövlət Sosial Müdafiə',{right:true}));
-    rows.push(pr2('Fondunun Xüsusi Şərtlərə Təyinat üzrə',{right:true}));
-    rows.push(pr2('Mərkəzi Filialına',{right:true}));
+    rows.push(pr2('Azərbaycan Respublikasının Əmək və',{indentLeft:true}));
+    rows.push(pr2('Əhalinin Sosial Müdafiəsi Nazirliyinin',{indentLeft:true}));
+    rows.push(pr2('tabeliyində Dövlət Sosial Müdafiə',{indentLeft:true}));
+    rows.push(pr2('Fondunun Xüsusi Şərtlərə Təyinat üzrə',{indentLeft:true}));
+    rows.push(pr2('Mərkəzi Filialına',{indentLeft:true}));
     rows.push(ep2());
-    rows.push(pr2(rayon+', '+kuce+',',{right:true}));
-    rows.push(pr2('ev '+ev+(menzil?', mənzil '+menzil:'')+' ünvanında yaşayan',{right:true}));
-    rows.push(pr2(fullAd+' tərəfindən',{right:true}));
+    rows.push(pr2(rayon+', '+kuce+',',{indentLeft:true}));
+    rows.push(pr2('ev '+ev+(menzil?', mənzil '+menzil:'')+' ünvanında yaşayan',{indentLeft:true}));
+    rows.push(pr2(fullAd+' tərəfindən',{indentLeft:true}));
     rows.push(ep2());rows.push(ep2());rows.push(ep2());
     rows.push(pr2('ƏRİZƏ',{center:true,bold:true}));
     rows.push(ep2());
@@ -724,4 +725,5 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     var a=document.createElement('a');a.href=url;a.download='erize_defn_'+soyad+'.docx';a.click();
     URL.revokeObjectURL(url);
   }
+
 </script>
