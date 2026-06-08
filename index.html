@@ -215,7 +215,7 @@
         <div class="form-group"><label>Ərizəçinin adı</label><input type="text" id="df-ad" placeholder="Zeynəb" oninput="azTitleInput(this)"/></div>
       </div>
       <div class="form-group"><label>Ərizəçinin ata adı</label><input type="text" id="df-ata" placeholder="Vaqif qızı" oninput="formatVefatAd(this)"/></div>
-      <div class="form-group"><label>Ünvan</label><input type="text" id="df-unvan-tam" placeholder="Bakı şəhəri, Suraxanı rayonu, Abbas Fətullayev küçəsi, ev 1, mənzil 2" oninput="formatUnvan(this)"/></div>
+      <div class="form-group"><label>Ünvan</label><input type="text" id="df-unvan-tam" placeholder="Bakı şəhəri, Suraxanı rayonu, Abbas Fətullayev küçəsi, ev 1, mənzil 2" onblur="formatUnvan(this)"/></div>
       <div class="form-row">
         <div class="form-group"><label>Pensiya hesab №</label><input type="text" id="df-hesab" placeholder="064426"/></div>
         <div class="form-group"><label>Telefon nömrəsi</label><input type="text" id="df-tel" placeholder="051 3653394"/></div>
@@ -668,28 +668,18 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   }
   var UNVAN_SUFFIX=['şəhəri','rayonu','qəsəbəsi','kəndi','dalan','ev','mənzil','küçəsi','prospekti','küçə','prospekt'];
   function formatUnvan(el){
-    var pos=el.selectionStart;
-    var val=el.value;
-    // Yalnız tam söz bitdikdə (boşluq və ya vergül yazılanda) formatla
-    var lastChar=val[pos-1];
-    if(lastChar!==' ' && lastChar!==',') return;
-    var parts=val.split(',');
+    var parts=el.value.split(',');
     var result=parts.map(function(part){
-      var leading=part.match(/^\s*/)[0];
       var words=part.trim().split(/\s+/);
-      var formatted=words.map(function(w){
+      return words.map(function(w){
         if(!w)return w;
         var wl=w.split('').map(azLower).join('');
         if(UNVAN_SUFFIX.indexOf(wl)>=0)return wl;
         if(/^\d/.test(w))return w;
         return azTitleWord(w);
       }).join(' ');
-      return leading+formatted;
     });
-    var newVal=result.join(',');
-    var diff=newVal.length-val.length;
-    el.value=newVal;
-    el.setSelectionRange(pos+diff,pos+diff);
+    el.value=result.join(', ');
   }
   function selectErize(cat){
     document.querySelectorAll('#tab-erize .arayish-form').forEach(function(f){f.classList.remove('active');});
