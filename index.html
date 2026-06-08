@@ -699,7 +699,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     var vefatTarix=g('df-vefat-tarix').trim();
     var tarix=today();
     var unvanSec=g('df-unvan').trim()||'Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına';
-    var qohum=ata.split('').map(function(c){return (c==='ı'||c==='i'||c==='İ'||c==='I')?c:c;}).join('').slice(-4).toLowerCase()==='oğlu'?'atam':'anam';
+    var qohum=g('df-qohum')||'atam';
     var vefatMetn='Sizdən xahiş edirəm ki, '+qohum+' '+vefatAd+' '+vefatTarix+'-'+ilShekilchi(vefatTarix)+' il tarixdə vəfatı ilə əlaqədar dəfn üçün müavinətin ödənilməsinə kömək edəsiniz.';
     var INDENT=4800;
     function ep2(){return new docx.Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'',font:'Arial',size:24})]});}
