@@ -211,29 +211,25 @@
     <div class="arayish-form" id="erize-defn">
       <div class="form-title">Dəfn xərci üzrə müavinət ərizəsi</div>
       <div class="form-row">
-        <div class="form-group"><label>Ərizəçinin soyadı</label><input type="text" id="df-soyad" placeholder="Ağazadə"/></div>
-        <div class="form-group"><label>Ərizəçinin adı</label><input type="text" id="df-ad" placeholder="Zeynəb"/></div>
+        <div class="form-group"><label>Ərizəçinin soyadı</label><input type="text" id="df-soyad" placeholder="Ağazadə" oninput="azTitleInput(this)"/></div>
+        <div class="form-group"><label>Ərizəçinin adı</label><input type="text" id="df-ad" placeholder="Zeynəb" oninput="azTitleInput(this)"/></div>
       </div>
-      <div class="form-group"><label>Ərizəçinin ata adı</label><input type="text" id="df-ata" placeholder="Vaqif qızı"/></div>
-      <div class="form-row">
-        <div class="form-group"><label>Şəhər/Rayon</label><input type="text" id="df-rayon" placeholder="Bakı şəhəri, Nizami rayonu"/></div>
-        <div class="form-group"><label>Küçə</label><input type="text" id="df-kuce" placeholder="Nəsimi küçəsi"/></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Ev</label><input type="text" id="df-ev" placeholder="32A"/></div>
-        <div class="form-group"><label>Mənzil</label><input type="text" id="df-menzil" placeholder="47"/></div>
-      </div>
+      <div class="form-group"><label>Ərizəçinin ata adı</label><input type="text" id="df-ata" placeholder="Vaqif qızı" oninput="azTitleInput(this)"/></div>
+      <div class="form-group"><label>Ünvan</label><input type="text" id="df-unvan-tam" placeholder="Bakı şəhəri, Suraxanı rayonu, Abbas Fətullayev küçəsi, ev 1, mənzil 2" oninput="formatUnvan(this)"/></div>
       <div class="form-row">
         <div class="form-group"><label>Pensiya hesab №</label><input type="text" id="df-hesab" placeholder="064426"/></div>
         <div class="form-group"><label>Telefon nömrəsi</label><input type="text" id="df-tel" placeholder="051 3653394"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Vəfat edənin adı soyadı ata adı</label><input type="text" id="df-vefat-ad" placeholder="Ağayev Vaqif Yaqub oğlu"/></div>
+        <div class="form-group"><label>Vəfat edənin adı soyadı ata adı</label><input type="text" id="df-vefat-ad" placeholder="Ağayev Vaqif Yaqub oğlu" oninput="formatVefatAd(this)"/></div>
         <div class="form-group"><label>Vəfat tarixi</label><input type="text" id="df-vefat-tarix" placeholder="22.09.2025" maxlength="10"/></div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>Hara ünvanlanır</label><input type="text" id="df-unvan" placeholder="Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına"/></div>
-        <div class="form-group"><label>Tarix</label><input type="text" id="df-tarix" placeholder="08.06.2026" maxlength="10"/></div>
+      <div class="form-group"><label>Hara ünvanlanır</label>
+        <select id="df-unvan">
+          <option value="Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına">Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına</option>
+          <option value="Maliyyə və Mühasibatlıq üzrə Mərkəzi Filialına">Maliyyə və Mühasibatlıq üzrə Mərkəzi Filialına</option>
+          <option value="Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına">Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına</option>
+        </select>
       </div>
       <div class="btn-group" style="grid-template-columns:1fr;">
         <button class="hazirla-btn" onclick="hazirlaErize('defn','word')">📄 Word yüklə</button>
@@ -652,6 +648,40 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
 </body>
 </html>
 <script>
+  var AZ_UPPER={'a':'A','b':'B','c':'C','ç':'Ç','d':'D','e':'E','ə':'Ə','f':'F','g':'G','ğ':'Ğ','h':'H','x':'X','i':'İ','ı':'I','j':'J','k':'K','q':'Q','l':'L','m':'M','n':'N','o':'O','ö':'Ö','p':'P','r':'R','s':'S','ş':'Ş','t':'T','u':'U','ü':'Ü','v':'V','y':'Y','z':'Z'};
+  var AZ_LOWER={'İ':'i','I':'ı','Ə':'ə','Ğ':'ğ','Ç':'ç','Ş':'ş','Ö':'ö','Ü':'ü'};
+  function azUpper(ch){return AZ_UPPER[ch]||ch.toUpperCase();}
+  function azLower(ch){return AZ_LOWER[ch]||ch.toLowerCase();}
+  function azTitleWord(w){if(!w)return w;return azUpper(w[0])+w.slice(1).split('').map(azLower).join('');}
+  function azTitleInput(el){
+    var pos=el.selectionStart;
+    var result=el.value.replace(/\S+/g,function(w){return azTitleWord(w);});
+    el.value=result;el.setSelectionRange(pos,pos);
+  }
+  function formatVefatAd(el){
+    var pos=el.selectionStart;
+    var skip=['oğlu','qızı'];
+    var result=el.value.replace(/\S+/g,function(w){
+      return skip.indexOf(w.split('').map(azLower).join(''))>=0?w.split('').map(azLower).join(''):azTitleWord(w);
+    });
+    el.value=result;el.setSelectionRange(pos,pos);
+  }
+  var UNVAN_SUFFIX=['şəhəri','rayonu','qəsəbəsi','kəndi','dalan','ev','mənzil','küçəsi','prospekti','küçə','prospekt'];
+  function formatUnvan(el){
+    var pos=el.selectionStart;
+    var parts=el.value.split(',');
+    var result=parts.map(function(part){
+      var words=part.trim().split(/\s+/);
+      return words.map(function(w){
+        if(!w)return w;
+        var wl=w.split('').map(azLower).join('');
+        if(UNVAN_SUFFIX.indexOf(wl)>=0)return wl;
+        if(/^\d/.test(w))return w;
+        return azTitleWord(w);
+      }).join(' ');
+    });
+    el.value=result.join(', ');el.setSelectionRange(pos,pos);
+  }
   function selectErize(cat){
     document.querySelectorAll('#tab-erize .arayish-form').forEach(function(f){f.classList.remove('active');});
     document.getElementById('erize-'+cat).classList.add('active');
@@ -664,14 +694,14 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     var g=function(id){return (document.getElementById(id)||{}).value||'';};
     var soyad=g('df-soyad').trim(),ad=g('df-ad').trim(),ata=g('df-ata').trim();
     var fullAd=soyad+' '+ad+' '+ata;
-    var rayon=g('df-rayon').trim(),kuce=g('df-kuce').trim();
-    var ev=g('df-ev').trim(),menzil=g('df-menzil').trim();
+    var unvanTam=g('df-unvan-tam').trim();
     var hesab=g('df-hesab').trim(),tel=g('df-tel').trim();
     var vefatAd=g('df-vefat-ad').trim();
     var vefatTarix=g('df-vefat-tarix').trim();
-    var tarix=g('df-tarix').trim()||today();
-    var qohum=ata.slice(-4)==='oğlu'?'atam':'anam';
-    var vefatMetn='Sizdən xahiş edirəm ki, '+qohum+' '+vefatAd+' '+vefatTarix+'-'+ilShekilchi(vefatTarix)+' il tarixdə vəfatı ilə əlaqədar dəfn üçün müavinətin ödənilməsinə kömək edasiniz.';
+    var tarix=today();
+    var unvanSec=g('df-unvan').trim()||'Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına';
+    var qohum=ata.split('').map(function(c){return (c==='ı'||c==='i'||c==='İ'||c==='I')?c:c;}).join('').slice(-4).toLowerCase()==='oğlu'?'atam':'anam';
+    var vefatMetn='Sizdən xahiş edirəm ki, '+qohum+' '+vefatAd+' '+vefatTarix+'-'+ilShekilchi(vefatTarix)+' il tarixdə vəfatı ilə əlaqədar dəfn üçün müavinətin ödənilməsinə kömək edəsiniz.';
     var INDENT=4800;
     function ep2(){return new docx.Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'',font:'Times New Roman',size:24})]});}
     function pr2(text,opts){
@@ -690,11 +720,9 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     rows.push(pr2('Azərbaycan Respublikasının Əmək və',{indentLeft:true}));
     rows.push(pr2('Əhalinin Sosial Müdafiəsi Nazirliyinin',{indentLeft:true}));
     rows.push(pr2('tabeliyində Dövlət Sosial Müdafiə',{indentLeft:true}));
-    rows.push(pr2('Fondunun Xüsusi Şərtlərə Təyinat üzrə',{indentLeft:true}));
-    rows.push(pr2('Mərkəzi Filialına',{indentLeft:true}));
+    rows.push(pr2('Fondunun '+unvanSec,{indentLeft:true}));
     rows.push(ep2());
-    rows.push(pr2(rayon+', '+kuce+',',{indentLeft:true}));
-    rows.push(pr2('ev '+ev+(menzil?', mənzil '+menzil:'')+' ünvanında yaşayan',{indentLeft:true}));
+    rows.push(pr2(unvanTam+' ünvanında yaşayan',{indentLeft:true}));
     rows.push(pr2(fullAd+' tərəfindən',{indentLeft:true}));
     rows.push(ep2());rows.push(ep2());rows.push(ep2());
     rows.push(pr2('ƏRİZƏ',{center:true,bold:true}));
