@@ -214,7 +214,7 @@
         <div class="form-group"><label>Ərizəçinin soyadı</label><input type="text" id="df-soyad" placeholder="Ağazadə" oninput="azTitleInput(this)"/></div>
         <div class="form-group"><label>Ərizəçinin adı</label><input type="text" id="df-ad" placeholder="Zeynəb" oninput="azTitleInput(this)"/></div>
       </div>
-      <div class="form-group"><label>Ərizəçinin ata adı</label><input type="text" id="df-ata" placeholder="Vaqif qızı" oninput="azTitleInput(this)"/></div>
+      <div class="form-group"><label>Ərizəçinin ata adı</label><input type="text" id="df-ata" placeholder="Vaqif qızı" oninput="formatVefatAd(this)"/></div>
       <div class="form-group"><label>Ünvan</label><input type="text" id="df-unvan-tam" placeholder="Bakı şəhəri, Suraxanı rayonu, Abbas Fətullayev küçəsi, ev 1, mənzil 2" oninput="formatUnvan(this)"/></div>
       <div class="form-row">
         <div class="form-group"><label>Pensiya hesab №</label><input type="text" id="df-hesab" placeholder="064426"/></div>
@@ -669,18 +669,27 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   var UNVAN_SUFFIX=['şəhəri','rayonu','qəsəbəsi','kəndi','dalan','ev','mənzil','küçəsi','prospekti','küçə','prospekt'];
   function formatUnvan(el){
     var pos=el.selectionStart;
-    var parts=el.value.split(',');
+    var val=el.value;
+    // Yalnız tam söz bitdikdə (boşluq və ya vergül yazılanda) formatla
+    var lastChar=val[pos-1];
+    if(lastChar!==' ' && lastChar!==',') return;
+    var parts=val.split(',');
     var result=parts.map(function(part){
+      var leading=part.match(/^\s*/)[0];
       var words=part.trim().split(/\s+/);
-      return words.map(function(w){
+      var formatted=words.map(function(w){
         if(!w)return w;
         var wl=w.split('').map(azLower).join('');
         if(UNVAN_SUFFIX.indexOf(wl)>=0)return wl;
         if(/^\d/.test(w))return w;
         return azTitleWord(w);
       }).join(' ');
+      return leading+formatted;
     });
-    el.value=result.join(', ');el.setSelectionRange(pos,pos);
+    var newVal=result.join(',');
+    var diff=newVal.length-val.length;
+    el.value=newVal;
+    el.setSelectionRange(pos+diff,pos+diff);
   }
   function selectErize(cat){
     document.querySelectorAll('#tab-erize .arayish-form').forEach(function(f){f.classList.remove('active');});
@@ -703,14 +712,14 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     var qohum=ata.split('').map(function(c){return (c==='ı'||c==='i'||c==='İ'||c==='I')?c:c;}).join('').slice(-4).toLowerCase()==='oğlu'?'atam':'anam';
     var vefatMetn='Sizdən xahiş edirəm ki, '+qohum+' '+vefatAd+' '+vefatTarix+'-'+ilShekilchi(vefatTarix)+' il tarixdə vəfatı ilə əlaqədar dəfn üçün müavinətin ödənilməsinə kömək edəsiniz.';
     var INDENT=4800;
-    function ep2(){return new docx.Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'',font:'Times New Roman',size:24})]});}
+    function ep2(){return new docx.Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'',font:'Arial',size:24})]});}
     function pr2(text,opts){
       opts=opts||{};
       return new docx.Paragraph({
         spacing:{before:0,after:0,line:276,lineRule:'auto'},
         alignment:opts.center?docx.AlignmentType.CENTER:opts.justify?docx.AlignmentType.JUSTIFIED:docx.AlignmentType.LEFT,
         indent:opts.indentLeft?{left:INDENT}:opts.indent?{firstLine:720}:undefined,
-        children:[new docx.TextRun({text:text,font:'Times New Roman',size:24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}})]
+        children:[new docx.TextRun({text:text,font:'Arial',size:24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}})]
       });
     }
     var pp={size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1418}};
@@ -731,7 +740,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     rows.push(ep2());
     rows.push(pr2('Pensiya hesab № '+hesab,{}));
     rows.push(ep2());
-    rows.push(new docx.Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'Ərizəyə əlavə olunan sənədlər:',font:'Times New Roman',size:24,italics:true,language:{value:'az-Latn-AZ'}})]}));
+    rows.push(new docx.Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'Ərizəyə əlavə olunan sənədlər:',font:'Arial',size:24,italics:true,language:{value:'az-Latn-AZ'}})]}));
     ['1.  Dəfni təşkil edən şəxsin şəxsiyyət vəsiqəsinin surəti;',
      '2.  Ölüm haqqında şahədətnamənin surəti;',
      '3.  Ədliyyə Nazirliyinin rayon (şəhər) qeydiyyat şöbəsinin ölüm haqqında arayışının əsli;',
@@ -741,12 +750,12 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     rows.push(new docx.Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},
       tabStops:[{type:docx.TabStopType.LEFT,position:5500}],
       children:[
-        new docx.TextRun({text:'Telefon nömrəsi: '+tel,font:'Times New Roman',size:24,language:{value:'az-Latn-AZ'}}),
-        new docx.TextRun({text:'	İmza: _______________',font:'Times New Roman',size:24,language:{value:'az-Latn-AZ'}})
+        new docx.TextRun({text:'Telefon nömrəsi: '+tel,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+        new docx.TextRun({text:'	İmza: _______________',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
       ]}));
     rows.push(new docx.Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},
       tabStops:[{type:docx.TabStopType.LEFT,position:5500}],
-      children:[new docx.TextRun({text:'	Tarix: '+tarix,font:'Times New Roman',size:24,language:{value:'az-Latn-AZ'}})]}));
+      children:[new docx.TextRun({text:'	Tarix: '+tarix,font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]}));
     var wd=new docx.Document({sections:[{properties:{page:pp},children:rows}]});
     var blob=await docx.Packer.toBlob(wd);
     var url=URL.createObjectURL(blob);
