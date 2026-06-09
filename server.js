@@ -141,54 +141,6 @@ const pdfFiles = loadPDFs();
 // ----------------------------
 // ARAYIŞ PDF - Word şablondan
 // ----------------------------
-app.post('/api/arayish-pdf', async (req, res) => {
-  let browser;
-  try {
-    const { metn, tarixMetn, bitme, yerMetn, vezife, imza, fin } = req.body;
-
-    // Word şablonu oxu
-    const PizZip = require('pizzip');
-    const Docxtemplater = require('docxtemplater');
-    const fs = require('fs');
-    const path = require('path');
-
-    const templatePath = path.join(__dirname, 'arayish_sablon.docx');
-    const content = fs.readFileSync(templatePath, 'binary');
-    const zip = new PizZip(content);
-    const doc = new Docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
-
-    doc.render({
-      METN: metn || '',
-      TARIX_METN: tarixMetn || '',
-      BITME: bitme || 'müddətsiz',
-      YER_METN: yerMetn || '',
-      VEZIFE: vezife || 'Direktor müavini',
-      IMZA: imza || 'Şamil Əliyev',
-    });
-
-    const buf = doc.getZip().generate({ type: 'nodebuffer' });
-    const tmpDocx = path.join('/tmp', `arayish_${fin||'tmp'}.docx`);
-    const tmpPdf = path.join('/tmp', `arayish_${fin||'tmp'}.pdf`);
-    fs.writeFileSync(tmpDocx, buf);
-
-    // LibreOffice ilə PDF-ə çevir
-    const { execSync } = require('child_process');
-    execSync(`libreoffice --headless --convert-to pdf --outdir /tmp ${tmpDocx}`);
-
-    const pdfBuf = fs.readFileSync(tmpPdf);
-    fs.unlinkSync(tmpDocx);
-    fs.unlinkSync(tmpPdf);
-
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="arayish_${fin||'namelum'}.pdf"`);
-    res.send(pdfBuf);
-
-  } catch (error) {
-    console.error('ARAYISH PDF ERROR:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
 app.post('/api/chat', async (req, res) => {
   try {
     const { messages } = req.body;
