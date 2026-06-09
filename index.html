@@ -450,11 +450,13 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   ch.push(new P({spacing:{before:0,after:0,line:60},children:[new T({text:'',font:'Arial',size:8})]}));
 // Ünvan birinci sətir
 ch.push(new P({alignment:A.BOTH, spacing:{before:40,after:0,line:240}, indent:{left:-851},
-  children:[new T({text:'     AZ 1029, Bakı şəhəri, Nizami rayonu,                                                                                                                     Tel: (+99412) 142  ',font:'Arial',size:18})]}));
+  tabStops:[{type:docx.TabStopType.RIGHT,position:9354}],
+  children:[new T({text:'AZ 1029, Bakı şəhəri, Nizami rayonu,',font:'Arial',size:18}),new T({text:'	Tel: (+99412) 142',font:'Arial',size:18})]}));
 
 // Ünvan ikinci sətir
 ch.push(new P({alignment:A.BOTH, spacing:{before:0,after:40,line:240,lineRule:'auto'}, indent:{left:-851},
-  children:[new T({text:'     Keşlə ŞTQ Heydər Əliyev prospekti, ev 183B                                                                                   e-poçt: dost_info@sosial.gov.az',font:'Arial',size:18})]}));
+  tabStops:[{type:docx.TabStopType.RIGHT,position:9354}],
+  children:[new T({text:'Keşlə ŞTQ Heydər ƌliyev prospekti, ev 183B',font:'Arial',size:18}),new T({text:'	e-poçt: dost_info@sosial.gov.az',font:'Arial',size:18})]}));
 
 // Aşağı xətt
 ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{left:-992,right:-233},
@@ -468,16 +470,16 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
 
     // ARAYIŞ
     ch.push(new P({alignment:A.CENTER,spacing:{after:0,line:240},
-      children:[new T({text:'ARAYIŞ',font:'Arial',size:24,bold:true})]}));
+      children:[new T({text:'ARAYIŞ',font:'Arial',size:22,bold:true})]}));
     ch.push(ep());
     // Əsas mətn - firstLine indent
     ch.push(new P({alignment:A.BOTH,spacing:{line:240},indent:{firstLine:708},
-      children:[new T({text:d.metn,font:'Arial',size:24})]}));
+      children:[new T({text:d.metn,font:'Arial',size:22})]}));
     ch.push(ep());
     // Hüququn yaranma tarixi
     if(d.tarixMetn){
       ch.push(new P({spacing:{after:0,line:240},indent:{firstLine:708},
-        children:[new T({text:d.tarixMetn,font:'Arial',size:24})]}));
+        children:[new T({text:d.tarixMetn,font:'Arial',size:22})]}));
       ch.push(ep());
     }
     // Bitmə tarixi
@@ -486,7 +488,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     ch.push(ep());
     // Tələb olunan yer
     ch.push(new P({spacing:{after:0,line:240},indent:{firstLine:708},
-      children:[new T({text:d.yerMetn,font:'Arial',size:24})]}));
+      children:[new T({text:d.yerMetn,font:'Arial',size:22})]}));
     // 3 boş sətir
     ch.push(ep());ch.push(ep());ch.push(ep());
     // İmza - indent YOX, tam sol-sağ kənarlara
@@ -495,8 +497,8 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
       indent:{left:708},
       tabStops:[{type:docx.TabStopType.RIGHT,position:9832}],
       children:[
-        new T({text:d.vezife,font:'Arial',size:24,bold:true}),
-        new T({text:'\t'+d.imza,font:'Arial',size:24,bold:true})
+        new T({text:d.vezife,font:'Arial',size:22,bold:true}),
+        new T({text:'\t'+d.imza,font:'Arial',size:22,bold:true})
       ]
     }));
     return ch;
