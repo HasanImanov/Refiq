@@ -273,7 +273,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '.unvan{font-size:9pt;line-height:1.4;display:flex;justify-content:space-between;margin:0.5mm 0;}'
       + '.bosh{display:block;line-height:1.3;}'
       + '.arayish{text-align:center;font-size:12pt;font-weight:bold;margin:3mm 0 2mm 0;}'
-      + '.metn{font-size:12pt;text-align:justify;line-height:1.2;margin-bottom:1mm;}'
+      + '.metn{font-size:12pt;text-align:justify;line-height:1.2;margin-bottom:0;}'
       + '.indent{text-indent:12.5mm;}'
       + '.imza{display:flex;justify-content:space-between;font-size:12pt;font-weight:bold;margin-top:8mm;}'
       + '</style></head><body>'
@@ -288,7 +288,6 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '<div class="unvan"><span>AZ 1029, Bakı şəhəri, Nizami rayonu,</span><span>Tel: (+99412) 142</span></div>'
       + '<div class="unvan"><span>Keşlə ŞTQ Heydər ƌliyev prospekti, ev 183B</span><span>e-poçt: dost_info@sosial.gov.az</span></div>'
       + '<div class="xett"></div>'
-      + '<span class="bosh">&nbsp;</span>'
       + '<p class="arayish">ARAYIŞ</p>'
       + '<p class="metn indent">'+esc(metn||'')+'</p>'
       + tarixHisse
