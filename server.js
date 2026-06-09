@@ -264,41 +264,15 @@ app.post('/api/arayish-word', async (req, res) => {
     const Docxtemplater = require('docxtemplater');
 
     const templatePath = path.join(__dirname, 'arayish_sablon.docx');
-    const content = fs.readFileSync(templatePath, 'binary');
-    const zip = new PizZip(content);
+    const templateContent = fs.readFileSync(templatePath, 'binary');
+    const zip = new PizZip(templateContent);
 
-    // Şablonu oxu, paraqrafları manual dəyiş
-    const AdmZip = require('adm-zip');
-    const zip2 = new AdmZip(templatePath);
-    const docXml = zip2.readAsText('word/document.xml');
-
-    // python-docx əvəzinə birbaşa XML-i dəyiş
-    // Bu yanaşma daha etibarlıdır
-    const { exec } = require('child_process');
-    const os = require('os');
-    const tmpIn = path.join(os.tmpdir(), `arayish_in_${Date.now()}.docx`);
-    const tmpOut = path.join(os.tmpdir(), `arayish_out_${Date.now()}.docx`);
-
-    fs.copyFileSync(templatePath, tmpIn);
-
-    // Node.js ilə docx-u dəyiş
-    const PizZip2 = require('pizzip');
-    const zip3 = new PizZip2(fs.readFileSync(tmpIn));
-    
-    // document.xml oxu
-    let xml = zip3.files['word/document.xml'].asText();
-    
-    // Sadə replace - placeholder mətnlər
-    // 17-ci para: bütün run mətnlərini birləşdir, yenisi ilə əvəz et
-    // Bu mürəkkəbdir, Docxtemplater işlədək
-    
-    const doc = new Docxtemplater(zip3, {
+    const doc = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
       nullGetter: () => ''
     });
 
-    // Şablonda {{METN}} var ise doldur
     doc.render({
       METN: metn || '',
       TARIX_METN: tarixMetn || '',
@@ -307,7 +281,7 @@ app.post('/api/arayish-word', async (req, res) => {
     });
 
     const buf = doc.getZip().generate({ type: 'nodebuffer' });
-    
+
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     res.setHeader('Content-Disposition', `attachment; filename="arayish_${fin||'namelum'}.docx"`);
     res.send(buf);
