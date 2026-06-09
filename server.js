@@ -63,6 +63,12 @@ app.post('/api/docx-to-pdf', async (req, res) => {
     const { html, filename } = req.body;
     const safeName = safeFilename(filename || "arayish");
 
+    // Liberation Sans fontlarını oxu və HTML-ə əlavə et
+    const fontRegular = fs.readFileSync(path.join(__dirname, 'fonts', 'LiberationSans-Regular.ttf')).toString('base64');
+    const fontBold = fs.readFileSync(path.join(__dirname, 'fonts', 'LiberationSans-Bold.ttf')).toString('base64');
+    const fontCSS = `<style>@font-face{font-family:'Arial';font-weight:normal;src:url('data:font/ttf;base64,${fontRegular}')format('truetype')}@font-face{font-family:'Arial';font-weight:bold;src:url('data:font/ttf;base64,${fontBold}')format('truetype')}</style>`;
+    const htmlFinal = html.includes('<head>') ? html.replace('<head>', '<head>' + fontCSS) : fontCSS + html;
+
     const chromium = await import('@sparticuz/chromium').then(m => m.default || m);
     const puppeteer = await import('puppeteer-core').then(m => m.default || m);
 
@@ -79,7 +85,7 @@ app.post('/api/docx-to-pdf', async (req, res) => {
 
     const page = await browser.newPage();
 
-    await page.setContent(String(html), { waitUntil: 'networkidle0' });
+    await page.setContent(String(htmlFinal), { waitUntil: 'domcontentloaded' });
 
     const pdfBuffer = await page.pdf({
       format: 'A4',
