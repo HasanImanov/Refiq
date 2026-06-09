@@ -270,7 +270,8 @@ app.post('/api/arayish-word', async (req, res) => {
     const doc = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
-      nullGetter: () => ''
+      nullGetter: () => '',
+      delimiters: { start: '{', end: '}' }
     });
 
     doc.render({
