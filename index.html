@@ -436,12 +436,12 @@
       var lb=Uint8Array.from(atob(LOGO),function(c){return c.charCodeAt(0);});
       // Gerb
       ch.push(new P({alignment:A.CENTER,spacing:{before:0,after:0,line:240},indent:{left:-1418,right:-656},
-        children:[new I({data:lb,transformation:{width:150,height:164},type:'jpg'})]}));
+        children:[new I({data:lb,transformation:{width:180,height:197},type:'jpg'})]}));
       ch.push(ep0());
       // Qurum adları
       ['AZƏRBAYCAN RESPUBLİKASININ','ƏMƏK VƏ ƏHALİNİN SOSİAL MÜDAFİƏSİ NAZİRLİYİNİN TABELİYİNDƏ','DAYANIQLI VƏ OPERATİV SOSİAL TƏMİNAT AGENTLİYİ','3 SAYLI BAKI DOST MƏRKƏZİ'].forEach(function(x){
         ch.push(new P({alignment:A.CENTER,spacing:{before:0,after:0,line:240},indent:{left:-1418,right:-656},
-          children:[new T({text:x,font:'Arial',size:28,bold:true})]}));
+          children:[new T({text:x,font:'Arial',size:30,bold:true})]}));
       });
      // Yuxarı xətt
 ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{left:-992,right:-233},
@@ -461,7 +461,7 @@ ch.push(new P({alignment:A.BOTH, spacing:{before:0,after:40,line:240,lineRule:'a
 // Aşağı xətt
 ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{left:-992,right:-233},
   children:[new T({text:'________________________________________________________________________________',font:'Arial',size:24})]}));
-      for(var i=0;i<3;i++)ch.push(ep());
+      for(var i=0;i<2;i++)ch.push(ep());
     } else {
       // Word - 20 boş sətir
       for(var i=0;i<20;i++)ch.push(ep());
