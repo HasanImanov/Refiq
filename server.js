@@ -289,8 +289,6 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '<div class="unvan"><span>Keşlə ŞTQ Heydər ƌliyev prospekti, ev 183B</span><span>e-poçt: dost_info@sosial.gov.az</span></div>'
       + '<div class="xett"></div>'
       + '<span class="bosh">&nbsp;</span>'
-      + '<span class="bosh">&nbsp;</span>'
-      + '<span class="bosh">&nbsp;</span>'
       + '<p class="arayish">ARAYIŞ</p>'
       + '<p class="metn indent">'+esc(metn||'')+'</p>'
       + tarixHisse
