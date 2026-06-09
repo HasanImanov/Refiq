@@ -107,6 +107,54 @@
     <button id="send-btn">Göndər ➤</button>
   </div>
 </div>
+<div id="tab-erize">
+  <div class="erize-container">
+    <div class="arayish-title">📝 Ərizə növünü seçin</div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+      <button class="hazirla-btn" style="width:auto;padding:10px 20px;" onclick="selectErize('defn')">⚰️ Dəfn xərci</button>
+    </div>
+    <div class="arayish-form" id="erize-defn">
+      <div class="form-title">Dəfn xərci üzrə müavinət ərizəsi</div>
+      <div class="form-row">
+        <div class="form-group"><label>Ərizəçinin soyadı</label><input type="text" id="df-soyad" placeholder="Ağazadə" oninput="azTitleInput(this)"/></div>
+        <div class="form-group"><label>Ərizəçinin adı</label><input type="text" id="df-ad" placeholder="Zeynəb" oninput="azTitleInput(this)"/></div>
+      </div>
+      <div class="form-group"><label>Ərizəçinin ata adı</label><input type="text" id="df-ata" placeholder="Vaqif qızı" oninput="formatVefatAd(this)"/></div>
+      <div class="form-group"><label>Ünvan</label><input type="text" id="df-unvan-tam" placeholder="Bakı şəhəri, Suraxanı rayonu, Abbas Fətullayev küçəsi, ev 1, mənzil 2" onblur="formatUnvan(this)"/></div>
+      <div class="form-row">
+        <div class="form-group"><label>Pensiya hesab №</label><input type="text" id="df-hesab" placeholder="064426"/></div>
+        <div class="form-group"><label>Telefon nömrəsi</label><input type="text" id="df-tel" placeholder="051 3653394"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Vəfat edəninin kimim olduğu</label>
+          <select id="df-qohum">
+            <option value="atam">atam</option>
+            <option value="anam">anam</option>
+            <option value="qardaşım">qardaşım</option>
+            <option value="bacım">bacım</option>
+            <option value="həyat yoldaşım">həyat yoldaşım</option>
+            <option value="övladım">övladım</option>
+            <option value="qohumum">qohumum</option>
+            <option value="qonşum">qonşum</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Vəfat edənin adı soyadı ata adı</label><input type="text" id="df-vefat-ad" placeholder="Ağayev Vaqif Yaqub oğlu" oninput="formatVefatAd(this)"/></div>
+        <div class="form-group"><label>Vəfat tarixi</label><input type="text" id="df-vefat-tarix" placeholder="22.09.2025" maxlength="10"/></div>
+      </div>
+      <div class="form-group"><label>Hara ünvanlanır</label>
+        <select id="df-unvan">
+          <option value="Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına">Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına</option>
+          <option value="Maliyyə və Mühasibatlıq üzrə Mərkəzi Filialına">Maliyyə və Mühasibatlıq üzrə Mərkəzi Filialına</option>
+          <option value="Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına">Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına</option>
+        </select>
+      </div>
+      <div class="btn-group" style="grid-template-columns:1fr;">
+        <button class="hazirla-btn" onclick="hazirlaErize('defn','word')">📄 Word yüklə</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="tab-arayish">
   <div class="arayish-container">
     <div class="arayish-title">📄 Arayış növünü seçin</div>
