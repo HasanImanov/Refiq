@@ -423,6 +423,13 @@
     URL.revokeObjectURL(url);
   }
 
+  var AZ_UPPER={'a':'A','b':'B','c':'C','ç':'Ç','d':'D','e':'E','ə':'Ə','f':'F','g':'G','ğ':'Ğ','h':'H','x':'X','i':'İ','ı':'I','j':'J','k':'K','q':'Q','l':'L','m':'M','n':'N','o':'O','ö':'Ö','p':'P','r':'R','s':'S','ş':'Ş','t':'T','u':'U','ü':'Ü','v':'V','y':'Y','z':'Z'};
+  var AZ_LOWER={'İ':'i','I':'ı','Ə':'ə','Ğ':'ğ','Ç':'ç','Ş':'ş','Ö':'ö','Ü':'ü'};
+  function azUpper(ch){return AZ_UPPER[ch]||ch.toUpperCase();}
+  function azLower(ch){return AZ_LOWER[ch]||ch.toLowerCase();}
+  function azTitleWord(w){if(!w)return w;return azUpper(w[0])+w.slice(1).split('').map(azLower).join('');}
+  var UNVAN_SUFFIX=['şəhəri','rayonu','qəsəbəsi','kəndi','dalan','ev','mənzil','küçəsi','prospekti','küçə','prospekt'];
+
   function azTitleInput(el){
     var pos=el.selectionStart;
     var result=el.value.replace(/\S+/g,function(w){return azTitleWord(w);});
