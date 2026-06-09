@@ -247,6 +247,188 @@ app.post('/api/arayish-word', async (req, res) => {
 // ARAYIŞ PDF - Word şablondan
 // ----------------------------
 app.post('/api/arayish-pdf', async (req, res) => {
+  try {
+    const { metn, tarixMetn, bitme, yerMetn, fin } = req.body;
+    const AdmZip = require('adm-zip');
+    const https = require('https');
+
+    // 1. Word şablonunu doldur
+    const templatePath = path.join(__dirname, 'arayish_sablon.docx');
+    const zip = new AdmZip(templatePath);
+
+    function escXml(str) {
+      return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    let xml = zip.readAsText('word/document.xml');
+    xml = xml.replace(/\{METN\}/g, escXml(metn||''));
+    xml = xml.replace(/\{TARIX_METN\}/g, escXml(tarixMetn||''));
+    xml = xml.replace(/\{BITME\}/g, escXml(bitme||'müddətsiz'));
+    xml = xml.replace(/\{YER_METN\}/g, escXml(yerMetn||''));
+    zip.updateFile('word/document.xml', Buffer.from(xml, 'utf-8'));
+    const docxBuf = zip.toBuffer();
+
+    // 2. CloudConvert API ilə Word → PDF
+    const CLOUDCONVERT_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDIzODA5MThmY2JiNzM5NDAxNTQ4YjY1MDhhODRmZGZiOGMxMjkzZDc1OWUzNDFjNjNhN2I3Zjc1YzdkZjc4OTYwZDQwZjhiZDQ3Njc3NjQiLCJpYXQiOjE3ODEwMzIwNDEuNDkwODQ1LCJuYmYiOjE3ODEwMzIwNDEuNDkwODQ3LCJleHAiOjQ5MzY3MDU2NDEuNDg1NDM0LCJzdWIiOiIzNTkwMTIwMSIsInNjb3BlcyI6W119.HWQ-ZVMKsFyXBq4GvKXZDqbQQYktx-WJH2zxd3ATnP3JA0oPXL0Z2czRmGmfpdtyDp6uwSTJAXK9OM7YxWsEzC-ys6ZlU4gDWuxrG_U7hWmxaF0oYNF1YajbsSbmSrw8l6VawkFM0c7Q3tiUxnDn3V2qtjxjfRKX6sKQNZfAIAgB2TY5aYLXkiHTrsmJgzedCFcB-ihcEoYr_8MwjFKzcRHrrFLl5F-EtuKIkgxHvlVYXZTxNFN3scwYrKVQbN7nYGQqb41aGgK6p184JE_BaBjQGdXpjVe6koxLy5RXLf6AhF08zM6j9OUQfa8ntgZp-9dxO_QFhViWU6oDhgydAo8d8rPksPxFSE4fzMsjy2pvkdZR3UgOnYdxfOk6jT1VXBnsKy9PcIhb3-IXk_XnIWMHBvwYdrja58r8GFRy1POo9rGLzb-U842a6Ad3K1Iui-dKgRTob4uo21IP7dRaMV2_ZqgoqCc8zQr-GX5PBtnLlbpMqKucD2e9kv1LN1qheX88Hw95ri6Dhmc7YgGzp30t3bb6fSzjpuzMweh9WW0nfv7N5crcTEGwR1_0h_EcMlM_URVLuWvrCp2y9waKh1xc6zilEPDvwKbPDO8_UVWpFh4lqw_5Aisk5BLpS1nHVpUKImTGWPijy5F6CHuYgrMHDASYb1-iq4SOxv5JdfU';
+
+    const axios = require('axios');
+    const FormData = require('form-data');
+
+    // Job yarat
+    const jobResp = await axios.post('https://api.cloudconvert.com/v2/jobs', {
+      tasks: {
+        'upload-file': { operation: 'import/upload' },
+        'convert-file': { operation: 'convert', input: 'upload-file', output_format: 'pdf' },
+        'export-file': { operation: 'export/url', input: 'convert-file' }
+      }
+    }, { headers: { Authorization: 'Bearer ' + CLOUDCONVERT_KEY } });
+
+    const job = jobResp.data.data;
+    const uploadTask = job.tasks.find(t => t.name === 'upload-file');
+
+    // Faylı yüklə
+    const form = new FormData();
+    Object.entries(uploadTask.result.form.parameters).forEach(([k,v]) => form.append(k, v));
+    form.append('file', docxBuf, { filename: 'arayish.docx', contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    await axios.post(uploadTask.result.form.url, form, { headers: form.getHeaders() });
+
+    // Job-u gözlə
+    let pdfUrl = null;
+    for (let i = 0; i < 30; i++) {
+      await new Promise(r => setTimeout(r, 1000));
+      const statusResp = await axios.get('https://api.cloudconvert.com/v2/jobs/' + job.id, {
+        headers: { Authorization: 'Bearer ' + CLOUDCONVERT_KEY }
+      });
+      const exportTask = statusResp.data.data.tasks.find(t => t.name === 'export-file');
+      if (exportTask && exportTask.status === 'finished') {
+        pdfUrl = exportTask.result.files[0].url;
+        break;
+      }
+      if (statusResp.data.data.status === 'error') throw new Error('CloudConvert xətası');
+    }
+
+    if (!pdfUrl) throw new Error('PDF hazırlanmadı');
+
+    // PDF-i yüklə və istifadəçiyə göndər
+    const pdfResp = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="arayish_${fin||'namelum'}.pdf"`);
+    res.send(Buffer.from(pdfResp.data));
+
+  } catch (error) {
+    console.error('ARAYISH PDF ERROR:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { messages } = req.body;
+
+    const systemPrompt = `
+Sən "Rəfiq" adlı AI assistantsan.
+PDF sənədlərə əsaslanırsan.
+Azərbaycan dilində cavab ver.
+`;
+
+    const lastMessage = messages[messages.length - 1];
+    const userContent = [];
+
+    for (const pdf of pdfFiles) {
+      userContent.push({
+        type: 'document',
+        source: {
+          type: 'base64',
+          media_type: 'application/pdf',
+          data: pdf.base64
+        }
+      });
+    }
+
+    if (typeof lastMessage.content === 'string') {
+      userContent.push({ type: 'text', text: lastMessage.content });
+    } else {
+      userContent.push(...lastMessage.content);
+    }
+
+    const updatedMessages = [
+      ...messages.slice(0, -1),
+      { role: 'user', content: userContent }
+    ];
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 2048,
+        system: systemPrompt,
+        messages: updatedMessages
+      })
+    });
+
+    const data = await response.json();
+    res.json(data);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ----------------------------
+// START
+// ----------------------------
+const PORT = process.env.PORT || 3000;
+
+
+// ----------------------------
+// ARAYIŞ - Word şablondan
+// ----------------------------
+app.post('/api/arayish-word', async (req, res) => {
+  try {
+    const { metn, tarixMetn, bitme, yerMetn, fin } = req.body;
+    const AdmZip = require('adm-zip');
+
+    const templatePath = path.join(__dirname, 'arayish_sablon.docx');
+    const zip = new AdmZip(templatePath);
+
+    // XML-i oxu və placeholder-ları əvəz et
+    let xml = zip.readAsText('word/document.xml');
+
+    function escapeXml(str) {
+      return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    xml = xml.replace(/\{METN\}/g, escapeXml(metn||''));
+    xml = xml.replace(/\{TARIX_METN\}/g, escapeXml(tarixMetn||''));
+    xml = xml.replace(/\{BITME\}/g, escapeXml(bitme||'müddətsiz'));
+    xml = xml.replace(/\{YER_METN\}/g, escapeXml(yerMetn||''));
+
+    zip.updateFile('word/document.xml', Buffer.from(xml, 'utf-8'));
+    const buf = zip.toBuffer();
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    res.setHeader('Content-Disposition', `attachment; filename="arayish_${fin||'namelum'}.docx"`);
+    res.send(buf);
+
+  } catch (error) {
+    console.error('ARAYISH WORD ERROR:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ----------------------------
+// ARAYIŞ PDF - Word şablondan
+// ----------------------------
+app.post('/api/arayish-pdf', async (req, res) => {
   let browser;
   try {
     const { metn, tarixMetn, bitme, yerMetn, fin } = req.body;
