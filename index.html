@@ -357,7 +357,7 @@
     document.getElementById('erize-'+cat).classList.add('active');
   }
 
-  function hazirlaErize(tip, format) {
+  async function hazirlaErize(tip, format) {
     var g=function(id){return (document.getElementById(id)||{}).value||'';};
     var soyad=g('df-soyad').trim(),ad=g('df-ad').trim(),ata=g('df-ata').trim();
     var fullAd=soyad+' '+ad+' '+ata;
