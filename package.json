@@ -21,6 +21,7 @@
     "express": "^5.2.1",
     "puppeteer-core": "^23.0.0",
     "pizzip": "^3.1.7",
-    "docxtemplater": "^3.55.0"
+    "docxtemplater": "^3.55.0",
+    "mammoth": "^1.8.0"
   }
 }
