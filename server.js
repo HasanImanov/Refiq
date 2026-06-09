@@ -319,72 +319,72 @@ p{margin:0;padding:0;}
 // ----------------------------
 // ARAYIŞ PDF - CloudConvert
 // ----------------------------
-app.post('/api/arayish-pdf', async (req, res) => {
-  try {
-    const { metn, tarixMetn, bitme, yerMetn, fin } = req.body;
-    const AdmZip = require('adm-zip');
-    const axios = require('axios');
-    const FormData = require('form-data');
+// app.post('/api/arayish-pdf', async (req, res) => {
+//   try {
+//     const { metn, tarixMetn, bitme, yerMetn, fin } = req.body;
+//     const AdmZip = require('adm-zip');
+//     const axios = require('axios');
+//     const FormData = require('form-data');
 
-    const templatePath = path.join(__dirname, 'arayish_sablon.docx');
-    const zip = new AdmZip(templatePath);
+//     const templatePath = path.join(__dirname, 'arayish_sablon.docx');
+//     const zip = new AdmZip(templatePath);
 
-    function escXml(str) {
-      return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
+//     function escXml(str) {
+//       return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+//     }
 
-    let xml = zip.readAsText('word/document.xml');
-    xml = xml.replace(/\{METN\}/g, escXml(metn||''));
-    xml = xml.replace(/\{TARIX_METN\}/g, escXml(tarixMetn||''));
-    xml = xml.replace(/\{BITME\}/g, escXml(bitme||'müddətsiz'));
-    xml = xml.replace(/\{YER_METN\}/g, escXml(yerMetn||''));
-    zip.updateFile('word/document.xml', Buffer.from(xml, 'utf-8'));
-    const docxBuf = zip.toBuffer();
+//     let xml = zip.readAsText('word/document.xml');
+//     xml = xml.replace(/\{METN\}/g, escXml(metn||''));
+//     xml = xml.replace(/\{TARIX_METN\}/g, escXml(tarixMetn||''));
+//     xml = xml.replace(/\{BITME\}/g, escXml(bitme||'müddətsiz'));
+//     xml = xml.replace(/\{YER_METN\}/g, escXml(yerMetn||''));
+//     zip.updateFile('word/document.xml', Buffer.from(xml, 'utf-8'));
+//     const docxBuf = zip.toBuffer();
 
-    const CC_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDIzODA5MThmY2JiNzM5NDAxNTQ4YjY1MDhhODRmZGZiOGMxMjkzZDc1OWUzNDFjNjNhN2I3Zjc1YzdkZjc4OTYwZDQwZjhiZDQ3Njc3NjQiLCJpYXQiOjE3ODEwMzIwNDEuNDkwODQ1LCJuYmYiOjE3ODEwMzIwNDEuNDkwODQ3LCJleHAiOjQ5MzY3MDU2NDEuNDg1NDM0LCJzdWIiOiIzNTkwMTIwMSIsInNjb3BlcyI6W119.HWQ-ZVMKsFyXBq4GvKXZDqbQQYktx-WJH2zxd3ATnP3JA0oPXL0Z2czRmGmfpdtyDp6uwSTJAXK9OM7YxWsEzC-ys6ZlU4gDWuxrG_U7hWmxaF0oYNF1YajbsSbmSrw8l6VawkFM0c7Q3tiUxnDn3V2qtjxjfRKX6sKQNZfAIAgB2TY5aYLXkiHTrsmJgzedCFcB-ihcEoYr_8MwjFKzcRHrrFLl5F-EtuKIkgxHvlVYXZTxNFN3scwYrKVQbN7nYGQqb41aGgK6p184JE_BaBjQGdXpjVe6koxLy5RXLf6AhF08zM6j9OUQfa8ntgZp-9dxO_QFhViWU6oDhgydAo8d8rPksPxFSE4fzMsjy2pvkdZR3UgOnYdxfOk6jT1VXBnsKy9PcIhb3-IXk_XnIWMHBvwYdrja58r8GFRy1POo9rGLzb-U842a6Ad3K1Iui-dKgRTob4uo21IP7dRaMV2_ZqgoqCc8zQr-GX5PBtnLlbpMqKucD2e9kv1LN1qheX88Hw95ri6Dhmc7YgGzp30t3bb6fSzjpuzMweh9WW0nfv7N5crcTEGwR1_0h_EcMlM_URVLuWvrCp2y9waKh1xc6zilEPDvwKbPDO8_UVWpFh4lqw_5Aisk5BLpS1nHVpUKImTGWPijy5F6CHuYgrMHDASYb1-iq4SOxv5JdfU';
+//     const CC_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDIzODA5MThmY2JiNzM5NDAxNTQ4YjY1MDhhODRmZGZiOGMxMjkzZDc1OWUzNDFjNjNhN2I3Zjc1YzdkZjc4OTYwZDQwZjhiZDQ3Njc3NjQiLCJpYXQiOjE3ODEwMzIwNDEuNDkwODQ1LCJuYmYiOjE3ODEwMzIwNDEuNDkwODQ3LCJleHAiOjQ5MzY3MDU2NDEuNDg1NDM0LCJzdWIiOiIzNTkwMTIwMSIsInNjb3BlcyI6W119.HWQ-ZVMKsFyXBq4GvKXZDqbQQYktx-WJH2zxd3ATnP3JA0oPXL0Z2czRmGmfpdtyDp6uwSTJAXK9OM7YxWsEzC-ys6ZlU4gDWuxrG_U7hWmxaF0oYNF1YajbsSbmSrw8l6VawkFM0c7Q3tiUxnDn3V2qtjxjfRKX6sKQNZfAIAgB2TY5aYLXkiHTrsmJgzedCFcB-ihcEoYr_8MwjFKzcRHrrFLl5F-EtuKIkgxHvlVYXZTxNFN3scwYrKVQbN7nYGQqb41aGgK6p184JE_BaBjQGdXpjVe6koxLy5RXLf6AhF08zM6j9OUQfa8ntgZp-9dxO_QFhViWU6oDhgydAo8d8rPksPxFSE4fzMsjy2pvkdZR3UgOnYdxfOk6jT1VXBnsKy9PcIhb3-IXk_XnIWMHBvwYdrja58r8GFRy1POo9rGLzb-U842a6Ad3K1Iui-dKgRTob4uo21IP7dRaMV2_ZqgoqCc8zQr-GX5PBtnLlbpMqKucD2e9kv1LN1qheX88Hw95ri6Dhmc7YgGzp30t3bb6fSzjpuzMweh9WW0nfv7N5crcTEGwR1_0h_EcMlM_URVLuWvrCp2y9waKh1xc6zilEPDvwKbPDO8_UVWpFh4lqw_5Aisk5BLpS1nHVpUKImTGWPijy5F6CHuYgrMHDASYb1-iq4SOxv5JdfU';
 
-    const jobResp = await axios.post('https://api.cloudconvert.com/v2/jobs', {
-      tasks: {
-        'upload-file': { operation: 'import/upload' },
-        'convert-file': { operation: 'convert', input: 'upload-file', output_format: 'pdf' },
-        'export-file': { operation: 'export/url', input: 'convert-file' }
-      }
-    }, { headers: { Authorization: 'Bearer ' + CC_KEY } });
+//     const jobResp = await axios.post('https://api.cloudconvert.com/v2/jobs', {
+//       tasks: {
+//         'upload-file': { operation: 'import/upload' },
+//         'convert-file': { operation: 'convert', input: 'upload-file', output_format: 'pdf' },
+//         'export-file': { operation: 'export/url', input: 'convert-file' }
+//       }
+//     }, { headers: { Authorization: 'Bearer ' + CC_KEY } });
 
-    const job = jobResp.data.data;
-    const uploadTask = job.tasks.find(t => t.name === 'upload-file');
+//     const job = jobResp.data.data;
+//     const uploadTask = job.tasks.find(t => t.name === 'upload-file');
 
-    const form = new FormData();
-    Object.entries(uploadTask.result.form.parameters).forEach(([k,v]) => form.append(k, v));
-    form.append('file', docxBuf, { filename: 'arayish.docx', contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-    await axios.post(uploadTask.result.form.url, form, { headers: form.getHeaders() });
+//     const form = new FormData();
+//     Object.entries(uploadTask.result.form.parameters).forEach(([k,v]) => form.append(k, v));
+//     form.append('file', docxBuf, { filename: 'arayish.docx', contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+//     await axios.post(uploadTask.result.form.url, form, { headers: form.getHeaders() });
 
-    let pdfUrl = null;
-    for (let i = 0; i < 30; i++) {
-      await new Promise(r => setTimeout(r, 1000));
-      const statusResp = await axios.get('https://api.cloudconvert.com/v2/jobs/' + job.id, {
-        headers: { Authorization: 'Bearer ' + CC_KEY }
-      });
-      const exportTask = statusResp.data.data.tasks.find(t => t.name === 'export-file');
-      if (exportTask && exportTask.status === 'finished') {
-        pdfUrl = exportTask.result.files[0].url;
-        break;
-      }
-      if (statusResp.data.data.status === 'error') throw new Error('CloudConvert xetasi');
-    }
+//     let pdfUrl = null;
+//     for (let i = 0; i < 30; i++) {
+//       await new Promise(r => setTimeout(r, 1000));
+//       const statusResp = await axios.get('https://api.cloudconvert.com/v2/jobs/' + job.id, {
+//         headers: { Authorization: 'Bearer ' + CC_KEY }
+//       });
+//       const exportTask = statusResp.data.data.tasks.find(t => t.name === 'export-file');
+//       if (exportTask && exportTask.status === 'finished') {
+//         pdfUrl = exportTask.result.files[0].url;
+//         break;
+//       }
+//       if (statusResp.data.data.status === 'error') throw new Error('CloudConvert xetasi');
+//     }
 
-    if (!pdfUrl) throw new Error('PDF hazirlanmadi');
+//     if (!pdfUrl) throw new Error('PDF hazirlanmadi');
 
-    const pdfResp = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename="arayish_' + (fin||'namelum') + '.pdf"');
-    res.send(Buffer.from(pdfResp.data));
+//     const pdfResp = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
+//     res.setHeader('Content-Type', 'application/pdf');
+//     res.setHeader('Content-Disposition', 'attachment; filename="arayish_' + (fin||'namelum') + '.pdf"');
+//     res.send(Buffer.from(pdfResp.data));
 
-  } catch (error) {
-    console.error('ARAYISH PDF ERROR:', error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
+//   } catch (error) {
+//     console.error('ARAYISH PDF ERROR:', error.message);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 app.listen(PORT, () => {
   console.log(`Rəfiq server işləyir: http://localhost:${PORT}`);
