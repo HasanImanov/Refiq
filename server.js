@@ -260,28 +260,25 @@ const PORT = process.env.PORT || 3000;
 app.post('/api/arayish-word', async (req, res) => {
   try {
     const { metn, tarixMetn, bitme, yerMetn, fin } = req.body;
-    const PizZip = require('pizzip');
-    const Docxtemplater = require('docxtemplater');
+    const AdmZip = require('adm-zip');
 
     const templatePath = path.join(__dirname, 'arayish_sablon.docx');
-    const templateContent = fs.readFileSync(templatePath, 'binary');
-    const zip = new PizZip(templateContent);
+    const zip = new AdmZip(templatePath);
 
-    const doc = new Docxtemplater(zip, {
-      paragraphLoop: true,
-      linebreaks: true,
-      nullGetter: () => '',
-      delimiters: { start: '{', end: '}' }
-    });
+    // XML-i oxu və placeholder-ları əvəz et
+    let xml = zip.readAsText('word/document.xml');
 
-    doc.render({
-      METN: metn || '',
-      TARIX_METN: tarixMetn || '',
-      BITME: bitme || 'müddətsiz',
-      YER_METN: yerMetn || '',
-    });
+    function escapeXml(str) {
+      return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
 
-    const buf = doc.getZip().generate({ type: 'nodebuffer' });
+    xml = xml.replace(/\{METN\}/g, escapeXml(metn||''));
+    xml = xml.replace(/\{TARIX_METN\}/g, escapeXml(tarixMetn||''));
+    xml = xml.replace(/\{BITME\}/g, escapeXml(bitme||'müddətsiz'));
+    xml = xml.replace(/\{YER_METN\}/g, escapeXml(yerMetn||''));
+
+    zip.updateFile('word/document.xml', Buffer.from(xml, 'utf-8'));
+    const buf = zip.toBuffer();
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     res.setHeader('Content-Disposition', `attachment; filename="arayish_${fin||'namelum'}.docx"`);
