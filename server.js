@@ -267,7 +267,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '*{box-sizing:border-box;margin:0;padding:0;}'
       + 'body{font-family:Arial,sans-serif;font-size:12pt;color:#000;}'
       + '.gerb{text-align:center;margin-bottom:3mm;}'
-      + '.gerb img{width:35mm;height:auto;}'
+      + '.gerb img{width:50mm;height:auto;}'
       + '.bashliq{text-align:center;font-size:14pt;font-weight:bold;line-height:1.2;}'
       + '.xett{border:none;border-top:1.5px solid #000;margin:2mm 0 1mm 0;}'
       + '.unvan{font-size:9pt;line-height:1.4;display:flex;justify-content:space-between;margin:0.5mm 0;}'
