@@ -436,7 +436,7 @@
       var lb=Uint8Array.from(atob(LOGO),function(c){return c.charCodeAt(0);});
       // Gerb
       ch.push(new P({alignment:A.CENTER,spacing:{before:0,after:0,line:240},indent:{left:-1418,right:-656},
-        children:[new I({data:lb,transformation:{width:118,height:129},type:'jpg'})]}));
+        children:[new I({data:lb,transformation:{width:150,height:164},type:'jpg'})]}));
       ch.push(ep0());
       // Qurum adları
       ['AZƏRBAYCAN RESPUBLİKASININ','ƏMƏK VƏ ƏHALİNİN SOSİAL MÜDAFİƏSİ NAZİRLİYİNİN TABELİYİNDƏ','DAYANIQLI VƏ OPERATİV SOSİAL TƏMİNAT AGENTLİYİ','3 SAYLI BAKI DOST MƏRKƏZİ'].forEach(function(x){
@@ -461,36 +461,31 @@ ch.push(new P({alignment:A.BOTH, spacing:{before:0,after:40,line:240,lineRule:'a
 // Aşağı xətt
 ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{left:-992,right:-233},
   children:[new T({text:'________________________________________________________________________________',font:'Arial',size:24})]}));
-      // 5 boş sətir
-      for(var i=0;i<5;i++)ch.push(ep());
+      for(var i=0;i<3;i++)ch.push(ep());
     } else {
       // Word - 20 boş sətir
       for(var i=0;i<20;i++)ch.push(ep());
     }
 
     // ARAYIŞ
-    ch.push(new P({alignment:A.CENTER,spacing:{after:0,line:240},
-      children:[new T({text:'ARAYIŞ',font:'Arial',size:22,bold:true})]}));
-    ch.push(ep());
+    ch.push(new P({alignment:A.CENTER,spacing:{before:0,after:120,line:240},
+      children:[new T({text:'ARAYIŞ',font:'Arial',size:24,bold:true})]}));
     // Əsas mətn - firstLine indent
-    ch.push(new P({alignment:A.BOTH,spacing:{line:240},indent:{firstLine:708},
+    ch.push(new P({alignment:A.BOTH,spacing:{before:0,after:0,line:220},indent:{firstLine:708},
       children:[new T({text:d.metn,font:'Arial',size:22})]}));
-    ch.push(ep());
     // Hüququn yaranma tarixi
     if(d.tarixMetn){
-      ch.push(new P({spacing:{after:0,line:240},indent:{firstLine:708},
+      ch.push(new P({spacing:{before:120,after:0,line:220},indent:{firstLine:708},
         children:[new T({text:d.tarixMetn,font:'Arial',size:22})]}));
-      ch.push(ep());
     }
     // Bitmə tarixi
     ch.push(new P({spacing:{after:0,line:240},indent:{firstLine:708},
       children:[new T({text:'T\u0259yinat\u0131n bitm\u0259 tarixi: '+d.bitme+'.',font:'Arial',size:24})]}));
     ch.push(ep());
     // Tələb olunan yer
-    ch.push(new P({spacing:{after:0,line:240},indent:{firstLine:708},
+    ch.push(new P({spacing:{before:120,after:0,line:220},indent:{firstLine:708},
       children:[new T({text:d.yerMetn,font:'Arial',size:22})]}));
-    // 3 boş sətir
-    ch.push(ep());ch.push(ep());ch.push(ep());
+    ch.push(ep());ch.push(ep());
     // İmza - indent YOX, tam sol-sağ kənarlara
     ch.push(new P({
       spacing:{after:0,line:240},
