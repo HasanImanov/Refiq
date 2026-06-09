@@ -718,7 +718,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     function pr2(text,opts){
       opts=opts||{};
       return new docx.Paragraph({
-        spacing:{before:0,after:0,line:276,lineRule:'auto'},
+        spacing:{before:0,after:opts.indentLeft?120:0,line:276,lineRule:'auto'},
         alignment:opts.center?docx.AlignmentType.CENTER:opts.justify?docx.AlignmentType.JUSTIFIED:docx.AlignmentType.LEFT,
         indent:opts.indentLeft?{left:INDENT}:opts.indent?{firstLine:720}:undefined,
         children:[new docx.TextRun({text:text,font:'Arial',size:24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}})]
