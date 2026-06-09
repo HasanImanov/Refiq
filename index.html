@@ -480,7 +480,7 @@
   // Normal boş sətir
   function ep(){return new docx.Paragraph({spacing:{after:0,line:240},children:[new docx.TextRun('')]});}
 
-  function buildChildren(d,withHeader){
+  async function buildChildren(d,withHeader){
     var P=docx.Paragraph,T=docx.TextRun,A=docx.AlignmentType,I=docx.ImageRun,TS=docx.TabStopType;
     var ch=[];
 
@@ -557,7 +557,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
  async function hazirla(tip, format) {
   var d = getData(tip);
   var pp = {size:{width:11906,height:16838}, margin:{top:709,right:656,bottom:2269,left:1418}};
-  var ch = buildChildren(d, false);
+  var ch = await buildChildren(d, false);
   // ── 2-ci səhifə (yalnız Word üçün) ──
   // A4: 16838 twip. Üst marja: 709, Alt marja: 2269
   // İstifadə sahəsi: 13860 twip. Bir sətir ~240 twip.
