@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: refiq
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: ANTHROPIC_API_KEY
+        sync: false
