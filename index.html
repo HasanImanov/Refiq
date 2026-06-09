@@ -472,11 +472,11 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
       children:[new T({text:'ARAYIŞ',font:'Arial',size:24,bold:true})]}));
     // Əsas mətn - firstLine indent
     ch.push(new P({alignment:A.BOTH,spacing:{before:0,after:0,line:220},indent:{firstLine:708},
-      children:[new T({text:d.metn,font:'Arial',size:22})]}));
+      children:[new T({text:d.metn,font:'Arial',size:24})]}));
     // Hüququn yaranma tarixi
     if(d.tarixMetn){
       ch.push(new P({spacing:{before:120,after:0,line:220},indent:{firstLine:708},
-        children:[new T({text:d.tarixMetn,font:'Arial',size:22})]}));
+        children:[new T({text:d.tarixMetn,font:'Arial',size:24})]}));
     }
     // Bitmə tarixi
     ch.push(new P({spacing:{after:0,line:240},indent:{firstLine:708},
@@ -484,16 +484,16 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     ch.push(ep());
     // Tələb olunan yer
     ch.push(new P({spacing:{before:120,after:0,line:220},indent:{firstLine:708},
-      children:[new T({text:d.yerMetn,font:'Arial',size:22})]}));
+      children:[new T({text:d.yerMetn,font:'Arial',size:24})]}));
     ch.push(ep());ch.push(ep());
     // İmza - indent YOX, tam sol-sağ kənarlara
     ch.push(new P({
       spacing:{after:0,line:240},
-      indent:{left:708},
-      tabStops:[{type:docx.TabStopType.RIGHT,position:9832}],
+      indent:{left:2140},
+      tabStops:[{type:docx.TabStopType.RIGHT,position:9354}],
       children:[
-        new T({text:d.vezife,font:'Arial',size:22,bold:true}),
-        new T({text:'\t'+d.imza,font:'Arial',size:22,bold:true})
+        new T({text:d.vezife,font:'Arial',size:24,bold:true}),
+        new T({text:'\t'+d.imza,font:'Arial',size:24,bold:true})
       ]
     }));
     return ch;
