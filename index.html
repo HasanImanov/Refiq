@@ -436,7 +436,7 @@
       var lb=Uint8Array.from(atob(LOGO),function(c){return c.charCodeAt(0);});
       // Gerb
       ch.push(new P({alignment:A.CENTER,spacing:{before:0,after:0,line:240},indent:{left:-1418,right:-656},
-        children:[new I({data:lb,transformation:{width:180,height:197},type:'jpg'})]}));
+        children:[new I({data:lb,transformation:{width:220,height:240},type:'jpg'})]}));
       ch.push(ep0());
       // Qurum adları
       ['AZƏRBAYCAN RESPUBLİKASININ','ƏMƏK VƏ ƏHALİNİN SOSİAL MÜDAFİƏSİ NAZİRLİYİNİN TABELİYİNDƏ','DAYANIQLI VƏ OPERATİV SOSİAL TƏMİNAT AGENTLİYİ','3 SAYLI BAKI DOST MƏRKƏZİ'].forEach(function(x){
@@ -454,7 +454,7 @@ ch.push(new P({alignment:A.BOTH, spacing:{before:40,after:0,line:240}, indent:{l
   children:[new T({text:'AZ 1029, Bakı şəhəri, Nizami rayonu,',font:'Arial',size:18}),new T({text:'	Tel: (+99412) 142',font:'Arial',size:18})]}));
 
 // Ünvan ikinci sətir
-ch.push(new P({alignment:A.BOTH, spacing:{before:0,after:40,line:200}, indent:{left:-1100,right:-700},
+ch.push(new P({alignment:A.BOTH, spacing:{before:0,after:40,line:200}, indent:{left:-1418,right:-656},
   tabStops:[{type:docx.TabStopType.RIGHT,position:9354}],
   children:[new T({text:'Keşlə ŞTQ Heydər ƌliyev prospekti, ev 183B',font:'Arial',size:18}),new T({text:'	e-poçt: dost_info@sosial.gov.az',font:'Arial',size:18})]}));
 
@@ -468,7 +468,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     }
 
     // ARAYIŞ
-    ch.push(new P({alignment:A.CENTER,spacing:{before:0,after:120,line:240},
+    ch.push(new P({alignment:A.CENTER,spacing:{before:0,after:200,line:240},
       children:[new T({text:'ARAYIŞ',font:'Arial',size:24,bold:true})]}));
     // Əsas mətn - firstLine indent
     ch.push(new P({alignment:A.BOTH,spacing:{before:0,after:0,line:220},indent:{firstLine:708},
