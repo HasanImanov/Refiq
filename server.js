@@ -290,6 +290,79 @@ app.post('/api/arayish-word', async (req, res) => {
   }
 });
 
+
+// ----------------------------
+// ARAYIŞ PDF - Word şablondan
+// ----------------------------
+app.post('/api/arayish-pdf', async (req, res) => {
+  let browser;
+  try {
+    const { metn, tarixMetn, bitme, yerMetn, fin } = req.body;
+    const AdmZip = require('adm-zip');
+    const mammoth = require('mammoth');
+
+    const templatePath = path.join(__dirname, 'arayish_sablon.docx');
+    const zip = new AdmZip(templatePath);
+
+    function escapeXml(str) {
+      return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    let xml = zip.readAsText('word/document.xml');
+    xml = xml.replace(/\{METN\}/g, escapeXml(metn||''));
+    xml = xml.replace(/\{TARIX_METN\}/g, escapeXml(tarixMetn||''));
+    xml = xml.replace(/\{BITME\}/g, escapeXml(bitme||'müddətsiz'));
+    xml = xml.replace(/\{YER_METN\}/g, escapeXml(yerMetn||''));
+    zip.updateFile('word/document.xml', Buffer.from(xml, 'utf-8'));
+    const docxBuf = zip.toBuffer();
+
+    // docx → HTML
+    const fontRegular = fs.readFileSync(path.join(__dirname, 'fonts', 'LiberationSans-Regular.ttf')).toString('base64');
+    const fontBold = fs.readFileSync(path.join(__dirname, 'fonts', 'LiberationSans-Bold.ttf')).toString('base64');
+
+    const result = await mammoth.convertToHtml({ buffer: docxBuf });
+    const bodyHtml = result.value;
+
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+@font-face{font-family:'Arial';font-weight:normal;src:url('data:font/ttf;base64,${fontRegular}')format('truetype')}
+@font-face{font-family:'Arial';font-weight:bold;src:url('data:font/ttf;base64,${fontBold}')format('truetype')}
+@page{size:A4;margin:12.51mm 11.57mm 40.02mm 25.01mm;}
+body{font-family:'Arial',sans-serif;font-size:12pt;color:#000;}
+p{margin:0;padding:0;}
+</style></head><body>${bodyHtml}</body></html>`;
+
+    // HTML → PDF
+    const chromium = await import('@sparticuz/chromium').then(m => m.default || m);
+    const puppeteer = await import('puppeteer-core').then(m => m.default || m);
+
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: { width: 1240, height: 1754, deviceScaleFactor: 2 },
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+    });
+
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'domcontentloaded' });
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: { top: '0mm', bottom: '0mm', left: '0mm', right: '0mm' }
+    });
+    await browser.close();
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="arayish_${fin||'namelum'}.pdf"`);
+    res.send(pdfBuffer);
+
+  } catch (error) {
+    console.error('ARAYISH PDF ERROR:', error);
+    if (browser) await browser.close();
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Rəfiq server işləyir: http://localhost:${PORT}`);
 });
