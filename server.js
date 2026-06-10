@@ -281,8 +281,13 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '<span class="bosh">&nbsp;</span>'
       + '<p class="arayish">ARAYIŞ</p>'
       + '<p class="metn indent">'+esc(metn||'')+'</p>'
+      + '<span class="bosh">&nbsp;</span>'
       + tarixHisse
+      + '<span class="bosh">&nbsp;</span>'
       + bitmeHisse
+      + '<span class="bosh">&nbsp;</span>'
+      + '<span class="bosh">&nbsp;</span>'
+      + '<span class="bosh">&nbsp;</span>'
       + '<p class="metn indent">'+esc(yerMetn||'')+'</p>'
       + '<div class="imza"><span>Direktor müavini</span><span>Şamil Əliyev</span></div>'
       + '</body></html>';
