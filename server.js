@@ -266,7 +266,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '@page{size:A4;margin:0;}'
       + '*{box-sizing:border-box;margin:0;padding:0;}'
       + 'body{font-family:Arial,sans-serif;font-size:12pt;color:#000;padding:12.5mm 11.6mm 40mm 25mm;}'
-      + '.header-img{width:100%;display:block;margin-bottom:0;}'
+      + '.header-img{width:calc(100% + 25mm + 11.6mm);margin-left:-25mm;display:block;margin-bottom:0;}'
       + '.bosh{display:block;line-height:0.8;}'
       + '.arayish{text-align:center;font-size:12pt;font-weight:bold;margin:4mm 0 3mm 0;}'
       + '.metn{font-size:12pt;text-align:justify;line-height:1.3;margin-bottom:0;}'
@@ -281,7 +281,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + tarixHisse
       + bitmeHisse
       + '<p class="metn indent">'+esc(yerMetn||'')+'</p>'
-      + '<div class="imza"><span>Direktor müavini</span><span>Şamil ƌliyev</span></div>'
+      + '<div class="imza"><span>Direktor müavini</span><span>Şamil Əliyev</span></div>'
       + '</body></html>';
 
     const chromium = await import('@sparticuz/chromium').then(m => m.default || m);
