@@ -289,7 +289,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
 
     browser = await puppeteer.launch({
       args: chromium.args,
-      defaultViewport: { width: 1240, height: 1754, deviceScaleFactor: 2 },
+      defaultViewport: { width: 794, height: 1123, deviceScaleFactor: 1 },
       executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
