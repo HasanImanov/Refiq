@@ -350,6 +350,10 @@
     var cb = document.getElementById(prefix+'-etibar');
     var box = document.getElementById(prefix+'-etibar-box');
     box.style.display = cb.checked ? 'block' : 'none';
+    if(cb.checked){
+      var adInput = document.getElementById(prefix+'-etibar-ad');
+      if(adInput && !adInput.value) adInput.value = 'Qasımova Yasəmən Şakir qızı';
+    }
   }
 
   function selectErize(cat){
