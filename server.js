@@ -211,7 +211,7 @@ const PORT = process.env.PORT || 3000;
 // ----------------------------
 app.post('/api/arayish-word', async (req, res) => {
   try {
-    const { metn, tarixMetn, bitme, yerMetn, fin } = req.body;
+    const { metn, tarixMetn, bitme, yerMetn, fin, qebulAd } = req.body;
     const AdmZip = require('adm-zip');
 
     const templatePath = path.join(__dirname, 'arayish_sablon.docx');
@@ -249,7 +249,7 @@ app.post('/api/arayish-word', async (req, res) => {
 app.post('/api/arayish-pdf', async (req, res) => {
   let browser;
   try {
-    const { metn, tarixMetn, bitme, yerMetn, fin } = req.body;
+    const { metn, tarixMetn, bitme, yerMetn, fin, qebulAd } = req.body;
 
     const fontRegular = fs.readFileSync(path.join(__dirname, 'fonts', 'LiberationSans-Regular.ttf')).toString('base64');
     const fontBold = fs.readFileSync(path.join(__dirname, 'fonts', 'LiberationSans-Bold.ttf')).toString('base64');
