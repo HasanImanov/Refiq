@@ -258,7 +258,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
     function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
     const tarixHisse = tarixMetn ? '<p class="metn indent">'+esc(tarixMetn)+'</p>' : '';
-    const bitmeHisse = bitme ? '<p class="metn indent">Toyinatın bitmə tarixi: '+esc(bitme)+'.</p>' : '';
+    const bitmeHisse = bitme ? '<p class="metn indent">Təyinatın bitmə tarixi: '+esc(bitme)+'.</p>' : '';
 
     const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>'
       + '@font-face{font-family:Arial;font-weight:normal;src:url("data:font/ttf;base64,'+fontRegular+'")format("truetype")}'
@@ -266,8 +266,8 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '@page{size:A4;margin:0;}'
       + '*{box-sizing:border-box;margin:0;padding:0;}'
       + 'body{font-family:Arial,sans-serif;font-size:12pt;color:#000;padding:12.5mm 11.6mm 40mm 25mm;}'
-      + '.header-img{width:100%;display:block;margin-bottom:2mm;}'
-      + '.bosh{display:block;line-height:1.5;}'
+      + '.header-img{width:100%;display:block;margin-bottom:0;}'
+      + '.bosh{display:block;line-height:0.8;}'
       + '.arayish{text-align:center;font-size:12pt;font-weight:bold;margin:4mm 0 3mm 0;}'
       + '.metn{font-size:12pt;text-align:justify;line-height:1.3;margin-bottom:0;}'
       + '.indent{text-indent:12.5mm;}'
