@@ -472,6 +472,12 @@
     document.getElementById('empty-state').style.display='none';
     document.getElementById('form-'+cat).classList.add('active');
   }
+  function today(){
+    var d=new Date();
+    return d.getDate().toString().padStart(2,'0')+'.'+
+           (d.getMonth()+1).toString().padStart(2,'0')+'.'+
+           d.getFullYear();
+  }
   function ilShekilchi(tarix){
     var son=tarix.trim().slice(-1);
     var map={'1':'ci','2':'ci','3':'cü','4':'cü','5':'ci','6':'ci','7':'ci','8':'ci','9':'cu','0':'cu'};
