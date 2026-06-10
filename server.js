@@ -268,7 +268,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + 'body{font-family:Arial,sans-serif;font-size:12pt;color:#000;padding:12.5mm 11.6mm 40mm 25mm;}'
       + '.header-img{width:calc(100% + 25mm + 11.6mm);margin-left:-25mm;margin-top:-12.5mm;display:block;margin-bottom:0;}'
       + '.bosh{display:block;line-height:0.8;}'
-      + '.arayish{text-align:center;font-size:12pt;font-weight:bold;margin:4mm 0 3mm 0;}'
+      + '.arayish{text-align:center;font-size:12pt;font-weight:bold;margin:14.4mm 0 3mm 0;}'
       + '.metn{font-size:12pt;text-align:justify;line-height:1.3;margin-bottom:0;}'
       + '.indent{text-indent:12.5mm;}'
       + '.xett{border:none;border-top:1px solid #000;position:relative;left:-14.1mm;width:188mm;margin-bottom:2mm;}'
