@@ -386,11 +386,30 @@
     }
     var pp={size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1418}};
     var rows=[];
-    rows.push(ep2());
-    rows.push(pr2('Azərbaycan Respublikasının Əmək və',{indentLeft:true}));
-    rows.push(pr2('Əhalinin Sosial Müdafiəsi Nazirliyinin',{indentLeft:true}));
-    rows.push(pr2('tabeliyində Dövlət Sosial Müdafiə',{indentLeft:true}));
-    rows.push(pr2('Fondunun '+unvanSec,{indentLeft:true}));
+    // Başlıq: sol - 3 saylı Bakı DOST Mərkəzi, sağ - filial adı
+    rows.push(new docx.Paragraph({
+      spacing:{before:0,after:0,line:276,lineRule:'auto'},
+      children:[
+        new docx.TextRun({text:'3 saylı Bakı DOST Mərkəzi',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+        new docx.TextRun({text:'\t'+'Azərbaycan Respublikasının Əmək və',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+      ],
+      tabStops:[{type:docx.TabStopType.LEFT,position:INDENT}]
+    }));
+    rows.push(new docx.Paragraph({
+      spacing:{before:0,after:0,line:276,lineRule:'auto'},
+      indent:{left:INDENT},
+      children:[new docx.TextRun({text:'Əhalinin Sosial Müdafiəsi Nazirliyinin',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]
+    }));
+    rows.push(new docx.Paragraph({
+      spacing:{before:0,after:0,line:276,lineRule:'auto'},
+      indent:{left:INDENT},
+      children:[new docx.TextRun({text:'tabeliyində Dövlət Sosial Müdafiə',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]
+    }));
+    rows.push(new docx.Paragraph({
+      spacing:{before:0,after:0,line:276,lineRule:'auto'},
+      indent:{left:INDENT},
+      children:[new docx.TextRun({text:'Fondunun '+unvanSec,font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]
+    }));
     rows.push(new docx.Paragraph({spacing:{before:0,after:400,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'',font:'Arial',size:24})]}));
     rows.push(pr2(unvanTam+' ünvanında yaşayan',{indentLeft:true}));
     rows.push(pr2(fullAd+' tərəfindən',{indentLeft:true}));
