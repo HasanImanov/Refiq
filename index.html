@@ -637,7 +637,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   var etibarChecked = etibarCb && etibarCb.checked;
   var etibarAdVal = etibarChecked && etibarInput ? etibarInput.value.trim() : '';
   var qebulAd = etibarChecked && etibarAdVal
-    ? '(səlahiyyətli nümayəndə) ' + etibarAdVal
+    ? etibarAdVal + ' (səlahiyyətli nümayəndə)'
     : d.fullAd;
   var ch2 = [];
   for(var i=0;i<55;i++) ch2.push(ep0());
