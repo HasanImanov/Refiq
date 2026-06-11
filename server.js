@@ -257,7 +257,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
 
     function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-    const huquqHisse = tarixMetn ? '<p class="metn indent" style="margin-top:0;margin-bottom:0;">Hüququn yaranma tarixi: '+esc(tarixMetn)+'</p>' : '';
+    const huquqHisse = tarixMetn ? '<p class="metn indent" style="margin-top:0;margin-bottom:0;">'+esc(tarixMetn)+'</p>' : '';
     const bitmeHisse = bitme ? '<p class="metn indent" style="margin-top:0;margin-bottom:0;">Təyinatın bitmə tarixi: '+esc(bitme)+'.</p>' : '';
 
     const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>'
