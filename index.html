@@ -390,7 +390,7 @@
     rows.push(new docx.Paragraph({
       spacing:{before:0,after:0,line:276,lineRule:'auto'},
       children:[
-        new docx.TextRun({text:'3 saylı Bakı DOST Mərkəzi',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+        new docx.TextRun({text:'',font:'Arial',size:24}),
         new docx.TextRun({text:'\t'+'Azərbaycan Respublikasının Əmək və',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
       ],
       tabStops:[{type:docx.TabStopType.LEFT,position:INDENT}]
@@ -410,7 +410,7 @@
       indent:{left:INDENT},
       children:[new docx.TextRun({text:'Fondunun '+unvanSec,font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]
     }));
-    rows.push(new docx.Paragraph({spacing:{before:0,after:400,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'',font:'Arial',size:24})]}));
+    rows.push(new docx.Paragraph({spacing:{before:0,after:120,line:276,lineRule:'auto'},children:[new docx.TextRun({text:'',font:'Arial',size:24})]}));
     rows.push(pr2(unvanTam+' ünvanında yaşayan',{indentLeft:true}));
     rows.push(pr2(fullAd+' tərəfindən',{indentLeft:true}));
     rows.push(ep2());rows.push(ep2());rows.push(ep2());rows.push(ep2());rows.push(ep2());
