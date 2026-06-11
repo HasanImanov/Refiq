@@ -257,8 +257,8 @@ app.post('/api/arayish-pdf', async (req, res) => {
 
     function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-    const tarixHisse = tarixMetn ? '<p class="metn indent">'+esc(tarixMetn)+'</p>' : '';
-    const bitmeHisse = bitme ? '<p class="metn indent">Təyinatın bitmə tarixi: '+esc(bitme)+'.</p>' : '';
+    const huquqHisse = tarixMetn ? '<p class="metn indent" style="margin-top:0;margin-bottom:0;">Hüququn yaranma tarixi: '+esc(tarixMetn)+'</p>' : '';
+    const bitmeHisse = bitme ? '<p class="metn indent" style="margin-top:0;margin-bottom:0;">Təyinatın bitmə tarixi: '+esc(bitme)+'.</p>' : '';
 
     const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>'
       + '@font-face{font-family:Arial;font-weight:normal;src:url("data:font/ttf;base64,'+fontRegular+'")format("truetype")}'
@@ -267,28 +267,19 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '*{box-sizing:border-box;margin:0;padding:0;}'
       + 'body{font-family:Arial,sans-serif;font-size:12pt;color:#000;padding:12.5mm 11.6mm 40mm 25mm;}'
       + '.header-img{width:calc(100% + 25mm + 11.6mm);margin-left:-25mm;margin-top:-12.5mm;display:block;margin-bottom:0;}'
-      + '.bosh{display:none;}'
-      + '.arayish{text-align:center;font-size:12pt;font-weight:bold;margin:28.1mm 0 3mm 0;}'
-      + '.metn{font-size:12pt;text-align:justify;line-height:1.3;margin-bottom:0;}'
+      + '.arayish{text-align:center;font-size:12pt;font-weight:bold;margin:28.1mm 0 4.2mm 0;}'
+      + '.metn{font-size:12pt;text-align:justify;line-height:1.3;margin-bottom:0;margin-top:0;}'
       + '.indent{text-indent:12.5mm;}'
       + '.xett{border:none;border-top:1px solid #000;position:relative;left:-14.1mm;width:188mm;margin-top:1mm;margin-bottom:1mm;}'
-      + '.imza{display:flex;justify-content:space-between;font-size:12pt;font-weight:bold;margin-top:10mm;padding-left:12.5mm;}'
+      + '.imza{display:flex;justify-content:space-between;font-size:12pt;font-weight:bold;margin-top:10.6mm;padding-left:12.5mm;}'
       + '</style></head><body>'
       + '<img class="header-img" src="data:image/png;base64,'+GERB+'"/>'
-      + '<span class="bosh">&nbsp;</span>'
-      + '<span class="bosh">&nbsp;</span>'
       + '<div class="xett"></div>'
-      + '<span class="bosh">&nbsp;</span>'
       + '<p class="arayish">ARAYIŞ</p>'
-      + '<p class="metn indent">'+esc(metn||'')+'</p>'
-      + '<span class="bosh">&nbsp;</span>'
-      + tarixHisse
-      + '<span class="bosh">&nbsp;</span>'
+      + '<p class="metn indent" style="margin-bottom:0;">'+esc(metn||'')+'</p>'
+      + huquqHisse
       + bitmeHisse
-      + '<span class="bosh">&nbsp;</span>'
-      + '<span class="bosh">&nbsp;</span>'
-      + '<span class="bosh">&nbsp;</span>'
-      + '<p class="metn indent">'+esc(yerMetn||'')+'</p>'
+      + '<p class="metn indent" style="margin-top:0;margin-bottom:0;">'+esc(yerMetn||'')+'</p>'
       + '<div class="imza"><span>Direktor müavini</span><span>Şamil Əliyev</span></div>'
       + '</body></html>';
 
