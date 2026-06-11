@@ -124,7 +124,7 @@
       <div class="form-group"><label>Ərizəçinin ata adı</label><input type="text" id="df-ata" placeholder="Vaqif qızı" oninput="formatVefatAd(this)"/></div>
       <div class="form-group"><label>Ünvan</label><input type="text" id="df-unvan-tam" placeholder="Bakı şəhəri, Suraxanı rayonu, Abbas Fətullayev küçəsi, ev 1, mənzil 2" onblur="formatUnvan(this)"/></div>
       <div class="form-row">
-        <div class="form-group"><label>Pensiya hesab №</label><input type="text" id="df-hesab" placeholder="064426"/></div>
+        <div class="form-group"><label id="df-hesab-label">Pensiya hesab №</label><input type="text" id="df-hesab" placeholder="064426"/></div>
         <div class="form-group"><label>Telefon nömrəsi</label><input type="text" id="df-tel" placeholder="051 3653394"/></div>
       </div>
       <div class="form-row">
@@ -144,7 +144,7 @@
         <div class="form-group"><label>Vəfat tarixi</label><input type="text" id="df-vefat-tarix" placeholder="22.09.2025" maxlength="10"/></div>
       </div>
       <div class="form-group"><label>Hara ünvanlanır</label>
-        <select id="df-unvan">
+        <select id="df-unvan" onchange="dfUnvanDeyish()">
           <option value="Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına">Xüsusi Şərtlərə Təyinat üzrə Mərkəzi Filialına</option>
           <option value="Maliyyə və Mühasibatlıq üzrə Mərkəzi Filialına">Maliyyə və Mühasibatlıq üzrə Mərkəzi Filialına</option>
           <option value="Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına">Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına</option>
@@ -481,6 +481,13 @@
     return d.getDate().toString().padStart(2,'0')+'.'+
            (d.getMonth()+1).toString().padStart(2,'0')+'.'+
            d.getFullYear();
+  }
+  function dfUnvanDeyish(){
+    var unvan = document.getElementById('df-unvan').value;
+    var label = document.getElementById('df-hesab-label');
+    if(label){
+      label.textContent = unvan === 'Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına' ? 'Hesab nömrəsi' : 'Pensiya hesab №';
+    }
   }
   function ilShekilchi(tarix){
     var son=tarix.trim().slice(-1);
