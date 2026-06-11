@@ -271,12 +271,12 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '.metn{font-size:12pt;text-align:justify;line-height:1.3;margin-bottom:0;margin-top:0;}'
       + '.indent{text-indent:12.5mm;}'
       + '.xett{border:none;border-top:1px solid #000;position:relative;left:-14.1mm;width:188mm;margin-top:1mm;margin-bottom:1mm;}'
-      + '.imza{display:flex;justify-content:space-between;font-size:12pt;font-weight:bold;margin-top:10.6mm;padding-left:12.5mm;}'
+      + '.imza{display:flex;justify-content:space-between;font-size:12pt;font-weight:bold;margin-top:12.7mm;padding-left:12.5mm;}'
       + '</style></head><body>'
       + '<img class="header-img" src="data:image/png;base64,'+GERB+'"/>'
       + '<div class="xett"></div>'
       + '<p class="arayish">ARAYIŞ</p>'
-      + '<p class="metn indent" style="margin-bottom:0;">'+esc(metn||'')+'</p>'
+      + '<p class="metn indent" style="margin-bottom:4.2mm;">'+esc(metn||'')+'</p>'
       + huquqHisse
       + bitmeHisse
       + '<p class="metn indent" style="margin-top:4.2mm;margin-bottom:0;">'+esc(yerMetn||'')+'</p>'
