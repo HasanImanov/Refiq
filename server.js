@@ -272,6 +272,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '.indent{text-indent:12.5mm;}'
       + '.xett{border:none;border-top:1px solid #000;position:relative;left:-14.1mm;width:188mm;margin-top:1mm;margin-bottom:1mm;}'
       + '.imza{display:flex;justify-content:space-between;font-size:12pt;font-weight:bold;margin-top:16.5mm;padding-left:12.5mm;}'
+      + '.qebul{font-size:12pt;margin-top:4mm;padding-left:12.5mm;}'
       + '</style></head><body>'
       + '<img class="header-img" src="data:image/png;base64,'+GERB+'"/>'
       + '<div class="xett"></div>'
@@ -281,6 +282,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + bitmeHisse
       + '<p class="metn indent" style="margin-top:4.2mm;margin-bottom:0;">'+esc(yerMetn||'')+'</p>'
       + '<div class="imza"><span>Direktor müavini</span><span>Şamil Əliyev</span></div>'
+      + (qebulAd ? '<div class="qebul"><span>Qəbul etdim: ________________ '+esc(qebulAd)+'</span></div>' : '')
       + '</body></html>';
 
     const chromium = await import('@sparticuz/chromium').then(m => m.default || m);
