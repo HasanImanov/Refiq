@@ -141,7 +141,7 @@
           </select>
         </div>
         <div class="form-group"><label>Vəfat edənin adı soyadı ata adı</label><input type="text" id="df-vefat-ad" oninput="this.value=this.value.replace(/[0-9]/g,'')" placeholder="Ağayev Vaqif Yaqub oğlu" oninput="formatVefatAd(this)"/></div>
-        <div class="form-group"><label>Vəfat tarixi</label><input type="text" id="df-vefat-tarix" placeholder="22.09.2025" maxlength="10" oninput="var v=this.value.replace(/[^0-9]/g,'');if(v.length>=3&&v.length<=4)v=v.slice(0,2)+'.'+v.slice(2);if(v.length>=5)v=v.slice(0,2)+'.'+v.slice(2,4)+'.'+v.slice(4,8);this.value=v;"/></div>
+        <div class="form-group"><label>Vəfat tarixi</label><input type="text" id="df-vefat-tarix" placeholder="22.09.2025" maxlength="10" oninput="var v=this.value.replace(/[^0-9]/g,'');var d=v.slice(0,2),m=v.slice(2,4),y=v.slice(4,8);if(d.length==2&&parseInt(d)>31)d='31';if(d.length==2&&parseInt(d)<1)d='01';if(m.length==2&&parseInt(m)>12)m='12';if(m.length==2&&parseInt(m)<1)m='01';v=d+m+y;if(v.length>=3)v=v.slice(0,2)+'.'+v.slice(2);if(v.length>=6)v=v.slice(0,5)+'.'+v.slice(5,9);this.value=v;"/></div>
       </div>
       <div class="form-group"><label>Hara ünvanlanır</label>
         <select id="df-unvan" onchange="dfUnvanDeyish()">
@@ -179,7 +179,7 @@
         <div class="form-group"><label>Məbləğ (manat)</label><input type="number" id="yg-mebleg" placeholder="220"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Hüququn yaranma tarixi</label><input type="text" id="yg-tarix" placeholder="27.04.2024" maxlength="10" oninput="var v=this.value.replace(/[^0-9]/g,'');if(v.length>=3&&v.length<=4)v=v.slice(0,2)+'.'+v.slice(2);if(v.length>=5)v=v.slice(0,2)+'.'+v.slice(2,4)+'.'+v.slice(4,8);this.value=v;" /></div>
+        <div class="form-group"><label>Hüququn yaranma tarixi</label><input type="text" id="yg-tarix" placeholder="27.04.2024" maxlength="10" oninput="var v=this.value.replace(/[^0-9]/g,'');var d=v.slice(0,2),m=v.slice(2,4),y=v.slice(4,8);if(d.length==2&&parseInt(d)>31)d='31';if(d.length==2&&parseInt(d)<1)d='01';if(m.length==2&&parseInt(m)>12)m='12';if(m.length==2&&parseInt(m)<1)m='01';v=d+m+y;if(v.length>=3)v=v.slice(0,2)+'.'+v.slice(2);if(v.length>=6)v=v.slice(0,5)+'.'+v.slice(5,9);this.value=v;" /></div>
         <div class="form-group"><label>Təyinatın bitmə tarixi</label><input type="text" id="yg-bitme" placeholder="müddətsiz" maxlength="10"/></div>
       </div>
       <div class="form-group"><label>Tələb olunan yer</label><input type="text" id="yg-yer" placeholder="məsələn: tələb olan yerə"/></div>
