@@ -279,7 +279,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + '<p class="metn indent" style="margin-bottom:0;">'+esc(metn||'')+'</p>'
       + huquqHisse
       + bitmeHisse
-      + '<p class="metn indent" style="margin-top:0;margin-bottom:0;">'+esc(yerMetn||'')+'</p>'
+      + '<p class="metn indent" style="margin-top:4.2mm;margin-bottom:0;">'+esc(yerMetn||'')+'</p>'
       + '<div class="imza"><span>Direktor müavini</span><span>Şamil Əliyev</span></div>'
       + '</body></html>';
 
