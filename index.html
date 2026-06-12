@@ -187,6 +187,15 @@
         </select>
       </div>
     </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2;"><label>Ərizə növü</label>
+        <select id="zm-erizenovü">
+          <option value="teyin">Təyin edəsiniz</option>
+          <option value="dayandır">Ödənişini dayandırasınız</option>
+          <option value="berpa">Bərpa edəsiniz</option>
+        </select>
+      </div>
+    </div>
     <div class="form-actions">
       <button class="hazirla-btn" onclick="hazirlaZmuavinat('word')">📄 Word yüklə</button>
     </div>
@@ -484,7 +493,25 @@
     // (sosial ödənişin adı) - CENTER, italic
     rows.push(pr('(sosial ödənişin adı)',{center:true,italic:true}));
 
-    rows.push(pr('təyin edəsiniz / ödənişini dayandırasınız / bərpa edəsiniz.',{}));
+    // Seçilmiş ərizə növünə görə strikethrough
+    var erizeSec = g('zm-erizenovü');
+    var teyin = 'təyin edəsiniz';
+    var dayandır = 'ödənişini dayandırasınız';
+    var berpa = 'bərpa edəsiniz';
+    function stRun(text, strike){
+      return new TextRun({text:text, font:'Arial', size:24, strike:strike, language:{value:'az-Latn-AZ'}});
+    }
+    rows.push(new Paragraph({
+      spacing:sp({}),
+      children:[
+        stRun(teyin, erizeSec!=='teyin'),
+        tr(' / '),
+        stRun(dayandır, erizeSec!=='dayandır'),
+        tr(' / '),
+        stRun(berpa, erizeSec!=='berpa'),
+        tr('.')
+      ]
+    }));
     rows.push(pr('(lazım olmayanların üstündən xətt çəkməli).',{italic:true}));
 
     // Qanunvericiliyə ___ - altdan xəttli
