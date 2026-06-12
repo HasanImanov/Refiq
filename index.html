@@ -414,106 +414,97 @@
     var ay = ['yanvar','fevral','mart','aprel','may','iyun','iyul','avqust','sentyabr','oktyabr','noyabr','dekabr'][today.getMonth()];
     var il = today.getFullYear();
 
-    const { Document, Paragraph, TextRun, AlignmentType, TabStopType } = docx;
-    // Orijinal word ölçüləri
-    // Səhifə: 12240x15840 twips (215.9x279.4mm)
-    // Marginlər: sol=1440 sağ=1440 yuxarı=1275 aşağı=992
-    var SA = 80; // space_after = 4pt = 80 twips
-    var LI_INFO = 3543; // 62.5mm - tel/sv/dog indent
-    var LI_DOST = 6662; // 117.5mm - 3 sayli DOST sag
+    const { Document, Paragraph, TextRun, AlignmentType, TabStopType, UnderlineType, BorderStyle } = docx;
+    var SA = 80;
+    var LI_INFO = 3543;
 
     function sp(opts){ return {before:0,after:(opts&&opts.after!==undefined)?opts.after:SA,line:276,lineRule:'auto'}; }
     function ep(){return new Paragraph({spacing:sp({after:SA}),children:[new TextRun({text:'',font:'Arial',size:24})]});}
-    function pr(text,opts){
+
+    // Altdan xətti olan mətn yaradan funksiya
+    function prU(runs,opts){
       opts=opts||{};
       return new Paragraph({
         spacing:sp(opts),
         alignment:opts.center?AlignmentType.CENTER:opts.justify?AlignmentType.JUSTIFIED:AlignmentType.LEFT,
         indent:opts.li?{left:opts.li}:undefined,
-        children:[new TextRun({text:text,font:'Arial',size:opts.size||24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}})]
+        border:opts.underline?{bottom:{style:BorderStyle.SINGLE,size:6,color:'000000',space:1}}:{},
+        children:runs
       });
+    }
+    function pr(text,opts){
+      opts=opts||{};
+      var run = new TextRun({text:text,font:'Arial',size:24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}});
+      return prU([run],opts);
+    }
+    function tr(text,opts){
+      opts=opts||{};
+      return new TextRun({text:text,font:'Arial',size:24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}});
     }
 
     var rows=[];
 
-    // [0] 3 saylı Bakı DOST Mərkəzi - sağda (li=117.5mm)
-    rows.push(pr('3 saylı Bakı DOST Mərkəzi',{li:LI_DOST}));
+    // 3 saylı Bakı DOST Mərkəzi - CENTER
+    rows.push(pr('3 saylı Bakı DOST Mərkəzi',{center:true}));
 
-    // [1-3] Filial adı - CENTER, BOLD
+    // Filial adı - CENTER, BOLD
     rows.push(pr('Azərbaycan Respublikası Əmək və Əhalinin Sosial Müdafiəsi',{center:true,bold:true}));
     rows.push(pr('Nazirliyinin tabeliyində Dövlət Sosial Müdafiə Fondunun',{center:true,bold:true}));
     rows.push(pr('Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına',{center:true,bold:true}));
 
-    // [4] boş
     rows.push(ep());
 
-    // [5] Ünvan ünvanında yaşayan
-    rows.push(pr(unvan+' ünvanında yaşayan',{}));
+    // ___ ünvanında yaşayan - xətt + mətn, altdan xəttli
+    rows.push(prU([tr(unvan),tr(' ünvanında yaşayan')],{underline:true}));
 
-    // [6] boş
     rows.push(ep());
 
-    // [7] Ad soyad tərəfindən
-    rows.push(pr(fullAd+' tərəfindən',{}));
+    // ___ tərəfindən - altdan xəttli
+    rows.push(prU([tr(fullAd),tr(' tərəfindən')],{underline:true}));
 
-    // [8] (soyadı, adı və atasının adı) - CENTER, italic
+    // (soyadı, adı və atasının adı) - CENTER, italic
     rows.push(pr('(soyadı, adı və atasının adı)',{center:true,italic:true}));
 
-    // [9-10] 2 boş sətir
     rows.push(ep());
     rows.push(ep());
 
-    // [11] ƏRİZƏ - CENTER, BOLD
+    // ƏRİZƏ - CENTER, BOLD
     rows.push(pr('ƏRİZƏ',{center:true,bold:true}));
 
-    // [12-14] Tel, SV, Dog - li=62.5mm
-    rows.push(pr('Ərizəçinin telefon nömrəsi '+tel,{li:LI_INFO}));
-    rows.push(pr('Şəxsiyyət vəsiqəsinin seriyası, nömrəsi '+sv,{li:LI_INFO}));
-    rows.push(pr('Doğulduğu tarix və yer: '+dogTarix+(dogYer?', '+dogYer:''),{li:LI_INFO}));
+    // Tel, SV, Dog - li=62.5mm, altdan xəttli
+    rows.push(prU([tr('Ərizəçinin telefon nömrəsi '),tr(tel)],{li:LI_INFO,underline:true}));
+    rows.push(prU([tr('Şəxsiyyət vəsiqəsinin seriyası, nömrəsi '),tr(sv)],{li:LI_INFO,underline:true}));
+    rows.push(prU([tr('Doğulduğu tarix və yer '),tr(dogTarix+(dogYer?', '+dogYer:''))],{li:LI_INFO,underline:true}));
 
-    // [15] boş
     rows.push(ep());
 
-    // [16] Xahiş edirəm mənə
-    rows.push(pr('Xahiş edirəm mənə',{}));
+    // Xahiş edirəm mənə ___ - altdan xəttli
+    rows.push(prU([tr('Xahiş edirəm mənə'),tr(nov?'  '+nov:'')],{underline:true}));
 
-    // [17] nov adı - CENTER
-    rows.push(pr(nov,{center:true}));
-
-    // [17] (sosial ödənişin adı) - CENTER, italic
+    // (sosial ödənişin adı) - CENTER, italic
     rows.push(pr('(sosial ödənişin adı)',{center:true,italic:true}));
 
-    // [18] təyin edəsiniz...
     rows.push(pr('təyin edəsiniz / ödənişini dayandırasınız / bərpa edəsiniz.',{}));
-
-    // [19] (lazım olmayanların...) - italic
     rows.push(pr('(lazım olmayanların üstündən xətt çəkməli).',{italic:true}));
 
-    // [20] Qanunvericiliyə...
-    rows.push(pr('Qanunvericiliyə əsasən mənə təyin edilmiş',{}));
+    // Qanunvericiliyə ___ - altdan xəttli
+    rows.push(prU([tr('Qanunvericiliyə əsasən mənə təyin edilmiş '),tr(nov)],{underline:true}));
 
-    // nov adı - CENTER
-    rows.push(pr(nov,{center:true}));
+    // (sosial ödənişin adı) - CENTER, italic
+    rows.push(pr('(sosial ödənişin adı)',{center:true,italic:true}));
 
-    // [21] (sosial ödənişin adı) - CENTER, italic
-    rows.push(pr('                                     (sosial ödənişin adı)',{center:true,italic:true}));
-
-    // [22] ödənişinin dayandırılmasına... - justify
     rows.push(pr('ödənişinin dayandırılmasına səbəb olan hal baş verdikdə bu barədə 5 (beş) gün müddətində müvafiq Quruma ("DOST" mərkəzinə) məlumat verməyi öhdəmə götürürəm.',{justify:true}));
 
-    // [23] boş
     rows.push(ep());
 
-    // [24] Ərizəyə aşağıdakı... - italic
     rows.push(pr('Ərizəyə aşağıdakı sənədləri və (və ya) məlumatları əlavə edirəm:',{italic:true}));
-
-    // [25] boş
     rows.push(ep());
 
-    // [26-31] 1-6
     ['1.','2.','3.','4.','5.','6.'].forEach(function(s){rows.push(pr(s,{}));});
 
-    // [32] Tarix + İmza
+    rows.push(ep());
+
+    // Tarix + İmza
     rows.push(new Paragraph({
       spacing:sp({}),
       children:[
