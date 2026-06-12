@@ -463,13 +463,15 @@
 
     rows.push(ep());
 
-    // ___ ünvanında yaşayan - xətt + mətn, altdan xəttli
-    rows.push(prU([tr(unvan),tr(' ünvanında yaşayan')],{underline:true}));
+    // Ünvan - xəttli sətir, altında "ünvanında yaşayan"
+    rows.push(prU([tr(unvan)],{underline:true}));
+    rows.push(pr('ünvanında yaşayan',{}));
 
     rows.push(ep());
 
-    // ___ tərəfindən - altdan xəttli
-    rows.push(prU([tr(fullAd),tr(' tərəfindən')],{underline:true}));
+    // Ad soyad - xəttli sətir, altında "tərəfindən"
+    rows.push(prU([tr(fullAd)],{underline:true}));
+    rows.push(pr('tərəfindən',{}));
 
     // (soyadı, adı və atasının adı) - CENTER, italic
     rows.push(pr('(soyadı, adı və atasının adı)',{center:true,italic:true}));
