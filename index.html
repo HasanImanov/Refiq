@@ -403,6 +403,12 @@
     }
   }
 
+  function ilShekilchi2(il){
+    var son=String(il).slice(-1);
+    var map={'1':'ci','2':'ci','3':'cü','4':'cü','5':'ci','6':'cı','7':'ci','8':'ci','9':'cu','0':'cu'};
+    return map[son]||'ci';
+  }
+
   function selectErize(cat){
     document.querySelectorAll('#tab-erize .arayish-form').forEach(function(f){f.classList.remove('active');});
     document.getElementById('erize-'+cat).classList.add('active');
@@ -453,8 +459,8 @@
 
     var rows=[];
 
-    // 3 saylı Bakı DOST Mərkəzi - CENTER
-    rows.push(pr('3 saylı Bakı DOST Mərkəzi',{center:true}));
+    // 3 saylı Bakı DOST Mərkəzi - CENTER, yuxarıda
+    rows.push(new Paragraph({spacing:{before:560,after:SA,line:276,lineRule:'auto'},alignment:AlignmentType.CENTER,children:[new TextRun({text:'3 saylı Bakı DOST Mərkəzi',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]}));
 
     // Filial adı - CENTER, BOLD
     rows.push(pr('Azərbaycan Respublikası Əmək və Əhalinin Sosial Müdafiəsi',{center:true,bold:true}));
@@ -463,11 +469,13 @@
 
     rows.push(ep());
 
-    // Ünvan - xətt sol, "ünvanında yaşayan" sağda eyni sətirdə
+    // Ünvan - əvvəldə uzun xətt, sonra ünvanında yaşayan sağda
+    var XETT = '_______________________________________________________';
     rows.push(new Paragraph({
       spacing:sp({}),
       children:[
-        new TextRun({text:unvan,font:'Arial',size:24,underline:{type:'single'},language:{value:'az-Latn-AZ'}}),
+        new TextRun({text:XETT+' ',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+        new TextRun({text:unvan,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:'\t',font:'Arial',size:24}),
         new TextRun({text:'ünvanında yaşayan',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
       ],
@@ -476,11 +484,12 @@
 
     rows.push(ep());
 
-    // Ad soyad - xətt sol, "tərəfindən" sağda eyni sətirdə
+    // Ad soyad - əvvəldə uzun xətt, sonra tərəfindən sağda
     rows.push(new Paragraph({
       spacing:sp({}),
       children:[
-        new TextRun({text:fullAd,font:'Arial',size:24,underline:{type:'single'},language:{value:'az-Latn-AZ'}}),
+        new TextRun({text:XETT+' ',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+        new TextRun({text:fullAd,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:'\t',font:'Arial',size:24}),
         new TextRun({text:'tərəfindən',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
       ],
@@ -496,10 +505,22 @@
     // ƏRİZƏ - CENTER, BOLD
     rows.push(pr('ƏRİZƏ',{center:true,bold:true}));
 
-    // Tel, SV, Dog - li=62.5mm, altdan xəttli
-    rows.push(prU([tr('Ərizəçinin telefon nömrəsi '),tr(tel)],{li:LI_INFO,underline:true}));
-    rows.push(prU([tr('Şəxsiyyət vəsiqəsinin seriyası, nömrəsi '),tr(sv)],{li:LI_INFO,underline:true}));
-    rows.push(prU([tr('Doğulduğu tarix və yer '),tr(dogTarix+(dogYer?', '+dogYer:''))],{li:LI_INFO,underline:true}));
+    // Tel, SV, Dog - mətn, sonra dəyər, sonra xətt axıra kimi
+    var XETT2 = '________________________';
+    function prXett(label, val, li){
+      return new Paragraph({
+        spacing:sp({}),
+        indent:li?{left:li}:undefined,
+        children:[
+          new TextRun({text:label,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+          new TextRun({text:val ? val+' ' : '',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+          new TextRun({text:XETT2,font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+        ]
+      });
+    }
+    rows.push(prXett('Ərizəçinin telefon nömrəsi ', tel, LI_INFO));
+    rows.push(prXett('Şəxsiyyət vəsiqəsinin seriyası, nömrəsi ', sv, LI_INFO));
+    rows.push(prXett('Doğulduğu tarix və yer ', dogTarix+(dogYer?', '+dogYer:''), LI_INFO));
 
     rows.push(ep());
 
@@ -551,7 +572,7 @@
     rows.push(new Paragraph({
       spacing:sp({}),
       children:[
-        new TextRun({text:'"'+String(gun).padStart(2,'0')+'" '+ay+' '+il+' il',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+        new TextRun({text:'"'+String(gun).padStart(2,'0')+'" '+ay+' '+il+'-'+ilShekilchi2(il)+' il',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:'\t'+'İmza _____________',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
       ],
       tabStops:[{type:TabStopType.RIGHT,position:9360}]
