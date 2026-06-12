@@ -463,15 +463,29 @@
 
     rows.push(ep());
 
-    // Ünvan - xəttli sətir, altında "ünvanında yaşayan"
-    rows.push(prU([tr(unvan)],{underline:true}));
-    rows.push(pr('ünvanında yaşayan',{}));
+    // Ünvan - xətt sol, "ünvanında yaşayan" sağda eyni sətirdə
+    rows.push(new Paragraph({
+      spacing:sp({}),
+      children:[
+        new TextRun({text:unvan,font:'Arial',size:24,underline:{type:'single'},language:{value:'az-Latn-AZ'}}),
+        new TextRun({text:'\t',font:'Arial',size:24}),
+        new TextRun({text:'ünvanında yaşayan',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+      ],
+      tabStops:[{type:TabStopType.RIGHT,position:9360}]
+    }));
 
     rows.push(ep());
 
-    // Ad soyad - xəttli sətir, altında "tərəfindən"
-    rows.push(prU([tr(fullAd)],{underline:true}));
-    rows.push(pr('tərəfindən',{}));
+    // Ad soyad - xətt sol, "tərəfindən" sağda eyni sətirdə
+    rows.push(new Paragraph({
+      spacing:sp({}),
+      children:[
+        new TextRun({text:fullAd,font:'Arial',size:24,underline:{type:'single'},language:{value:'az-Latn-AZ'}}),
+        new TextRun({text:'\t',font:'Arial',size:24}),
+        new TextRun({text:'tərəfindən',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+      ],
+      tabStops:[{type:TabStopType.RIGHT,position:9360}]
+    }));
 
     // (soyadı, adı və atasının adı) - CENTER, italic
     rows.push(pr('(soyadı, adı və atasının adı)',{center:true,italic:true}));
