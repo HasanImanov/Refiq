@@ -506,14 +506,14 @@
 
     // Tel, SV, Dog - mətn, sonra dəyər, sonra xətt axıra kimi
     var XETT2 = '________________________';
+    // Tel, SV, Dog - mətn + dəyər üstdə, altdan xətt uzanır
     function prXett(label, val, li){
       return new Paragraph({
         spacing:sp({}),
         indent:li?{left:li}:undefined,
         border:{bottom:{style:'single',size:6,color:'000000',space:1}},
         children:[
-          new TextRun({text:label,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
-          new TextRun({text:val || '',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+          new TextRun({text:label+(val||''),font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
         ]
       });
     }
