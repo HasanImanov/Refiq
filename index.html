@@ -154,10 +154,7 @@
         <button class="hazirla-btn" onclick="hazirlaErize('defn','word')">📄 Word yüklə</button>
       </div>
     </div>
-  </div>
-</div>
-
-<div id="tab-erize-zmuavinat" style="display:none;">
+    <div class="arayish-form" id="erize-zmuavinat">
   <div class="arayish-container">
     <div class="form-title">Z.Müavinət ərizəsi</div>
     <div class="form-row">
@@ -191,6 +188,8 @@
     </div>
     <div class="form-actions">
       <button class="hazirla-btn" onclick="hazirlaZmuavinat('word')">📄 Word yüklə</button>
+    </div>
+  </div>
     </div>
   </div>
 </div>
@@ -396,14 +395,7 @@
 
   function selectErize(cat){
     document.querySelectorAll('#tab-erize .arayish-form').forEach(function(f){f.classList.remove('active');});
-    // Yeni formları da gizlət
-    var zm = document.getElementById('tab-erize-zmuavinat');
-    if(zm) zm.style.display='none';
-    if(cat==='zmuavinat'){
-      if(zm) zm.style.display='block';
-    } else {
-      document.getElementById('erize-'+cat).classList.add('active');
-    }
+    document.getElementById('erize-'+cat).classList.add('active');
   }
 
   async function hazirlaZmuavinat(format) {
