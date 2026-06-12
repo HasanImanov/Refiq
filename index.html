@@ -471,12 +471,8 @@
 
     // Ünvan - əvvəl boş xəttli sətir, sonra mətn + sağda label
     rows.push(new Paragraph({
-      spacing:sp({after:0}),
-      border:{bottom:{style:'single',size:6,color:'000000',space:1}},
-      children:[new TextRun({text:'',font:'Arial',size:24})]
-    }));
-    rows.push(new Paragraph({
       spacing:sp({}),
+      border:{top:{style:'single',size:6,color:'000000',space:1}},
       children:[
         new TextRun({text:unvan,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:'\t',font:'Arial',size:24}),
@@ -489,12 +485,8 @@
 
     // Ad soyad - əvvəl boş xəttli sətir, sonra mətn + sağda label
     rows.push(new Paragraph({
-      spacing:sp({after:0}),
-      border:{bottom:{style:'single',size:6,color:'000000',space:1}},
-      children:[new TextRun({text:'',font:'Arial',size:24})]
-    }));
-    rows.push(new Paragraph({
       spacing:sp({}),
+      border:{top:{style:'single',size:6,color:'000000',space:1}},
       children:[
         new TextRun({text:fullAd,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:'\t',font:'Arial',size:24}),
@@ -515,26 +507,19 @@
     // Tel, SV, Dog - mətn, sonra dəyər, sonra xətt axıra kimi
     var XETT2 = '________________________';
     function prXett(label, val, li){
-      return [
-        new Paragraph({
-          spacing:sp({after:0}),
-          indent:li?{left:li}:undefined,
-          border:{bottom:{style:'single',size:6,color:'000000',space:1}},
-          children:[new TextRun({text:'',font:'Arial',size:24})]
-        }),
-        new Paragraph({
-          spacing:sp({}),
-          indent:li?{left:li}:undefined,
-          children:[
-            new TextRun({text:label,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
-            new TextRun({text:val || '',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
-          ]
-        })
-      ];
+      return new Paragraph({
+        spacing:sp({}),
+        indent:li?{left:li}:undefined,
+        border:{top:{style:'single',size:6,color:'000000',space:1}},
+        children:[
+          new TextRun({text:label,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+          new TextRun({text:val || '',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+        ]
+      });
     }
-    prXett('Ərizəçinin telefon nömrəsi ', tel, LI_INFO).forEach(function(p){rows.push(p);});
-    prXett('Şəxsiyyət vəsiqəsinin seriyası, nömrəsi ', sv, LI_INFO).forEach(function(p){rows.push(p);});
-    prXett('Doğulduğu tarix və yer ', dogTarix+(dogYer?', '+dogYer:''), LI_INFO).forEach(function(p){rows.push(p);});
+    rows.push(prXett('Ərizəçinin telefon nömrəsi ', tel, LI_INFO));
+    rows.push(prXett('Şəxsiyyət vəsiqəsinin seriyası, nömrəsi ', sv, LI_INFO));
+    rows.push(prXett('Doğulduğu tarix və yer ', dogTarix+(dogYer?', '+dogYer:''), LI_INFO));
 
     rows.push(ep());
 
