@@ -505,13 +505,11 @@
     var XETT2 = '________________________';
     // Tel, SV, Dog - mətn üstdə, altdan tam xətt
     function prXett(label, val, li){
-      var XETT = ' ________________________________________';
       return new Paragraph({
         spacing:sp({}),
         indent:li?{left:li}:undefined,
         children:[
-          new TextRun({text:label+(val||''),font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
-          new TextRun({text:XETT,font:'Arial',size:24,underline:{type:'single',color:'000000'},language:{value:'az-Latn-AZ'}})
+          new TextRun({text:label+(val||''),font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
         ]
       });
     }
