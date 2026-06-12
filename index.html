@@ -459,10 +459,7 @@
 
     var rows=[];
 
-    // 3 saylı Bakı DOST Mərkəzi - CENTER, yuxarıda
-    rows.push(new Paragraph({spacing:{before:560,after:SA,line:276,lineRule:'auto'},alignment:AlignmentType.CENTER,children:[new TextRun({text:'3 saylı Bakı DOST Mərkəzi',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]}));
-
-    // Filial adı - CENTER, BOLD
+    // Filial adı - CENTER, BOLD (3 saylı DOST header-dadır)
     rows.push(pr('Azərbaycan Respublikası Əmək və Əhalinin Sosial Müdafiəsi',{center:true,bold:true}));
     rows.push(pr('Nazirliyinin tabeliyində Dövlət Sosial Müdafiə Fondunun',{center:true,bold:true}));
     rows.push(pr('Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına',{center:true,bold:true}));
@@ -506,14 +503,15 @@
 
     // Tel, SV, Dog - mətn, sonra dəyər, sonra xətt axıra kimi
     var XETT2 = '________________________';
-    // Tel, SV, Dog - mətn + dəyər üstdə, altdan xətt uzanır
+    // Tel, SV, Dog - mətn üstdə, altdan tam xətt
     function prXett(label, val, li){
+      var XETT = '________________________________________';
       return new Paragraph({
         spacing:sp({}),
         indent:li?{left:li}:undefined,
-        border:{bottom:{style:'single',size:6,color:'000000',space:1}},
         children:[
-          new TextRun({text:label+(val||''),font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+          new TextRun({text:label,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+          new TextRun({text:(val||'')+' '+XETT,font:'Arial',size:24,underline:{type:'single',color:'000000'},language:{value:'az-Latn-AZ'}})
         ]
       });
     }
@@ -577,8 +575,11 @@
       tabStops:[{type:TabStopType.RIGHT,position:9360}]
     }));
 
+    var header = new docx.Header({
+      children:[new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:'3 saylı Bakı DOST Mərkəzi',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})]})]
+    });
     var pp={size:{width:12240,height:15840},margin:{top:1275,right:1440,bottom:992,left:1440}};
-    var doc2=new Document({sections:[{properties:{page:pp},children:rows}]});
+    var doc2=new Document({sections:[{properties:{page:pp},headers:{default:header},children:rows}]});
     var buf=await docx.Packer.toBlob(doc2);
     var url=URL.createObjectURL(buf);
     var a=document.createElement('a');a.href=url;
