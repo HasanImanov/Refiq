@@ -157,6 +157,44 @@
   </div>
 </div>
 
+<div id="tab-erize-zmuavinat" style="display:none;">
+  <div class="arayish-container">
+    <div class="form-title">Z.Müavinət ərizəsi</div>
+    <div class="form-row">
+      <div class="form-group"><label>Ərizəçinin soyadı</label><input type="text" id="zm-soyad" oninput="azTitleInput(this)" placeholder="Həsənov"/></div>
+      <div class="form-group"><label>Adı</label><input type="text" id="zm-ad" oninput="azTitleInput(this)" placeholder="Əli"/></div>
+      <div class="form-group"><label>Ata adı</label><input type="text" id="zm-ata" oninput="formatVefatAd(this)" placeholder="Vaqif oğlu"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2;"><label>Ünvan</label><input type="text" id="zm-unvan" onblur="formatUnvan(this)" placeholder="Bakı şəhəri, Sabunçu rayonu..."/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Telefon nömrəsi</label><input type="text" id="zm-tel" oninput="this.value=this.value.replace(/[^0-9 ]/g,'')" placeholder="051 3653394"/></div>
+      <div class="form-group"><label>Ş/V seriya və nömrəsi</label><input type="text" id="zm-sv" placeholder="AZE12345678"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Doğulduğu tarix</label><input type="text" id="zm-dog-tarix" placeholder="01.01.1970" maxlength="10" oninput="var v=this.value.replace(/[^0-9]/g,'');var d=v.slice(0,2),m=v.slice(2,4),y=v.slice(4,8);if(d.length==2&&parseInt(d)>31)d='31';if(d.length==2&&parseInt(d)<1)d='01';if(m.length==2&&parseInt(m)>12)m='12';if(m.length==2&&parseInt(m)<1)m='01';v=d+m+y;if(v.length>=3)v=v.slice(0,2)+'.'+v.slice(2);if(v.length>=6)v=v.slice(0,5)+'.'+v.slice(5,9);this.value=v;"/></div>
+      <div class="form-group"><label>Doğulduğu yer</label><input type="text" id="zm-dog-yer" placeholder="Bakı şəhəri"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:2;"><label>Sosial müavinətin növü</label>
+        <select id="zm-novü">
+          <option value="">-- Seçin --</option>
+          <option value="əlillik üzrə müavinət">Əlillik üzrə müavinət</option>
+          <option value="yaşa görə pensiya">Yaşa görə pensiya</option>
+          <option value="itkinə görə müavinət">İtkinə görə müavinət</option>
+          <option value="sosial müavinət">Sosial müavinət</option>
+          <option value="işsizlik müavinəti">İşsizlik müavinəti</option>
+          <option value="uşaq müavinəti">Uşaq müavinəti</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="hazirla-btn" onclick="hazirlaZmuavinat('word')">📄 Word yüklə</button>
+    </div>
+  </div>
+</div>
+
 <div id="tab-arayish">
   <div class="arayish-container">
     <div class="arayish-title">📄 Arayış növünü seçin</div>
@@ -358,7 +396,105 @@
 
   function selectErize(cat){
     document.querySelectorAll('#tab-erize .arayish-form').forEach(function(f){f.classList.remove('active');});
-    document.getElementById('erize-'+cat).classList.add('active');
+    // Yeni formları da gizlət
+    var zm = document.getElementById('tab-erize-zmuavinat');
+    if(zm) zm.style.display='none';
+    if(cat==='zmuavinat'){
+      if(zm) zm.style.display='block';
+    } else {
+      document.getElementById('erize-'+cat).classList.add('active');
+    }
+  }
+
+  async function hazirlaZmuavinat(format) {
+    var g=function(id){return (document.getElementById(id)||{}).value||'';};
+    var soyad=g('zm-soyad').trim(), ad=g('zm-ad').trim(), ata=g('zm-ata').trim();
+    var fullAd = soyad+' '+ad+' '+ata;
+    var unvan = g('zm-unvan').trim();
+    var tel = g('zm-tel').trim();
+    var sv = g('zm-sv').trim();
+    var dogTarix = g('zm-dog-tarix').trim();
+    var dogYer = g('zm-dog-yer').trim();
+    var nov = g('zm-novü').trim();
+    var today = new Date();
+    var tarix = String(today.getDate()).padStart(2,'0')+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+today.getFullYear();
+    var gun = today.getDate();
+    var ay = ['yanvar','fevral','mart','aprel','may','iyun','iyul','avqust','sentyabr','oktyabr','noyabr','dekabr'][today.getMonth()];
+    var il = today.getFullYear();
+
+    const { Document, Paragraph, TextRun, AlignmentType, TabStopType, TabStopPosition } = docx;
+    var INDENT = 720;
+    function ep(){return new Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},children:[new TextRun({text:'',font:'Arial',size:24})]});}
+    function pr(text,opts){
+      opts=opts||{};
+      return new Paragraph({
+        spacing:{before:0,after:opts.after||0,line:276,lineRule:'auto'},
+        alignment:opts.center?AlignmentType.CENTER:opts.justify?AlignmentType.JUSTIFIED:AlignmentType.LEFT,
+        indent:opts.indent?{firstLine:INDENT}:undefined,
+        children:[new TextRun({text:text,font:'Arial',size:24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}})]
+      });
+    }
+
+    var rows=[];
+    rows.push(new Paragraph({
+      spacing:{before:0,after:0,line:276,lineRule:'auto'},
+      children:[
+        new TextRun({text:'3 saylı Bakı DOST Mərkəzi',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+        new TextRun({text:'\t'+'Azərbaycan Respublikası Əmək və Əhalinin Sosial Müdafiəsi',font:'Arial',size:24,bold:true,language:{value:'az-Latn-AZ'}})
+      ],
+      tabStops:[{type:TabStopType.LEFT,position:3600}]
+    }));
+    rows.push(new Paragraph({
+      spacing:{before:0,after:0,line:276,lineRule:'auto'},
+      indent:{left:3600},
+      children:[new TextRun({text:'Nazirliyinin tabeliyində Dövlət Sosial Müdafiə Fondunun',font:'Arial',size:24,bold:true,language:{value:'az-Latn-AZ'}})]
+    }));
+    rows.push(new Paragraph({
+      spacing:{before:0,after:0,line:276,lineRule:'auto'},
+      indent:{left:3600},
+      children:[new TextRun({text:'Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına',font:'Arial',size:24,bold:true,language:{value:'az-Latn-AZ'}})]
+    }));
+    rows.push(ep());
+    rows.push(pr(unvan+' ünvanında yaşayan',{}));
+    rows.push(pr(fullAd+' tərəfindən',{}));
+    rows.push(pr('(soyadı, adı və atasının adı)',{italic:true}));
+    rows.push(ep());
+    rows.push(pr('ƏRİZƏ',{center:true,bold:true}));
+    rows.push(ep());
+    rows.push(pr('Ərizəçinin telefon nömrəsi '+tel,{}));
+    rows.push(pr('Şəxsiyyət vəsiqəsinin seriyası, nömrəsi '+sv,{}));
+    rows.push(pr('Doğulduğu tarix və yer: '+dogTarix+(dogYer?' , '+dogYer:''),{}));
+    rows.push(ep());
+    rows.push(pr('Xahiş edirəm mənə',{indent:true}));
+    rows.push(pr(nov,{center:true,bold:false}));
+    rows.push(pr('(sosial ödənişin adı)',{center:true,italic:true}));
+    rows.push(pr('təyin edəsiniz / ödənişini dayandırasınız / bərpa edəsiniz.',{indent:true}));
+    rows.push(pr('(lazım olmayanların üstündən xətt çəkməli).',{italic:true}));
+    rows.push(ep());
+    rows.push(pr('Qanunvericiliyə əsasən mənə təyin edilmiş',{indent:true}));
+    rows.push(pr(nov,{center:true}));
+    rows.push(pr('(sosial ödənişin adı)',{center:true,italic:true}));
+    rows.push(pr('ödənişinin dayandırılmasına səbəb olan hal baş verdikdə bu barədə 5 (beş) gün müddətində müvafiq Quruma ("DOST" mərkəzinə) məlumat verməyi öhdəmə götürürəm.',{indent:true,justify:true}));
+    rows.push(ep());
+    rows.push(pr('Ərizəyə aşağıdakı sənədləri və (və ya) məlumatları əlavə edirəm:',{italic:true}));
+    ['1.','2.','3.','4.','5.','6.'].forEach(function(s){rows.push(pr(s,{after:80}));});
+    rows.push(ep());rows.push(ep());
+    rows.push(new Paragraph({
+      spacing:{before:0,after:0,line:276,lineRule:'auto'},
+      children:[
+        new TextRun({text:'"'+String(gun).padStart(2,'0')+'" '+ay+' '+il+' il',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
+        new TextRun({text:'\t'+'İmza _____________',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+      ],
+      tabStops:[{type:TabStopType.RIGHT,position:9360}]
+    }));
+
+    var pp={size:{width:11906,height:16838},margin:{top:1134,right:851,bottom:1134,left:1701}};
+    var doc2=new Document({sections:[{properties:{page:pp},children:rows}]});
+    var buf=await docx.Packer.toBlob(doc2);
+    var url=URL.createObjectURL(buf);
+    var a=document.createElement('a');a.href=url;
+    a.download='zmuavinat_erizesi.docx';a.click();
+    URL.revokeObjectURL(url);
   }
 
   async function hazirlaErize(tip, format) {
