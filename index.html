@@ -469,12 +469,12 @@
 
     rows.push(ep());
 
-    // Ünvan - əvvəldə uzun xətt, sonra ünvanında yaşayan sağda
-    var XETT = '_______________________________________________________';
+    // Ünvan - xətt üzərində ünvan yazılır, sağ ucda "ünvanında yaşayan"
+    // Border bottom ilə tam xətt, tab ilə sağa
     rows.push(new Paragraph({
       spacing:sp({}),
+      border:{bottom:{style:'single',size:6,color:'000000',space:1}},
       children:[
-        new TextRun({text:XETT+' ',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:unvan,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:'\t',font:'Arial',size:24}),
         new TextRun({text:'ünvanında yaşayan',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
@@ -484,11 +484,11 @@
 
     rows.push(ep());
 
-    // Ad soyad - əvvəldə uzun xətt, sonra tərəfindən sağda
+    // Ad soyad - xətt üzərində ad yazılır, sağ ucda "tərəfindən"
     rows.push(new Paragraph({
       spacing:sp({}),
+      border:{bottom:{style:'single',size:6,color:'000000',space:1}},
       children:[
-        new TextRun({text:XETT+' ',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:fullAd,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:'\t',font:'Arial',size:24}),
         new TextRun({text:'tərəfindən',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
@@ -511,10 +511,10 @@
       return new Paragraph({
         spacing:sp({}),
         indent:li?{left:li}:undefined,
+        border:{bottom:{style:'single',size:6,color:'000000',space:1}},
         children:[
           new TextRun({text:label,font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
-          new TextRun({text:val ? val+' ' : '',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
-          new TextRun({text:XETT2,font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
+          new TextRun({text:val || '',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
         ]
       });
     }
