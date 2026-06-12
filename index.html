@@ -410,70 +410,112 @@
     var dogYer = g('zm-dog-yer').trim();
     var nov = g('zm-novü').trim();
     var today = new Date();
-    var tarix = String(today.getDate()).padStart(2,'0')+'.'+String(today.getMonth()+1).padStart(2,'0')+'.'+today.getFullYear();
     var gun = today.getDate();
     var ay = ['yanvar','fevral','mart','aprel','may','iyun','iyul','avqust','sentyabr','oktyabr','noyabr','dekabr'][today.getMonth()];
     var il = today.getFullYear();
 
-    const { Document, Paragraph, TextRun, AlignmentType, TabStopType, TabStopPosition } = docx;
-    var INDENT = 720;
-    function ep(){return new Paragraph({spacing:{before:0,after:0,line:276,lineRule:'auto'},children:[new TextRun({text:'',font:'Arial',size:24})]});}
+    const { Document, Paragraph, TextRun, AlignmentType, TabStopType } = docx;
+    // Orijinal word ölçüləri
+    // Səhifə: 12240x15840 twips (215.9x279.4mm)
+    // Marginlər: sol=1440 sağ=1440 yuxarı=1275 aşağı=992
+    var SA = 80; // space_after = 4pt = 80 twips
+    var LI_INFO = 3543; // 62.5mm - tel/sv/dog indent
+    var LI_DOST = 6662; // 117.5mm - 3 sayli DOST sag
+
+    function sp(opts){ return {before:0,after:(opts&&opts.after!==undefined)?opts.after:SA,line:276,lineRule:'auto'}; }
+    function ep(){return new Paragraph({spacing:sp({after:SA}),children:[new TextRun({text:'',font:'Arial',size:24})]});}
     function pr(text,opts){
       opts=opts||{};
       return new Paragraph({
-        spacing:{before:0,after:opts.after||0,line:276,lineRule:'auto'},
+        spacing:sp(opts),
         alignment:opts.center?AlignmentType.CENTER:opts.justify?AlignmentType.JUSTIFIED:AlignmentType.LEFT,
-        indent:opts.indent?{firstLine:INDENT}:undefined,
-        children:[new TextRun({text:text,font:'Arial',size:24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}})]
+        indent:opts.li?{left:opts.li}:undefined,
+        children:[new TextRun({text:text,font:'Arial',size:opts.size||24,bold:opts.bold||false,italics:opts.italic||false,language:{value:'az-Latn-AZ'}})]
       });
     }
 
     var rows=[];
-    rows.push(new Paragraph({
-      spacing:{before:0,after:0,line:276,lineRule:'auto'},
-      children:[
-        new TextRun({text:'3 saylı Bakı DOST Mərkəzi',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
-        new TextRun({text:'\t'+'Azərbaycan Respublikası Əmək və Əhalinin Sosial Müdafiəsi',font:'Arial',size:24,bold:true,language:{value:'az-Latn-AZ'}})
-      ],
-      tabStops:[{type:TabStopType.LEFT,position:3600}]
-    }));
-    rows.push(new Paragraph({
-      spacing:{before:0,after:0,line:276,lineRule:'auto'},
-      indent:{left:3600},
-      children:[new TextRun({text:'Nazirliyinin tabeliyində Dövlət Sosial Müdafiə Fondunun',font:'Arial',size:24,bold:true,language:{value:'az-Latn-AZ'}})]
-    }));
-    rows.push(new Paragraph({
-      spacing:{before:0,after:0,line:276,lineRule:'auto'},
-      indent:{left:3600},
-      children:[new TextRun({text:'Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına',font:'Arial',size:24,bold:true,language:{value:'az-Latn-AZ'}})]
-    }));
+
+    // [0] 3 saylı Bakı DOST Mərkəzi - sağda (li=117.5mm)
+    rows.push(pr('3 saylı Bakı DOST Mərkəzi',{li:LI_DOST}));
+
+    // [1-3] Filial adı - CENTER, BOLD
+    rows.push(pr('Azərbaycan Respublikası Əmək və Əhalinin Sosial Müdafiəsi',{center:true,bold:true}));
+    rows.push(pr('Nazirliyinin tabeliyində Dövlət Sosial Müdafiə Fondunun',{center:true,bold:true}));
+    rows.push(pr('Sosial Ödənişlərin Təyinatı üzrə Mərkəzi Filialına',{center:true,bold:true}));
+
+    // [4] boş
     rows.push(ep());
+
+    // [5] Ünvan ünvanında yaşayan
     rows.push(pr(unvan+' ünvanında yaşayan',{}));
+
+    // [6] boş
+    rows.push(ep());
+
+    // [7] Ad soyad tərəfindən
     rows.push(pr(fullAd+' tərəfindən',{}));
-    rows.push(pr('(soyadı, adı və atasının adı)',{italic:true}));
+
+    // [8] (soyadı, adı və atasının adı) - CENTER, italic
+    rows.push(pr('(soyadı, adı və atasının adı)',{center:true,italic:true}));
+
+    // [9-10] 2 boş sətir
     rows.push(ep());
+    rows.push(ep());
+
+    // [11] ƏRİZƏ - CENTER, BOLD
     rows.push(pr('ƏRİZƏ',{center:true,bold:true}));
+
+    // [12-14] Tel, SV, Dog - li=62.5mm
+    rows.push(pr('Ərizəçinin telefon nömrəsi '+tel,{li:LI_INFO}));
+    rows.push(pr('Şəxsiyyət vəsiqəsinin seriyası, nömrəsi '+sv,{li:LI_INFO}));
+    rows.push(pr('Doğulduğu tarix və yer: '+dogTarix+(dogYer?', '+dogYer:''),{li:LI_INFO}));
+
+    // [15] boş
     rows.push(ep());
-    rows.push(pr('Ərizəçinin telefon nömrəsi '+tel,{}));
-    rows.push(pr('Şəxsiyyət vəsiqəsinin seriyası, nömrəsi '+sv,{}));
-    rows.push(pr('Doğulduğu tarix və yer: '+dogTarix+(dogYer?' , '+dogYer:''),{}));
-    rows.push(ep());
-    rows.push(pr('Xahiş edirəm mənə',{indent:true}));
-    rows.push(pr(nov,{center:true,bold:false}));
-    rows.push(pr('(sosial ödənişin adı)',{center:true,italic:true}));
-    rows.push(pr('təyin edəsiniz / ödənişini dayandırasınız / bərpa edəsiniz.',{indent:true}));
-    rows.push(pr('(lazım olmayanların üstündən xətt çəkməli).',{italic:true}));
-    rows.push(ep());
-    rows.push(pr('Qanunvericiliyə əsasən mənə təyin edilmiş',{indent:true}));
+
+    // [16] Xahiş edirəm mənə
+    rows.push(pr('Xahiş edirəm mənə',{}));
+
+    // [17] nov adı - CENTER
     rows.push(pr(nov,{center:true}));
+
+    // [17] (sosial ödənişin adı) - CENTER, italic
     rows.push(pr('(sosial ödənişin adı)',{center:true,italic:true}));
-    rows.push(pr('ödənişinin dayandırılmasına səbəb olan hal baş verdikdə bu barədə 5 (beş) gün müddətində müvafiq Quruma ("DOST" mərkəzinə) məlumat verməyi öhdəmə götürürəm.',{indent:true,justify:true}));
+
+    // [18] təyin edəsiniz...
+    rows.push(pr('təyin edəsiniz / ödənişini dayandırasınız / bərpa edəsiniz.',{}));
+
+    // [19] (lazım olmayanların...) - italic
+    rows.push(pr('(lazım olmayanların üstündən xətt çəkməli).',{italic:true}));
+
+    // [20] Qanunvericiliyə...
+    rows.push(pr('Qanunvericiliyə əsasən mənə təyin edilmiş',{}));
+
+    // nov adı - CENTER
+    rows.push(pr(nov,{center:true}));
+
+    // [21] (sosial ödənişin adı) - CENTER, italic
+    rows.push(pr('                                     (sosial ödənişin adı)',{center:true,italic:true}));
+
+    // [22] ödənişinin dayandırılmasına... - justify
+    rows.push(pr('ödənişinin dayandırılmasına səbəb olan hal baş verdikdə bu barədə 5 (beş) gün müddətində müvafiq Quruma ("DOST" mərkəzinə) məlumat verməyi öhdəmə götürürəm.',{justify:true}));
+
+    // [23] boş
     rows.push(ep());
+
+    // [24] Ərizəyə aşağıdakı... - italic
     rows.push(pr('Ərizəyə aşağıdakı sənədləri və (və ya) məlumatları əlavə edirəm:',{italic:true}));
-    ['1.','2.','3.','4.','5.','6.'].forEach(function(s){rows.push(pr(s,{after:80}));});
-    rows.push(ep());rows.push(ep());
+
+    // [25] boş
+    rows.push(ep());
+
+    // [26-31] 1-6
+    ['1.','2.','3.','4.','5.','6.'].forEach(function(s){rows.push(pr(s,{}));});
+
+    // [32] Tarix + İmza
     rows.push(new Paragraph({
-      spacing:{before:0,after:0,line:276,lineRule:'auto'},
+      spacing:sp({}),
       children:[
         new TextRun({text:'"'+String(gun).padStart(2,'0')+'" '+ay+' '+il+' il',font:'Arial',size:24,language:{value:'az-Latn-AZ'}}),
         new TextRun({text:'\t'+'İmza _____________',font:'Arial',size:24,language:{value:'az-Latn-AZ'}})
@@ -481,7 +523,7 @@
       tabStops:[{type:TabStopType.RIGHT,position:9360}]
     }));
 
-    var pp={size:{width:11906,height:16838},margin:{top:1134,right:851,bottom:1134,left:1701}};
+    var pp={size:{width:12240,height:15840},margin:{top:1275,right:1440,bottom:992,left:1440}};
     var doc2=new Document({sections:[{properties:{page:pp},children:rows}]});
     var buf=await docx.Packer.toBlob(doc2);
     var url=URL.createObjectURL(buf);
