@@ -228,6 +228,7 @@ app.post('/api/arayish-word', async (req, res) => {
     xml = xml.replace(/\{TARIX_METN\}/g, escapeXml(tarixMetn||''));
     xml = xml.replace(/\{BITME\}/g, escapeXml(bitme||'müddətsiz'));
     xml = xml.replace(/\{YER_METN\}/g, escapeXml(yerMetn||''));
+    xml = xml.replace(/\{QEBUL_AD\}/g, escapeXml(qebulAd||''));
 
     zip.updateFile('word/document.xml', Buffer.from(xml, 'utf-8'));
     const buf = zip.toBuffer();
