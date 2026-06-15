@@ -1,11 +1,9 @@
 FROM node:20-slim
 
-# LibreOffice və Arial font quraşdır
 RUN apt-get update && apt-get install -y \
-    libreoffice \
     fonts-liberation \
-    ttf-mscorefonts-installer \
     fontconfig \
+    chromium \
     --no-install-recommends \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/*
