@@ -675,7 +675,18 @@
   function azUpper(ch){return AZ_UPPER[ch]||ch.toUpperCase();}
   function azLower(ch){return AZ_LOWER[ch]||ch.toLowerCase();}
   function azTitleWord(w){if(!w)return w;return azUpper(w[0])+w.slice(1).split('').map(azLower).join('');}
-  var UNVAN_SUFFIX=['şəhəri','rayonu','qəsəbəsi','kəndi','dalan','ev','mənzil','küçəsi','prospekti','küçə','prospekt'];
+  var UNVAN_SUFFIX=[
+    // Tam formalar
+    'şəhəri','şəhər','rayonu','rayon','qəsəbəsi','qəsəbə','kəndi','kənd',
+    'dalan','ev','mənzil','bina','məhəllə','massivi','massiv',
+    'küçəsi','küçə','prospekti','prospekt','bulvarı','bulvar',
+    'körpüsü','meydanı','parkı','mikrorayonu','mikrorayon',
+    // Qısaldılmışlar (nöqtəli)
+    'e.','m.','mən.','b.','bin.','qəs.','r.','ray.','ş.','şəh.','k.','kənd.',
+    'küç.','pros.','dalan.','məh.','mas.','mr.',
+    // Qısaldılmışlar (nöqtəsiz)
+    'e','m','b','qəs','mr','məh','mas'
+  ];
 
   function azTitleInput(el){
     var pos=el.selectionStart;
