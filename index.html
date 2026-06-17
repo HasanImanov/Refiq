@@ -1058,7 +1058,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   function showLoading(){
     var w=document.getElementById('welcome-msg');if(w)w.remove();
     var msg=document.createElement('div');msg.className='msg bot-msg';msg.id='loading-msg';
-    var av=document.createElement('div');av.className='avatar bot';av.textContent='R';
+    var av=document.createElement('div');av.className='avatar bot';av.textContent='A';
     var ld=document.createElement('div');ld.className='loading-bubble';
     ld.innerHTML='<div class="spinner-wrap"><svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="17" fill="none" stroke="#E8EFF8" stroke-width="1.5"/><circle cx="20" cy="20" r="12" fill="none" stroke="#E8EFF8" stroke-width="1.5"/><circle cx="20" cy="20" r="7" fill="none" stroke="#E8EFF8" stroke-width="1.5"/><g class="ring1"><circle cx="20" cy="20" r="17" fill="none" stroke="#1B3A6B" stroke-width="2.5" stroke-dasharray="50 57" stroke-linecap="round"/></g><g class="ring2"><circle cx="20" cy="20" r="12" fill="none" stroke="#2D5DA6" stroke-width="3" stroke-dasharray="30 45" stroke-dashoffset="15" stroke-linecap="round"/></g><g class="ring3"><circle cx="20" cy="20" r="7" fill="none" stroke="#5B8FC9" stroke-width="2" stroke-dasharray="12 8 5 19" stroke-linecap="round"/></g></svg></div<img src="logo.png" alt="logo"/></div><span class="loading-text">Axtarıram...</span>';
     msg.appendChild(av);msg.appendChild(ld);chatBox.appendChild(msg);chatBox.scrollTop=chatBox.scrollHeight;
