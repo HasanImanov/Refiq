@@ -4,6 +4,16 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
+// Sual-cavab bazası
+let QA_DATA = {};
+try {
+  const qaPath = path.join(__dirname, 'qa_data.json');
+  QA_DATA = JSON.parse(require('fs').readFileSync(qaPath, 'utf8'));
+  console.log('QA data yükləndi:', Object.keys(QA_DATA).map(k => k + ': ' + QA_DATA[k].length).join(', '));
+} catch(e) {
+  console.warn('QA data yüklənmədi:', e.message);
+}
+
 const app = express();
 
 // ----------------------------
@@ -145,10 +155,21 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { messages } = req.body;
 
-    const systemPrompt = `
-Sən "Rəfiq" adlı AI assistantsan.
-PDF sənədlərə əsaslanırsan.
-Azərbaycan dilində cavab ver.
+    const // QA bazasını system prompt-a əlavə et
+const qaText = Object.entries(QA_DATA).map(([sheet, items]) => {
+  if (!items.length) return '';
+  return `\n## ${sheet}\n` + items.map(item =>
+    `Sual: ${item.sual}\nCavab: ${item.cavab}`
+  ).join('\n\n');
+}).filter(Boolean).join('\n');
+
+systemPrompt = `
+Sən "AİSA" adlı süni intellekt sosial assistantsan. 3 saylı Bakı DOST Mərkəzinin əməkdaşlarına kömək edirsən.
+PDF sənədlərə və aşağıdakı sual-cavab bazasına əsaslanaraq dəqiq cavab ver.
+Azərbaycan dilində cavab ver. Qısa, konkret və aydın ol.
+
+SUAL-CAVAB BAZASI:
+${qaText}
 `;
 
     const lastMessage = messages[messages.length - 1];
