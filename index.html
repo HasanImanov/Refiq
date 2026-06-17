@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rəfiq – Sosial Xidmətlər Assistantı</title>
+  <title>AİSA – Sosial Xidmətlər Assistantı</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
   <script src="/docx.js"></script>
   <style>
@@ -86,10 +86,10 @@
 <body>
 <header>
   <img src="logo.png" alt="Logo"/>
-  <div class="header-text"><h1>Rəfiq</h1><p><span class="status-dot"></span>Sosial xidmətlər üzrə AI assistant</p></div>
+  <div class="header-text"><h1>AİSA</h1><p><span class="status-dot"></span>Sosial xidmətlər üzrə AI assistant</p></div>
 </header>
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('refiq')">💬 Rəfiq</button>
+  <button class="tab-btn active" onclick="switchTab('refiq')">💬 AİSA</button>
   <button class="tab-btn" onclick="switchTab('arayish')">📄 Arayışlar</button>
   <button class="tab-btn" onclick="switchTab('erize')">📝 Ərizələr</button>
 </div>
@@ -97,7 +97,7 @@
   <main>
     <div id="chat-box">
       <div class="welcome" id="welcome-msg">
-        <h2>Salam! Mən Rəfiqəm 👋</h2>
+        <h2>Salam! Mən AİSA-yam 👋</h2>
         <p>Reqlament və qanunlar üzrə suallarınızı verin.</p>
       </div>
     </div>
@@ -1065,7 +1065,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
     addMessage('user',text);showLoading();
     try{
       conversationHistory.push({role:'user',content:text});
-      var sys='Sən "Rəfiq" adlı sosial xidmətlər üzrə ixtisaslaşmış AI assistantsan. Sənə verilən PDF sənədlər əsasında cavab verirsən. CAVAB FORMATI: 1. "**Reqlamentə əsasən:** ..." 2. "**Qanunun X maddəsinin Y bəndinə əsasən:** ..." 3. Məlumat yoxdursa açıq bildir. Yalnız sənədlərə əsaslan. Azərbaycan dilində cavab ver.';
+      var sys='Sən "AİSA" adlı sosial xidmətlər üzrə ixtisaslaşmış AI assistantsan. Sənə verilən PDF sənədlər əsasında cavab verirsən. CAVAB FORMATI: 1. "**Reqlamentə əsasən:** ..." 2. "**Qanunun X maddəsinin Y bəndinə əsasən:** ..." 3. Məlumat yoxdursa açıq bildir. Yalnız sənədlərə əsaslan. Azərbaycan dilində cavab ver.';
       var r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({messages:conversationHistory,system:sys})});
       var data=await r.json();
