@@ -155,15 +155,14 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { messages } = req.body;
 
-    const // QA bazasını system prompt-a əlavə et
-const qaText = Object.entries(QA_DATA).map(([sheet, items]) => {
-  if (!items.length) return '';
-  return `\n## ${sheet}\n` + items.map(item =>
-    `Sual: ${item.sual}\nCavab: ${item.cavab}`
-  ).join('\n\n');
-}).filter(Boolean).join('\n');
+    const qaText = Object.entries(QA_DATA).map(([sheet, items]) => {
+      if (!items.length) return '';
+      return `\n## ${sheet}\n` + items.map(item =>
+        `Sual: ${item.sual}\nCavab: ${item.cavab}`
+      ).join('\n\n');
+    }).filter(Boolean).join('\n');
 
-systemPrompt = `
+    systemPrompt = `
 Sən "AİSA" adlı süni intellekt sosial assistantsan. 3 saylı Bakı DOST Mərkəzinin əməkdaşlarına kömək edirsən.
 PDF sənədlərə və aşağıdakı sual-cavab bazasına əsaslanaraq dəqiq cavab ver.
 Azərbaycan dilində cavab ver. Qısa, konkret və aydın ol.
