@@ -306,7 +306,7 @@ app.post('/api/arayish-pdf', async (req, res) => {
       + huquqHisse
       + bitmeHisse
       + '<p class="metn indent" style="margin-top:4.2mm;margin-bottom:0;">'+esc(yerMetn||'')+'</p>'
-      + '<div class="imza"><span>Direktor müavini</span><span>Şamil Əliyev</span></div>'
+      + '<div class="imza"><span>'+esc(vezife||'Direktor müavini')+'</span><span>'+esc(imza||'Şamil Əliyev')+'</span></div>'
       + (qebulAd ? '<div class="qebul"><span>Qəbul etdim: ________________ '+esc(qebulAd)+'</span></div>' : '')
       + '</body></html>';
 
