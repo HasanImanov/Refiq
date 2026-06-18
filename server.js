@@ -233,7 +233,7 @@ const PORT = process.env.PORT || 3000;
 // ----------------------------
 app.post('/api/arayish-word', async (req, res) => {
   try {
-    const { metn, tarixMetn, bitme, yerMetn, fin, qebulAd } = req.body;
+    const { metn, tarixMetn, bitme, yerMetn, fin, qebulAd, vezife, imza } = req.body;
     const AdmZip = require('adm-zip');
 
     const templatePath = path.join(__dirname, 'arayish_sablon.docx');
@@ -251,6 +251,8 @@ app.post('/api/arayish-word', async (req, res) => {
     xml = xml.replace(/\{BITME\}/g, escapeXml(bitme||'müddətsiz'));
     xml = xml.replace(/\{YER_METN\}/g, escapeXml(yerMetn||''));
     xml = xml.replace(/\{QEBUL_AD\}/g, escapeXml(qebulAd||''));
+    xml = xml.replace(/\{VEZIFE\}/g, escapeXml(vezife||'Direktor müavini'));
+    xml = xml.replace(/\{IMZA\}/g, escapeXml(imza||'Şamil Əliyev'));
 
     zip.updateFile('word/document.xml', Buffer.from(xml, 'utf-8'));
     const buf = zip.toBuffer();
@@ -272,7 +274,7 @@ app.post('/api/arayish-word', async (req, res) => {
 app.post('/api/arayish-pdf', async (req, res) => {
   let browser;
   try {
-    const { metn, tarixMetn, bitme, yerMetn, fin, qebulAd } = req.body;
+    const { metn, tarixMetn, bitme, yerMetn, fin, qebulAd, vezife, imza } = req.body;
 
     const fontRegular = fs.readFileSync(path.join(__dirname, 'fonts', 'LiberationSans-Regular.ttf')).toString('base64');
     const fontBold = fs.readFileSync(path.join(__dirname, 'fonts', 'LiberationSans-Bold.ttf')).toString('base64');
