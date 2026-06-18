@@ -794,7 +794,7 @@
       d.fullAd=toInitCap(document.getElementById('yg-soyad').value)+' '+toInitCap(document.getElementById('yg-ad').value)+' '+toInitCap(document.getElementById('yg-ata').value);
       d.qebulAd=d.fullAd;
       d.metn=d.fullAd+' (FİN '+d.fin+') Azərbaycan Respublikasının Əmək və Əhalinin Sosial Müdafiəsi Nazirliyinin Mərkəzləşdirilmiş elektron informasiya sisteminin \u201cSosial ödənişlər\u201d altsisteminə əsasən Nazirliyin tabeliyindəki Dövlət Sosial Müdafiə Fondundan yaşa görə '+d.mebleg+' manat ('+n2w(d.mebleg)+') məbləğində sosial müavinət alır.';
-      d.tarixMetn=d.tarix?'Hüququn yaranma tarixi: '+d.tarix+'-'+ilShekilchi(d.tarix)+' il':'';
+      d.tarixMetn=d.tarix?d.tarix+'-'+ilShekilchi(d.tarix)+' il':'';
     } else {
       d.fin=document.getElementById('el-fin').value.trim();
       d.mebleg=document.getElementById('el-mebleg').value.trim();
@@ -936,7 +936,9 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
         bitme: d.bitme||'müddətsiz',
         yerMetn: d.yerMetn,
         fin: d.fin||'namelum',
-        qebulAd: d.qebulAd||''
+        qebulAd: d.qebulAd||'',
+        vezife: d.vezife||'Direktor müavini',
+        imza: d.imza||'Şamil Əliyev'
       })
     });
     if(resp.ok){
