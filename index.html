@@ -1053,7 +1053,7 @@ ch.push(new P({alignment:A.CENTER, spacing:{before:0,after:0,line:22}, indent:{l
   function addMessage(role,text){
     var w=document.getElementById('welcome-msg');if(w)w.remove();
     var msg=document.createElement('div');msg.className='msg '+(role==='user'?'user':'bot-msg');
-    var av=document.createElement('div');av.className='avatar '+(role==='user'?'user-av':'bot');av.textContent=role==='user'?'Siz':'R';
+    var av=document.createElement('div');av.className='avatar '+(role==='user'?'user-av':'bot');av.textContent=role==='user'?'Siz':'A';
     var bb=document.createElement('div');bb.className='bubble '+(role==='user'?'user':'bot');
     if(role==='assistant'){bb.innerHTML=fmtTxt(text);}else{bb.textContent=text;}
     msg.appendChild(av);msg.appendChild(bb);chatBox.appendChild(msg);chatBox.scrollTop=chatBox.scrollHeight;
