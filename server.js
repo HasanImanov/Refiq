@@ -14,6 +14,70 @@ try {
   console.warn('QA data yüklənmədi:', e.message);
 }
 
+// ----------------------------
+// Keyword axtarışı (RAG əvəzinə sadə açar-söz uyğunluğu)
+// ----------------------------
+const AZ_STOPWORDS = new Set([
+  'və','ki','bir','bu','o','da','də','üçün','ilə','amma','lakin','ya','yoxsa',
+  'necə','nə','kim','hansı','hara','niyə','nədir','olur','olar','edir','edə',
+  'var','yox','mən','sən','siz','biz','onlar','olan','üzrə','görə','qədər',
+  'sonra','əvvəl','indi','artıq','daha','çox','az','hər','heç','isə','ya da',
+  'olub','olmuş','etmək','istəyirəm','istərdim','bilərəm','bilərsiniz','salam',
+  'xahiş','edirəm','zəhmət','olmasa','deyin','soruşmaq','sual','cavab'
+]);
+
+function normalizeAz(str) {
+  return (str || '')
+    .toLocaleLowerCase('az')
+    .replace(/[^a-zəüöğışç0-9\s]/giu, ' ')
+    .split(/\s+/)
+    .filter(w => w.length >= 3 && !AZ_STOPWORDS.has(w));
+}
+
+// Bütün QA elementlərini düz siyahıya (flat) çevirib, hər biri üçün
+// açar-söz toxenlərini əvvəlcədən hesablayırıq ki, hər sorğuda yenidən
+// hesablamaq lazım gəlməsin.
+let QA_INDEX = [];
+(function buildQaIndex() {
+  for (const [sheet, items] of Object.entries(QA_DATA)) {
+    for (const item of items) {
+      const tokens = new Set([
+        ...normalizeAz(sheet),
+        ...normalizeAz(item.sual)
+      ]);
+      QA_INDEX.push({ sheet, sual: item.sual, cavab: item.cavab, tokens });
+    }
+  }
+})();
+
+function wordsMatch(a, b) {
+  if (a === b) return true;
+  // Azərbaycan dilində şəkilçilər çox olduğu üçün kök uyğunluğuna da baxırıq
+  const minLen = Math.min(a.length, b.length);
+  if (minLen < 4) return false;
+  return a.startsWith(b) || b.startsWith(a);
+}
+
+// İstifadəçi sualına uyğun ən yaxşı maddələri seçir.
+// maxItems - bazaya göndəriləcək maksimum sual-cavab sayı
+function selectRelevantQA(userMessage, maxItems = 12) {
+  const queryTokens = normalizeAz(userMessage);
+  if (queryTokens.length === 0) return [];
+
+  const scored = QA_INDEX.map(entry => {
+    let score = 0;
+    for (const qt of queryTokens) {
+      for (const et of entry.tokens) {
+        if (wordsMatch(qt, et)) { score++; break; }
+      }
+    }
+    return { entry, score };
+  }).filter(x => x.score > 0);
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, maxItems).map(x => x.entry);
+}
+
 const app = express();
 
 // ----------------------------
@@ -155,12 +219,28 @@ app.post('/api/chat', async (req, res) => {
   try {
     const { messages } = req.body;
 
-    const qaText = Object.entries(QA_DATA).map(([sheet, items]) => {
-      if (!items.length) return '';
+    const lastUserMessage = messages.length
+      ? (typeof messages[messages.length - 1].content === 'string'
+          ? messages[messages.length - 1].content
+          : (messages[messages.length - 1].content || [])
+              .map(c => c.text || '').join(' '))
+      : '';
+
+    const relevantQA = selectRelevantQA(lastUserMessage, 12);
+
+    // Seçilmiş maddələri bölmə (sheet) üzrə qruplaşdırırıq ki, Claude-a
+    // strukturlu şəkildə göndərilsin
+    const groupedBySheet = {};
+    for (const item of relevantQA) {
+      if (!groupedBySheet[item.sheet]) groupedBySheet[item.sheet] = [];
+      groupedBySheet[item.sheet].push(item);
+    }
+
+    const qaText = Object.entries(groupedBySheet).map(([sheet, items]) => {
       return `\n## ${sheet}\n` + items.map(item =>
         `Sual: ${item.sual}\nCavab: ${item.cavab}`
       ).join('\n\n');
-    }).filter(Boolean).join('\n');
+    }).join('\n');
 
     systemPrompt = `
 Sən "AİSA" adlı süni intellekt sosial assistantsan.DOST Mərkəzlərinin əməkdaşlarına kömək edirsən.
