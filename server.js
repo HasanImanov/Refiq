@@ -60,15 +60,41 @@ function wordsMatch(a, b) {
 
 // İstifadəçi sualına uyğun ən yaxşı maddələri seçir.
 // maxItems - bazaya göndəriləcək maksimum sual-cavab sayı
+//
+// QEYD: Bazada 300+ maddə olduğu üçün "əmək", "vəfat", "təqaüd", "müavinət"
+// kimi çox yayılmış sözlər onlarla maddədə keçir və sadə say-əsaslı skorda
+// bərabər çəkiyə malik olurlar. Bu, nadir mövzulu reqlamentlərin (məs.
+// "Əfqanıstan", "Xüsusi hesab", "keçmiş Prezidentin arvadı") heç vaxt
+// top-N-ə düşməməsinə səbəb olur, çünki onların fərqləndirici sözləri
+// ümumi sözlərin "səs sayı" içində itir. Bunun qarşısını almaq üçün sadə
+// IDF (invers sənəd tezliyi) çəkiləməsi tətbiq edirik: bir söz bazada nə
+// qədər az maddədə keçirsə, uyğunluq tapıldıqda bir o qədər çox bal verir.
 function selectRelevantQA(userMessage, maxItems = 12) {
   const queryTokens = normalizeAz(userMessage);
   if (queryTokens.length === 0) return [];
+
+  const totalDocs = QA_INDEX.length;
+  const docFreq = {};
+  for (const qt of queryTokens) {
+    let count = 0;
+    for (const entry of QA_INDEX) {
+      for (const et of entry.tokens) {
+        if (wordsMatch(qt, et)) { count++; break; }
+      }
+    }
+    docFreq[qt] = count;
+  }
+  function idfWeight(qt) {
+    const df = docFreq[qt] || 1;
+    // nadir söz (az maddədə keçir) -> yüksək çəki; adi söz -> aşağı çəki
+    return Math.log((totalDocs + 1) / df) + 0.15;
+  }
 
   const scored = QA_INDEX.map(entry => {
     let score = 0;
     for (const qt of queryTokens) {
       for (const et of entry.tokens) {
-        if (wordsMatch(qt, et)) { score++; break; }
+        if (wordsMatch(qt, et)) { score += idfWeight(qt); break; }
       }
     }
     return { entry, score };
